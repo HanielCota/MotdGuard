@@ -4,8 +4,13 @@
   <h1>MotdGuard</h1>
 
   <p>
-    Um plugin moderno para <strong>Velocity</strong> que controla o MOTD, protege contra spam de ping
-    e gerencia modo de manutencao com recarregamento em tempo real.
+    O plugin definitivo para deixar seu proxy <strong>Velocity</strong> mais bonito, mais controlado
+    e muito mais protegido desde o primeiro ping.
+  </p>
+
+  <p>
+    MOTD profissional, manutencao inteligente, rate limit contra flood e configuracao simples.
+    Tudo em um plugin leve, direto e feito para servidor serio.
   </p>
 
   <p>
@@ -27,20 +32,32 @@
 
 ## Visao Geral
 
-**MotdGuard** foi criado para servidores Velocity que precisam de uma camada simples e confiavel para controlar a primeira impressao do servidor e reduzir abuso no endpoint de ping.
+**MotdGuard** nao e so um plugin de MOTD. Ele e a primeira camada de controle do seu proxy.
 
-Com ele, voce pode alterar o MOTD com MiniMessage, ativar manutencao sem reiniciar o proxy, permitir bypass por permissao e limitar spam de ping por IP.
+Enquanto outros plugins so mudam duas linhas na lista de servidores, o MotdGuard entrega uma experiencia completa: visual forte, manutencao sem dor de cabeca e protecao real contra spam de ping. E o tipo de ferramenta que voce instala uma vez e deixa trabalhando em silencio, mantendo seu servidor com cara profissional e comportamento previsivel.
+
+Com ele, voce altera o MOTD com MiniMessage, ativa manutencao sem reiniciar o proxy, libera bypass para staff e limita abuso por IP antes que isso vire problema.
+
+## Por que usar?
+
+| Motivo | Impacto |
+| --- | --- |
+| Visual de servidor premium | Seu servidor aparece com uma identidade mais forte e organizada na lista. |
+| Controle imediato | Ative manutencao, recarregue config e ajuste mensagens sem derrubar o proxy. |
+| Seguranca de verdade | Rate limit por IP ajuda a segurar flood de ping e consultas abusivas. |
+| Leve e objetivo | Faz o que precisa fazer sem virar um plugin gigante e confuso. |
+| Pronto para producao | Build automatizado, CodeQL, Dependabot e dependencias monitoradas. |
 
 ## Destaques
 
 | Recurso | Descricao |
 | --- | --- |
-| MOTD dinamico | Personalize as linhas exibidas na lista de servidores com suporte a MiniMessage. |
-| Modo manutencao | Bloqueie entradas temporariamente com mensagem customizada. |
-| Rate limit de ping | Reduza spam e flood de consultas ao proxy por IP. |
-| Hot reload | Recarregue o `config.toml` sem reiniciar o Velocity. |
-| Bypass por permissao | Permita que staff entre mesmo durante manutencao. |
-| Logs de erro | Registre falhas em `plugins/MotdGuard/errors.log` para diagnostico. |
+| MOTD dinamico | Transforme a primeira impressao do servidor com MiniMessage, cores e estilos modernos. |
+| Modo manutencao | Feche o servidor com elegancia, mensagem customizada e controle total por comando. |
+| Rate limit de ping | Segure spam e flood de consultas antes que eles virem ruido no proxy. |
+| Hot reload | Ajuste tudo no `config.toml` e aplique sem reiniciar o Velocity. |
+| Bypass por permissao | Staff entra quando precisa, mesmo com manutencao ativa. |
+| Logs de erro | Falhas ficam registradas em `plugins/MotdGuard/errors.log` para diagnostico rapido. |
 
 ## Requisitos
 
@@ -59,6 +76,8 @@ Com ele, voce pode alterar o MOTD com MiniMessage, ativar manutencao sem reinici
 5. Use `/motdguard reload` para aplicar alteracoes sem reiniciar.
 
 ## Configuracao
+
+Configuracao simples, legivel e direta. Voce muda o comportamento do plugin sem precisar recompilar nada.
 
 Arquivo principal:
 
@@ -97,7 +116,7 @@ help-maintenance-off = "&e/motdguard maintenance off - Desativa a manutencao"
 
 ## MiniMessage
 
-O MOTD usa [MiniMessage](https://docs.advntr.dev/minimessage/) para formatacao moderna de texto.
+O MOTD usa [MiniMessage](https://docs.advntr.dev/minimessage/) para formatacao moderna de texto. Isso permite criar um visual muito mais bonito do que o padrao antigo de cores simples.
 
 | Sintaxe | Resultado |
 | --- | --- |
@@ -179,7 +198,9 @@ src/main/java/io/github/hanielcot/motdguard/
 
 ## Qualidade e Seguranca
 
-O projeto usa GitHub Actions para validar build, CodeQL para analise de seguranca e Dependabot para manter dependencias atualizadas.
+MotdGuard foi pensado para ser confiavel em producao. O foco e simples: proteger o proxy, manter o visual do servidor profissional e evitar que configuracao ruim ou dependencia velha vire dor de cabeca.
+
+O projeto usa GitHub Actions para validar build, CodeQL para analise de seguranca e Dependabot para manter dependencias atualizadas. Menos improviso, mais previsibilidade.
 
 | Area | Ferramenta |
 | --- | --- |
@@ -187,6 +208,12 @@ O projeto usa GitHub Actions para validar build, CodeQL para analise de seguranc
 | Analise estatica | CodeQL |
 | Dependencias | Dependabot |
 | Empacotamento | Shadow Jar |
+
+## Filosofia
+
+MotdGuard segue uma ideia direta: plugin bom nao precisa ser pesado, confuso ou cheio de firula. Ele precisa resolver o problema, proteger o servidor e continuar funcionando sem chamar atencao.
+
+Esse projeto existe para entregar uma camada limpa, forte e confiavel para quem quer um proxy Velocity com aparencia profissional e controle de verdade.
 
 ## Contribuicao
 
