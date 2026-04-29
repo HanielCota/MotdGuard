@@ -1,147 +1,202 @@
-# MotdGuard
+<div align="center">
+  <img src="logo.png" alt="MotdGuard logo" width="180">
 
-Dynamic MOTD plugin for Velocity proxy with maintenance mode and rate limiting.
+  <h1>MotdGuard</h1>
 
-## Features
+  <p>
+    Um plugin moderno para <strong>Velocity</strong> que controla o MOTD, protege contra spam de ping
+    e gerencia modo de manutencao com recarregamento em tempo real.
+  </p>
 
-- **Dynamic MOTD**: Customize server list appearance with MiniMessage formatting
-- **Maintenance Mode**: Block players from joining during maintenance with custom kick message
-- **Rate Limiting**: Prevent ping spam attacks with configurable limits per IP
-- **Hot Reload**: Reload configuration without restarting the server
-- **Permission Bypass**: Players with `motdguard.bypass` can join during maintenance
+  <p>
+    <a href="https://github.com/HanielCota/MotdGuard/actions/workflows/build.yml">
+      <img alt="Build" src="https://img.shields.io/github/actions/workflow/status/HanielCota/MotdGuard/build.yml?branch=main&style=for-the-badge&label=build">
+    </a>
+    <a href="https://github.com/HanielCota/MotdGuard/security/code-scanning">
+      <img alt="CodeQL" src="https://img.shields.io/github/actions/workflow/status/HanielCota/MotdGuard/codeql.yml?branch=main&style=for-the-badge&label=codeql">
+    </a>
+    <a href="LICENSE">
+      <img alt="License" src="https://img.shields.io/github/license/HanielCota/MotdGuard?style=for-the-badge">
+    </a>
+    <img alt="Java" src="https://img.shields.io/badge/Java-21-f58220?style=for-the-badge">
+    <img alt="Velocity" src="https://img.shields.io/badge/Velocity-3.5%2B-1f6feb?style=for-the-badge">
+  </p>
+</div>
 
-## Requirements
+---
 
-- Java 21
-- Velocity 3.4.0+
+## Visao Geral
 
-## Installation
+**MotdGuard** foi criado para servidores Velocity que precisam de uma camada simples e confiavel para controlar a primeira impressao do servidor e reduzir abuso no endpoint de ping.
 
-1. Download the latest release from [GitHub Releases](https://github.com/HanielCot/MotdGuard/releases)
-2. Place the `MotdGuard-*.jar` file in your Velocity `plugins` folder
-3. Restart your Velocity proxy
-4. Configure `config.toml` in the `plugins/MotdGuard` folder
+Com ele, voce pode alterar o MOTD com MiniMessage, ativar manutencao sem reiniciar o proxy, permitir bypass por permissao e limitar spam de ping por IP.
 
-## Configuration
+## Destaques
 
-Configuration file: `plugins/MotdGuard/config.toml`
+| Recurso | Descricao |
+| --- | --- |
+| MOTD dinamico | Personalize as linhas exibidas na lista de servidores com suporte a MiniMessage. |
+| Modo manutencao | Bloqueie entradas temporariamente com mensagem customizada. |
+| Rate limit de ping | Reduza spam e flood de consultas ao proxy por IP. |
+| Hot reload | Recarregue o `config.toml` sem reiniciar o Velocity. |
+| Bypass por permissao | Permita que staff entre mesmo durante manutencao. |
+| Logs de erro | Registre falhas em `plugins/MotdGuard/errors.log` para diagnostico. |
+
+## Requisitos
+
+| Item | Versao |
+| --- | --- |
+| Java | 21+ |
+| Velocity | 3.5.0+ |
+| Gradle | Wrapper incluso no projeto |
+
+## Instalacao
+
+1. Baixe o arquivo `.jar` mais recente em [GitHub Releases](https://github.com/HanielCota/MotdGuard/releases).
+2. Coloque o arquivo em `plugins/` no seu proxy Velocity.
+3. Reinicie o proxy para gerar a configuracao inicial.
+4. Edite `plugins/MotdGuard/config.toml`.
+5. Use `/motdguard reload` para aplicar alteracoes sem reiniciar.
+
+## Configuracao
+
+Arquivo principal:
+
+```text
+plugins/MotdGuard/config.toml
+```
+
+Exemplo:
 
 ```toml
 [motd]
-line1 = "<#00FF00>MeuServidor"
-line2 = "<#FFFFFF>Modo Hardcore Ativo"
+line1 = "<#f58220><bold>MeuServidor</bold>"
+line2 = "<#ffffff>Protegido por <#f58220>MotdGuard"
 
 [maintenance]
 enabled = false
-kick-message = "<red>Servidor em manutenção. Volte em breve!"
+kick-message = "<red>Servidor em manutencao. Volte em breve!"
 
 [ratelimit]
 enabled = true
 max-pings-per-minute = 60
-block-message = "Muitas requisições. Aguarde."
+block-message = "Muitas requisicoes. Aguarde."
 
 [messages]
-reload-success = "&aConfiguration reloaded successfully."
-reload-failure = "&cFailed to reload configuration. Check console."
-maintenance-enabled = "&aMaintenance mode enabled."
-maintenance-disabled = "&aMaintenance mode disabled."
-maintenance-toggled = "&aMaintenance mode {status}."
-help-header = "&aMotdGuard Commands:"
-help-reload = "&e/motdguard reload - Reload configuration"
-help-maintenance = "&e/motdguard maintenance - Toggle maintenance mode"
-help-maintenance-on = "&e/motdguard maintenance on - Enable maintenance"
-help-maintenance-off = "&e/motdguard maintenance off - Disable maintenance"
+reload-success = "&aConfiguracao recarregada com sucesso."
+reload-failure = "&cFalha ao recarregar a configuracao. Verifique o console."
+maintenance-enabled = "&aModo manutencao ativado."
+maintenance-disabled = "&aModo manutencao desativado."
+maintenance-toggled = "&aModo manutencao {status}."
+help-header = "&aComandos do MotdGuard:"
+help-reload = "&e/motdguard reload - Recarrega a configuracao"
+help-maintenance = "&e/motdguard maintenance - Alterna o modo manutencao"
+help-maintenance-on = "&e/motdguard maintenance on - Ativa a manutencao"
+help-maintenance-off = "&e/motdguard maintenance off - Desativa a manutencao"
 ```
 
-### MiniMessage Formatting
+## MiniMessage
 
-The plugin uses [MiniMessage](https://docs.advntr.dev/minimessage/) for text formatting. Supported tags include:
+O MOTD usa [MiniMessage](https://docs.advntr.dev/minimessage/) para formatacao moderna de texto.
 
-- `<green>`, `<red>`, `<blue>`, etc. - Color names
-- `<#RRGGBB>` - Hex color codes
-- `<bold>`, `<italic>`, `<strikethrough>` - Text styles
-- `<click:run_command:/cmd>` - Click actions
-- `<hover:show_text:text>` - Hover tooltips
+| Sintaxe | Resultado |
+| --- | --- |
+| `<green>Online` | Cor nomeada |
+| `<#f58220>MotdGuard` | Cor hexadecimal |
+| `<bold>Texto</bold>` | Texto em negrito |
+| `<gradient:#f58220:#ffffff>Servidor</gradient>` | Gradiente |
+| `<hover:show_text:'Info'>Passe o mouse</hover>` | Texto com hover |
 
-## Commands
+## Comandos
 
-| Command | Description | Permission |
-|---------|-------------|-------------|
-| `/motdguard` or `/mg` | Show help menu | `motdguard.admin` |
-| `/motdguard reload` | Reload configuration file | `motdguard.admin` |
-| `/motdguard maintenance` or `/mg m` | Toggle maintenance mode | `motdguard.admin` |
-| `/motdguard maintenance on` or `/mg m on` | Enable maintenance mode | `motdguard.admin` |
-| `/motdguard maintenance off` or `/mg m off` | Disable maintenance mode | `motdguard.admin` |
+| Comando | Descricao | Permissao |
+| --- | --- | --- |
+| `/motdguard` | Mostra o menu de ajuda | `motdguard.admin` |
+| `/mg` | Alias principal | `motdguard.admin` |
+| `/motdguard reload` | Recarrega a configuracao | `motdguard.admin` |
+| `/motdguard maintenance` | Alterna o modo manutencao | `motdguard.admin` |
+| `/motdguard maintenance on` | Ativa o modo manutencao | `motdguard.admin` |
+| `/motdguard maintenance off` | Desativa o modo manutencao | `motdguard.admin` |
+| `/mg m` | Alias para manutencao | `motdguard.admin` |
 
-## Permissions
+## Permissoes
 
-| Permission | Description | Default |
-|------------|-------------|---------|
-| `motdguard.admin` | Access to all MotdGuard commands | `op` |
-| `motdguard.bypass` | Bypass maintenance mode | `false` |
+| Permissao | Descricao | Padrao |
+| --- | --- | --- |
+| `motdguard.admin` | Acesso aos comandos administrativos | `op` |
+| `motdguard.bypass` | Permite entrar durante manutencao | `false` |
 
-## Building
+## Build Local
 
-### Requirements
-
-- Java 21
-- Gradle 8.x
-
-### Build Commands
+Use o Gradle Wrapper incluido no repositorio.
 
 ```bash
-# Build the project
 ./gradlew build
+```
 
-# Build without running SpotBugs checks
+Build sem SpotBugs:
+
+```bash
 ./gradlew build -x spotbugsMain -x spotbugsTest
+```
 
-# Build shadow JAR
+Gerar o JAR final:
+
+```bash
 ./gradlew shadowJar
-
-# Clean build directory
-./gradlew clean
 ```
 
-The compiled JAR will be located at:
-- `build/libs/MotdGuard-1.0.0.jar` (with dependencies)
+O artefato compilado fica em:
 
-## Project Structure
-
+```text
+build/libs/motdguard-1.0.0.jar
 ```
+
+## Estrutura
+
+```text
 src/main/java/io/github/hanielcot/motdguard/
-├── MotdGuardPlugin.java       # Main plugin class
+├── MotdGuardPlugin.java
 ├── command/
-│   └── MotdGuardCommand.java   # Command handler
+│   └── MotdGuardCommand.java
 ├── config/
-│   ├── ConfigData.java         # Configuration data class
-│   ├── ConfigManager.java      # Configuration manager
-│   ├── MaintenanceConfig.java  # Maintenance settings
-│   ├── MessagesConfig.java     # Message templates
-│   ├── MotdConfig.java         # MOTD settings
-│   └── RateLimitConfig.java   # Rate limiting settings
+│   ├── ConfigData.java
+│   ├── ConfigManager.java
+│   ├── MaintenanceConfig.java
+│   ├── MessagesConfig.java
+│   ├── MotdConfig.java
+│   └── RateLimitConfig.java
 ├── exception/
-│   └── PluginExceptionHandler.java  # Exception handler
+│   └── PluginExceptionHandler.java
 ├── listener/
-│   ├── LoginListener.java     # Login event handler
-│   └── PingListener.java       # Proxy ping handler
+│   ├── LoginListener.java
+│   └── PingListener.java
 └── service/
-    ├── MaintenanceService.java # Maintenance mode logic
-    ├── MotdService.java        # MOTD building logic
-    └── RateLimitService.java  # Rate limiting logic
+    ├── MaintenanceService.java
+    ├── MotdService.java
+    └── RateLimitService.java
 ```
 
-## Error Logging
+## Qualidade e Seguranca
 
-The plugin logs uncaught exceptions to `plugins/MotdGuard/errors.log`. This file is automatically created and rotated.
+O projeto usa GitHub Actions para validar build, CodeQL para analise de seguranca e Dependabot para manter dependencias atualizadas.
 
-## License
+| Area | Ferramenta |
+| --- | --- |
+| Build | GitHub Actions |
+| Analise estatica | CodeQL |
+| Dependencias | Dependabot |
+| Empacotamento | Shadow Jar |
 
-This project is licensed under the MIT License.
+## Contribuicao
 
-## Contributing
+Contribuicoes sao bem-vindas. Para propor mudancas:
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+1. Faca um fork do repositorio.
+2. Crie uma branch para sua alteracao.
+3. Rode o build localmente.
+4. Abra um pull request descrevendo o que mudou.
+
+## Licenca
+
+Distribuido sob a licenca MIT. Veja [LICENSE](LICENSE) para mais detalhes.
