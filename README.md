@@ -9,8 +9,8 @@
   </p>
 
   <p>
-    MOTD profissional, manutencao inteligente, rate limit contra flood e configuracao simples.
-    Tudo em um plugin leve, direto e feito para servidor serio.
+    MOTD profissional, manutenção inteligente, rate limit contra flood e configuração simples.
+    Tudo em um plugin leve, direto e feito para servidor sério.
   </p>
 
   <p>
@@ -30,54 +30,54 @@
 
 ---
 
-## Visao Geral
+## Visão Geral
 
-**MotdGuard** nao e so um plugin de MOTD. Ele e a primeira camada de controle do seu proxy.
+**MotdGuard** não é só um plugin de MOTD. Ele é a primeira camada de controle do seu proxy.
 
-Enquanto outros plugins so mudam duas linhas na lista de servidores, o MotdGuard entrega uma experiencia completa: visual forte, manutencao sem dor de cabeca e protecao real contra spam de ping. E o tipo de ferramenta que voce instala uma vez e deixa trabalhando em silencio, mantendo seu servidor com cara profissional e comportamento previsivel.
+Enquanto outros plugins só mudam duas linhas na lista de servidores, o MotdGuard entrega uma experiência completa: visual forte, manutenção sem dor de cabeça e proteção real contra spam de ping. É o tipo de ferramenta que você instala uma vez e deixa trabalhando em silêncio, mantendo seu servidor com cara profissional e comportamento previsível.
 
-Com ele, voce altera o MOTD com MiniMessage, ativa manutencao sem reiniciar o proxy, libera bypass para staff e limita abuso por IP antes que isso vire problema.
+Com ele, você altera o MOTD com MiniMessage, ativa manutenção sem reiniciar o proxy, libera bypass para staff e limita abuso por IP antes que isso vire problema.
 
 ## Por que usar?
 
 | Motivo | Impacto |
 | --- | --- |
 | Visual de servidor premium | Seu servidor aparece com uma identidade mais forte e organizada na lista. |
-| Controle imediato | Ative manutencao, recarregue config e ajuste mensagens sem derrubar o proxy. |
-| Seguranca de verdade | Rate limit por IP ajuda a segurar flood de ping e consultas abusivas. |
+| Controle imediato | Ative manutenção, recarregue a configuração e ajuste mensagens sem derrubar o proxy. |
+| Segurança de verdade | Rate limit por IP ajuda a segurar flood de ping e consultas abusivas. |
 | Leve e objetivo | Faz o que precisa fazer sem virar um plugin gigante e confuso. |
-| Pronto para producao | Build automatizado, CodeQL, Dependabot e dependencias monitoradas. |
+| Pronto para produção | Build automatizado, CodeQL, Dependabot e dependências monitoradas. |
 
 ## Destaques
 
-| Recurso | Descricao |
+| Recurso | Descrição |
 | --- | --- |
-| MOTD dinamico | Transforme a primeira impressao do servidor com MiniMessage, cores e estilos modernos. |
-| Modo manutencao | Feche o servidor com elegancia, mensagem customizada e controle total por comando. |
-| Rate limit de ping | Segure spam e flood de consultas antes que eles virem ruido no proxy. |
+| MOTD dinâmico | Transforme a primeira impressão do servidor com MiniMessage, cores e estilos modernos. |
+| Modo manutenção | Feche o servidor com elegância, mensagem customizada e controle total por comando. |
+| Rate limit de ping | Segure spam e flood de consultas antes que eles virem ruído no proxy. |
 | Hot reload | Ajuste tudo no `config.toml` e aplique sem reiniciar o Velocity. |
-| Bypass por permissao | Staff entra quando precisa, mesmo com manutencao ativa. |
-| Logs de erro | Falhas ficam registradas em `plugins/MotdGuard/errors.log` para diagnostico rapido. |
+| Bypass por permissão | Staff entra quando precisa, mesmo com manutenção ativa. |
+| Logs de erro | Falhas ficam registradas em `plugins/MotdGuard/errors.log` para diagnóstico rápido. |
 
 ## Requisitos
 
-| Item | Versao |
+| Item | Versão |
 | --- | --- |
 | Java | 21+ |
 | Velocity | 3.5.0+ |
 | Gradle | Wrapper incluso no projeto |
 
-## Instalacao
+## Instalação
 
 1. Baixe o arquivo `.jar` mais recente em [GitHub Releases](https://github.com/HanielCota/MotdGuard/releases).
 2. Coloque o arquivo em `plugins/` no seu proxy Velocity.
-3. Reinicie o proxy para gerar a configuracao inicial.
+3. Reinicie o proxy para gerar a configuração inicial.
 4. Edite `plugins/MotdGuard/config.toml`.
-5. Use `/motdguard reload` para aplicar alteracoes sem reiniciar.
+5. Use `/motdguard reload` para aplicar alterações sem reiniciar.
 
-## Configuracao
+## Configuração
 
-Configuracao simples, legivel e direta. Voce muda o comportamento do plugin sem precisar recompilar nada.
+Configuração simples, legível e direta. Você muda o comportamento do plugin sem precisar recompilar nada.
 
 Arquivo principal:
 
@@ -94,29 +94,29 @@ line2 = "<#ffffff>Protegido por <#f58220>MotdGuard"
 
 [maintenance]
 enabled = false
-kick-message = "<red>Servidor em manutencao. Volte em breve!"
+kick-message = "<red>Servidor em manutenção. Volte em breve!"
 
 [ratelimit]
 enabled = true
 max-pings-per-minute = 60
-block-message = "Muitas requisicoes. Aguarde."
+block-message = "Muitas requisições. Aguarde."
 
 [messages]
-reload-success = "&aConfiguracao recarregada com sucesso."
-reload-failure = "&cFalha ao recarregar a configuracao. Verifique o console."
-maintenance-enabled = "&aModo manutencao ativado."
-maintenance-disabled = "&aModo manutencao desativado."
-maintenance-toggled = "&aModo manutencao {status}."
+reload-success = "&aConfiguração recarregada com sucesso."
+reload-failure = "&cFalha ao recarregar a configuração. Verifique o console."
+maintenance-enabled = "&aModo manutenção ativado."
+maintenance-disabled = "&aModo manutenção desativado."
+maintenance-toggled = "&aModo manutenção {status}."
 help-header = "&aComandos do MotdGuard:"
-help-reload = "&e/motdguard reload - Recarrega a configuracao"
-help-maintenance = "&e/motdguard maintenance - Alterna o modo manutencao"
-help-maintenance-on = "&e/motdguard maintenance on - Ativa a manutencao"
-help-maintenance-off = "&e/motdguard maintenance off - Desativa a manutencao"
+help-reload = "&e/motdguard reload - Recarrega a configuração"
+help-maintenance = "&e/motdguard maintenance - Alterna o modo manutenção"
+help-maintenance-on = "&e/motdguard maintenance on - Ativa a manutenção"
+help-maintenance-off = "&e/motdguard maintenance off - Desativa a manutenção"
 ```
 
 ## MiniMessage
 
-O MOTD usa [MiniMessage](https://docs.advntr.dev/minimessage/) para formatacao moderna de texto. Isso permite criar um visual muito mais bonito do que o padrao antigo de cores simples.
+O MOTD usa [MiniMessage](https://docs.advntr.dev/minimessage/) para formatação moderna de texto. Isso permite criar um visual muito mais bonito do que o padrão antigo de cores simples.
 
 | Sintaxe | Resultado |
 | --- | --- |
@@ -128,26 +128,26 @@ O MOTD usa [MiniMessage](https://docs.advntr.dev/minimessage/) para formatacao m
 
 ## Comandos
 
-| Comando | Descricao | Permissao |
+| Comando | Descrição | Permissão |
 | --- | --- | --- |
 | `/motdguard` | Mostra o menu de ajuda | `motdguard.admin` |
 | `/mg` | Alias principal | `motdguard.admin` |
-| `/motdguard reload` | Recarrega a configuracao | `motdguard.admin` |
-| `/motdguard maintenance` | Alterna o modo manutencao | `motdguard.admin` |
-| `/motdguard maintenance on` | Ativa o modo manutencao | `motdguard.admin` |
-| `/motdguard maintenance off` | Desativa o modo manutencao | `motdguard.admin` |
-| `/mg m` | Alias para manutencao | `motdguard.admin` |
+| `/motdguard reload` | Recarrega a configuração | `motdguard.admin` |
+| `/motdguard maintenance` | Alterna o modo manutenção | `motdguard.admin` |
+| `/motdguard maintenance on` | Ativa o modo manutenção | `motdguard.admin` |
+| `/motdguard maintenance off` | Desativa o modo manutenção | `motdguard.admin` |
+| `/mg m` | Alias para manutenção | `motdguard.admin` |
 
-## Permissoes
+## Permissões
 
-| Permissao | Descricao | Padrao |
+| Permissão | Descrição | Padrão |
 | --- | --- | --- |
 | `motdguard.admin` | Acesso aos comandos administrativos | `op` |
-| `motdguard.bypass` | Permite entrar durante manutencao | `false` |
+| `motdguard.bypass` | Permite entrar durante manutenção | `false` |
 
 ## Build Local
 
-Use o Gradle Wrapper incluido no repositorio.
+Use o Gradle Wrapper incluído no repositório.
 
 ```bash
 ./gradlew build
@@ -196,34 +196,34 @@ src/main/java/io/github/hanielcota/motdguard/
     └── RateLimitService.java
 ```
 
-## Qualidade e Seguranca
+## Qualidade e Segurança
 
-MotdGuard foi pensado para ser confiavel em producao. O foco e simples: proteger o proxy, manter o visual do servidor profissional e evitar que configuracao ruim ou dependencia velha vire dor de cabeca.
+MotdGuard foi pensado para ser confiável em produção. O foco é simples: proteger o proxy, manter o visual do servidor profissional e evitar que configuração ruim ou dependência velha vire dor de cabeça.
 
-O projeto usa GitHub Actions para validar build, CodeQL para analise de seguranca e Dependabot para manter dependencias atualizadas. Menos improviso, mais previsibilidade.
+O projeto usa GitHub Actions para validar build, CodeQL para análise de segurança e Dependabot para manter dependências atualizadas. Menos improviso, mais previsibilidade.
 
-| Area | Ferramenta |
+| Área | Ferramenta |
 | --- | --- |
 | Build | GitHub Actions |
-| Analise estatica | CodeQL |
-| Dependencias | Dependabot |
+| Análise estática | CodeQL |
+| Dependências | Dependabot |
 | Empacotamento | Shadow Jar |
 
 ## Filosofia
 
-MotdGuard segue uma ideia direta: plugin bom nao precisa ser pesado, confuso ou cheio de firula. Ele precisa resolver o problema, proteger o servidor e continuar funcionando sem chamar atencao.
+MotdGuard segue uma ideia direta: plugin bom não precisa ser pesado, confuso ou cheio de firula. Ele precisa resolver o problema, proteger o servidor e continuar funcionando sem chamar atenção.
 
-Esse projeto existe para entregar uma camada limpa, forte e confiavel para quem quer um proxy Velocity com aparencia profissional e controle de verdade.
+Este projeto existe para entregar uma camada limpa, forte e confiável para quem quer um proxy Velocity com aparência profissional e controle de verdade.
 
-## Contribuicao
+## Contribuição
 
-Contribuicoes sao bem-vindas. Para propor mudancas:
+Contribuições são bem-vindas. Para propor mudanças:
 
-1. Faca um fork do repositorio.
-2. Crie uma branch para sua alteracao.
+1. Faça um fork do repositório.
+2. Crie uma branch para sua alteração.
 3. Rode o build localmente.
 4. Abra um pull request descrevendo o que mudou.
 
-## Licenca
+## Licença
 
-Distribuido sob a licenca MIT. Veja [LICENSE](LICENSE) para mais detalhes.
+Distribuído sob a licença MIT. Veja [LICENSE](LICENSE) para mais detalhes.
