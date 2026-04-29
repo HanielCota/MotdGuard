@@ -56,3 +56,4 @@ build/reports/
 # JDK distributions
 jdk21/
 jdk-*/
+*.zip
