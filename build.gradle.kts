@@ -37,7 +37,7 @@ dependencies {
     implementation("co.aikar:acf-velocity:0.5.1-SNAPSHOT")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     implementation("com.bucket4j:bucket4j_jdk17-core:8.14.0")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.17.2")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.21.3")
 
     compileOnly("org.projectlombok:lombok:1.18.32")
     annotationProcessor("org.projectlombok:lombok:1.18.32")
