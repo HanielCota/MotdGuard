@@ -4,7 +4,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 
 plugins {
     java
-    id("com.gradleup.shadow") version "8.3.6"
+    id("com.gradleup.shadow") version "9.4.1"
     id("com.github.spotbugs") version "6.5.1"
 }
 
@@ -31,13 +31,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
+    compileOnly("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
+    annotationProcessor("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
 
     implementation("co.aikar:acf-velocity:0.5.1-SNAPSHOT")
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
-    implementation("com.bucket4j:bucket4j_jdk17-core:8.14.0")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.17.2")
+    implementation("com.bucket4j:bucket4j_jdk17-core:8.18.0")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.21.3")
 
     compileOnly("org.projectlombok:lombok:1.18.32")
     annotationProcessor("org.projectlombok:lombok:1.18.32")
