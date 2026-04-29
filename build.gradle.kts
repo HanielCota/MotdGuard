@@ -5,7 +5,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 plugins {
     java
     id("com.gradleup.shadow") version "8.3.6"
-    id("com.github.spotbugs") version "6.0.14"
+    id("com.github.spotbugs") version "6.5.1"
 }
 
 group = "io.github.hanielcot"
