@@ -33,6 +33,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build
         run: ./gradlew build -x spotbugsMain -x spotbugsTest
 
