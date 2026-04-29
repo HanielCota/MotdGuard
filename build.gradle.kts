@@ -98,4 +98,12 @@ tasks {
     build {
         dependsOn(shadowJar)
     }
+
+    register("printVersion") {
+        group = "help"
+        description = "Prints the project version."
+        doLast {
+            println(project.version)
+        }
+    }
 }

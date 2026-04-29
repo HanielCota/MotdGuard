@@ -81,6 +81,23 @@ With MotdGuard, you can customize the MOTD with MiniMessage, enable maintenance 
 4. Edit `plugins/MotdGuard/config.toml`.
 5. Use `/motdguard reload` to apply changes without restarting.
 
+## Releases
+
+Releases are published from semantic version tags.
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The release workflow verifies that the tag version matches the Gradle project version, builds the plugin with Java 21, creates a GitHub Release, generates release notes, and attaches the compiled JAR.
+
+Release artifacts are available at:
+
+```text
+https://github.com/HanielCota/MotdGuard/releases
+```
+
 ## Configuration
 
 The configuration is simple, readable, and direct. You can change the plugin behavior without recompiling anything.
