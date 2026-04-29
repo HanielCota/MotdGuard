@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="logo.png" alt="MotdGuard logo" width="180">
+  <img src=".github/assets/logo.png" alt="MotdGuard logo" width="180">
 
   <h1>MotdGuard</h1>
 
