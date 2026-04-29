@@ -2,6 +2,16 @@ import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.SpotBugsTask
 
+buildscript {
+    configurations.classpath {
+        resolutionStrategy.force(
+            "org.apache.logging.log4j:log4j-api:2.25.4",
+            "org.apache.logging.log4j:log4j-core:2.25.4",
+            "org.codehaus.plexus:plexus-utils:4.0.3",
+        )
+    }
+}
+
 plugins {
     java
     id("com.gradleup.shadow") version "9.4.1"
@@ -30,6 +40,14 @@ repositories {
 
 }
 
+configurations.configureEach {
+    resolutionStrategy.force(
+        "org.apache.logging.log4j:log4j-api:2.25.4",
+        "org.apache.logging.log4j:log4j-core:2.25.4",
+        "org.codehaus.plexus:plexus-utils:4.0.3",
+    )
+}
+
 dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
@@ -48,7 +66,7 @@ dependencies {
 }
 
 spotbugs {
-    toolVersion.set("4.8.5")
+    toolVersion.set("4.9.8")
     effort.set(Effort.MAX)
     reportLevel.set(Confidence.DEFAULT)
 }
