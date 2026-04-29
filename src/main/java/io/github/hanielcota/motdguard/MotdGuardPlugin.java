@@ -1,4 +1,4 @@
-package io.github.hanielcot.motdguard;
+package io.github.hanielcota.motdguard;
 
 import co.aikar.commands.VelocityCommandManager;
 import com.google.inject.Inject;
@@ -7,14 +7,14 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
-import io.github.hanielcot.motdguard.command.MotdGuardCommand;
-import io.github.hanielcot.motdguard.config.ConfigManager;
-import io.github.hanielcot.motdguard.exception.PluginExceptionHandler;
-import io.github.hanielcot.motdguard.listener.LoginListener;
-import io.github.hanielcot.motdguard.listener.PingListener;
-import io.github.hanielcot.motdguard.service.MaintenanceService;
-import io.github.hanielcot.motdguard.service.MotdService;
-import io.github.hanielcot.motdguard.service.RateLimitService;
+import io.github.hanielcota.motdguard.command.MotdGuardCommand;
+import io.github.hanielcota.motdguard.config.ConfigManager;
+import io.github.hanielcota.motdguard.exception.PluginExceptionHandler;
+import io.github.hanielcota.motdguard.listener.LoginListener;
+import io.github.hanielcota.motdguard.listener.PingListener;
+import io.github.hanielcota.motdguard.service.MaintenanceService;
+import io.github.hanielcota.motdguard.service.MotdService;
+import io.github.hanielcota.motdguard.service.RateLimitService;
 import java.nio.file.Path;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
     name = "MotdGuard",
     version = "1.0.0",
     description = "Dynamic MOTD with maintenance mode and rate limiting",
-    authors = {"HanielCot"})
+    authors = {"HanielCota"})
 public final class MotdGuardPlugin {
 
     private final ProxyServer server;

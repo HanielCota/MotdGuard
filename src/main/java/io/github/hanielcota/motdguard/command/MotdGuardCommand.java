@@ -1,4 +1,4 @@
-package io.github.hanielcot.motdguard.command;
+package io.github.hanielcota.motdguard.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
@@ -7,10 +7,10 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.velocitypowered.api.proxy.Player;
-import io.github.hanielcot.motdguard.config.ConfigManager;
-import io.github.hanielcot.motdguard.service.MaintenanceService;
-import io.github.hanielcot.motdguard.service.MotdService;
-import io.github.hanielcot.motdguard.service.RateLimitService;
+import io.github.hanielcota.motdguard.config.ConfigManager;
+import io.github.hanielcota.motdguard.service.MaintenanceService;
+import io.github.hanielcota.motdguard.service.MotdService;
+import io.github.hanielcota.motdguard.service.RateLimitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;

@@ -1,4 +1,4 @@
-package io.github.hanielcot.motdguard.config;
+package io.github.hanielcota.motdguard.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

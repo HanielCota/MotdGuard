@@ -1,7 +1,7 @@
-package io.github.hanielcot.motdguard.service;
+package io.github.hanielcota.motdguard.service;
 
 import com.velocitypowered.api.proxy.server.ServerPing;
-import io.github.hanielcot.motdguard.config.ConfigManager;
+import io.github.hanielcota.motdguard.config.ConfigManager;
 import java.util.concurrent.atomic.AtomicReference;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;

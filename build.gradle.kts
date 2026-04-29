@@ -18,7 +18,7 @@ plugins {
     id("com.github.spotbugs") version "6.5.1"
 }
 
-group = "io.github.hanielcot"
+group = "io.github.hanielcota"
 version = "1.0.0"
 
 description = "Dynamic MOTD plugin for Velocity with maintenance mode and rate limiting"
@@ -79,11 +79,11 @@ tasks {
 
     shadowJar {
         archiveClassifier.set("")
-        relocate("co.aikar.commands", "io.github.hanielcot.motdguard.libs.acf")
-        relocate("co.aikar.locales", "io.github.hanielcot.motdguard.libs.locales")
-        relocate("com.github.benmanes.caffeine", "io.github.hanielcot.motdguard.libs.caffeine")
-        relocate("io.github.bucket4j", "io.github.hanielcot.motdguard.libs.bucket4j")
-        relocate("com.fasterxml.jackson", "io.github.hanielcot.motdguard.libs.jackson")
+        relocate("co.aikar.commands", "io.github.hanielcota.motdguard.libs.acf")
+        relocate("co.aikar.locales", "io.github.hanielcota.motdguard.libs.locales")
+        relocate("com.github.benmanes.caffeine", "io.github.hanielcota.motdguard.libs.caffeine")
+        relocate("io.github.bucket4j", "io.github.hanielcota.motdguard.libs.bucket4j")
+        relocate("com.fasterxml.jackson", "io.github.hanielcota.motdguard.libs.jackson")
     }
 
     withType<SpotBugsTask> {

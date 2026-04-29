@@ -1,4 +1,4 @@
-package io.github.hanielcot.motdguard.exception;
+package io.github.hanielcota.motdguard.exception;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;

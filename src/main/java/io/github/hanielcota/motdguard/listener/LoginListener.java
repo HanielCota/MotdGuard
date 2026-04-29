@@ -1,9 +1,9 @@
-package io.github.hanielcot.motdguard.listener;
+package io.github.hanielcota.motdguard.listener;
 
 import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
-import io.github.hanielcot.motdguard.service.MaintenanceService;
+import io.github.hanielcota.motdguard.service.MaintenanceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,9 +1,9 @@
-package io.github.hanielcot.motdguard.listener;
+package io.github.hanielcota.motdguard.listener;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
-import io.github.hanielcot.motdguard.service.MotdService;
-import io.github.hanielcot.motdguard.service.RateLimitService;
+import io.github.hanielcota.motdguard.service.MotdService;
+import io.github.hanielcota.motdguard.service.RateLimitService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

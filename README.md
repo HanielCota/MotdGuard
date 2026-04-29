@@ -174,7 +174,7 @@ build/libs/motdguard-1.0.0.jar
 ## Estrutura
 
 ```text
-src/main/java/io/github/hanielcot/motdguard/
+src/main/java/io/github/hanielcota/motdguard/
 ├── MotdGuardPlugin.java
 ├── command/
 │   └── MotdGuardCommand.java

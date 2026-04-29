@@ -1,10 +1,10 @@
-package io.github.hanielcot.motdguard.service;
+package io.github.hanielcota.motdguard.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import io.github.bucket4j.Bucket;
-import io.github.hanielcot.motdguard.config.ConfigManager;
+import io.github.hanielcota.motdguard.config.ConfigManager;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.Duration;
