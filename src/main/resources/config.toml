@@ -1,0 +1,24 @@
+[motd]
+line1 = "<#00FF00>MeuServidor"
+line2 = "<#FFFFFF>Modo Hardcore Ativo"
+
+[maintenance]
+enabled = false
+kick-message = "<red>Servidor em manutenção. Volte em breve!"
+
+[ratelimit]
+enabled = true
+max-pings-per-minute = 60
+block-message = "Muitas requisições. Aguarde."
+
+[messages]
+reload-success = "&aConfiguration reloaded successfully."
+reload-failure = "&cFailed to reload configuration. Check console."
+maintenance-enabled = "&aMaintenance mode enabled."
+maintenance-disabled = "&aMaintenance mode disabled."
+maintenance-toggled = "&aMaintenance mode {status}."
+help-header = "&aMotdGuard Commands:"
+help-reload = "&e/motdguard reload - Reload configuration"
+help-maintenance = "&e/motdguard maintenance - Toggle maintenance mode"
+help-maintenance-on = "&e/motdguard maintenance on - Enable maintenance"
+help-maintenance-off = "&e/motdguard maintenance off - Disable maintenance"
