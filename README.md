@@ -4,13 +4,19 @@
   <h1>MotdGuard</h1>
 
   <p>
-    O plugin definitivo para deixar seu proxy <strong>Velocity</strong> mais bonito, mais controlado
-    e muito mais protegido desde o primeiro ping.
+    The definitive plugin to make your <strong>Velocity</strong> proxy cleaner, easier to control,
+    and much more protected from the first server ping.
   </p>
 
   <p>
-    MOTD profissional, manutenção inteligente, rate limit contra flood e configuração simples.
-    Tudo em um plugin leve, direto e feito para servidor sério.
+    Professional MOTD, smart maintenance mode, ping flood rate limiting, and simple configuration.
+    Everything in a lightweight, direct plugin built for serious servers.
+  </p>
+
+  <p>
+    <a href="README.pt-BR.md">
+      <img alt="Read in Portuguese" src="https://img.shields.io/badge/Ler%20em-Portugu%C3%AAs-009739?style=for-the-badge">
+    </a>
   </p>
 
   <p>
@@ -30,148 +36,148 @@
 
 ---
 
-## Visão Geral
+## Overview
 
-**MotdGuard** não é só um plugin de MOTD. Ele é a primeira camada de controle do seu proxy.
+**MotdGuard** is not just another MOTD plugin. It is the first control layer of your Velocity proxy.
 
-Enquanto outros plugins só mudam duas linhas na lista de servidores, o MotdGuard entrega uma experiência completa: visual forte, manutenção sem dor de cabeça e proteção real contra spam de ping. É o tipo de ferramenta que você instala uma vez e deixa trabalhando em silêncio, mantendo seu servidor com cara profissional e comportamento previsível.
+While many plugins only change two lines in the server list, MotdGuard delivers a complete experience: strong presentation, painless maintenance mode, and real protection against ping spam. It is the kind of tool you install once and let work quietly in the background, keeping your server professional, predictable, and protected.
 
-Com ele, você altera o MOTD com MiniMessage, ativa manutenção sem reiniciar o proxy, libera bypass para staff e limita abuso por IP antes que isso vire problema.
+With MotdGuard, you can customize the MOTD with MiniMessage, enable maintenance without restarting the proxy, allow staff bypass, and limit abusive ping traffic per IP before it becomes a problem.
 
-## Por que usar?
+## Why Use It?
 
-| Motivo | Impacto |
+| Reason | Impact |
 | --- | --- |
-| Visual de servidor premium | Seu servidor aparece com uma identidade mais forte e organizada na lista. |
-| Controle imediato | Ative manutenção, recarregue a configuração e ajuste mensagens sem derrubar o proxy. |
-| Segurança de verdade | Rate limit por IP ajuda a segurar flood de ping e consultas abusivas. |
-| Leve e objetivo | Faz o que precisa fazer sem virar um plugin gigante e confuso. |
-| Pronto para produção | Build automatizado, CodeQL, Dependabot e dependências monitoradas. |
+| Premium server presentation | Your server shows a stronger, cleaner identity in the server list. |
+| Immediate control | Enable maintenance, reload configuration, and adjust messages without taking the proxy down. |
+| Real protection | Per-IP rate limiting helps reduce ping flood and abusive server list queries. |
+| Lightweight and focused | Does what it needs to do without becoming a huge, confusing plugin. |
+| Production-ready | Automated builds, CodeQL, Dependabot, and monitored dependencies. |
 
-## Destaques
+## Highlights
 
-| Recurso | Descrição |
+| Feature | Description |
 | --- | --- |
-| MOTD dinâmico | Transforme a primeira impressão do servidor com MiniMessage, cores e estilos modernos. |
-| Modo manutenção | Feche o servidor com elegância, mensagem customizada e controle total por comando. |
-| Rate limit de ping | Segure spam e flood de consultas antes que eles virem ruído no proxy. |
-| Hot reload | Ajuste tudo no `config.toml` e aplique sem reiniciar o Velocity. |
-| Bypass por permissão | Staff entra quando precisa, mesmo com manutenção ativa. |
-| Logs de erro | Falhas ficam registradas em `plugins/MotdGuard/errors.log` para diagnóstico rápido. |
+| Dynamic MOTD | Create a strong first impression with MiniMessage, colors, and modern text styles. |
+| Maintenance mode | Close the server cleanly with a custom message and full command control. |
+| Ping rate limiting | Hold back spam and abusive status queries before they create noise on the proxy. |
+| Hot reload | Update `config.toml` and apply changes without restarting Velocity. |
+| Permission bypass | Staff can still join when needed, even while maintenance is active. |
+| Error logs | Failures are written to `plugins/MotdGuard/errors.log` for quick diagnostics. |
 
-## Requisitos
+## Requirements
 
-| Item | Versão |
+| Item | Version |
 | --- | --- |
 | Java | 21+ |
 | Velocity | 3.5.0+ |
-| Gradle | Wrapper incluso no projeto |
+| Gradle | Wrapper included in the project |
 
-## Instalação
+## Installation
 
-1. Baixe o arquivo `.jar` mais recente em [GitHub Releases](https://github.com/HanielCota/MotdGuard/releases).
-2. Coloque o arquivo em `plugins/` no seu proxy Velocity.
-3. Reinicie o proxy para gerar a configuração inicial.
-4. Edite `plugins/MotdGuard/config.toml`.
-5. Use `/motdguard reload` para aplicar alterações sem reiniciar.
+1. Download the latest `.jar` file from [GitHub Releases](https://github.com/HanielCota/MotdGuard/releases).
+2. Place the file inside the `plugins/` folder of your Velocity proxy.
+3. Restart the proxy to generate the initial configuration.
+4. Edit `plugins/MotdGuard/config.toml`.
+5. Use `/motdguard reload` to apply changes without restarting.
 
-## Configuração
+## Configuration
 
-Configuração simples, legível e direta. Você muda o comportamento do plugin sem precisar recompilar nada.
+The configuration is simple, readable, and direct. You can change the plugin behavior without recompiling anything.
 
-Arquivo principal:
+Main file:
 
 ```text
 plugins/MotdGuard/config.toml
 ```
 
-Exemplo:
+Example:
 
 ```toml
 [motd]
-line1 = "<#f58220><bold>MeuServidor</bold>"
-line2 = "<#ffffff>Protegido por <#f58220>MotdGuard"
+line1 = "<#f58220><bold>MyServer</bold>"
+line2 = "<#ffffff>Protected by <#f58220>MotdGuard"
 
 [maintenance]
 enabled = false
-kick-message = "<red>Servidor em manutenção. Volte em breve!"
+kick-message = "<red>Server under maintenance. Please come back soon!"
 
 [ratelimit]
 enabled = true
 max-pings-per-minute = 60
-block-message = "Muitas requisições. Aguarde."
+block-message = "Too many requests. Please wait."
 
 [messages]
-reload-success = "&aConfiguração recarregada com sucesso."
-reload-failure = "&cFalha ao recarregar a configuração. Verifique o console."
-maintenance-enabled = "&aModo manutenção ativado."
-maintenance-disabled = "&aModo manutenção desativado."
-maintenance-toggled = "&aModo manutenção {status}."
-help-header = "&aComandos do MotdGuard:"
-help-reload = "&e/motdguard reload - Recarrega a configuração"
-help-maintenance = "&e/motdguard maintenance - Alterna o modo manutenção"
-help-maintenance-on = "&e/motdguard maintenance on - Ativa a manutenção"
-help-maintenance-off = "&e/motdguard maintenance off - Desativa a manutenção"
+reload-success = "&aConfiguration reloaded successfully."
+reload-failure = "&cFailed to reload the configuration. Check the console."
+maintenance-enabled = "&aMaintenance mode enabled."
+maintenance-disabled = "&aMaintenance mode disabled."
+maintenance-toggled = "&aMaintenance mode {status}."
+help-header = "&aMotdGuard commands:"
+help-reload = "&e/motdguard reload - Reloads the configuration"
+help-maintenance = "&e/motdguard maintenance - Toggles maintenance mode"
+help-maintenance-on = "&e/motdguard maintenance on - Enables maintenance"
+help-maintenance-off = "&e/motdguard maintenance off - Disables maintenance"
 ```
 
 ## MiniMessage
 
-O MOTD usa [MiniMessage](https://docs.advntr.dev/minimessage/) para formatação moderna de texto. Isso permite criar um visual muito mais bonito do que o padrão antigo de cores simples.
+The MOTD uses [MiniMessage](https://docs.advntr.dev/minimessage/) for modern text formatting. This lets you create a much better-looking server list entry than the old basic color-code style.
 
-| Sintaxe | Resultado |
+| Syntax | Result |
 | --- | --- |
-| `<green>Online` | Cor nomeada |
-| `<#f58220>MotdGuard` | Cor hexadecimal |
-| `<bold>Texto</bold>` | Texto em negrito |
-| `<gradient:#f58220:#ffffff>Servidor</gradient>` | Gradiente |
-| `<hover:show_text:'Info'>Passe o mouse</hover>` | Texto com hover |
+| `<green>Online` | Named color |
+| `<#f58220>MotdGuard` | Hex color |
+| `<bold>Text</bold>` | Bold text |
+| `<gradient:#f58220:#ffffff>Server</gradient>` | Gradient |
+| `<hover:show_text:'Info'>Hover me</hover>` | Hover text |
 
-## Comandos
+## Commands
 
-| Comando | Descrição | Permissão |
+| Command | Description | Permission |
 | --- | --- | --- |
-| `/motdguard` | Mostra o menu de ajuda | `motdguard.admin` |
-| `/mg` | Alias principal | `motdguard.admin` |
-| `/motdguard reload` | Recarrega a configuração | `motdguard.admin` |
-| `/motdguard maintenance` | Alterna o modo manutenção | `motdguard.admin` |
-| `/motdguard maintenance on` | Ativa o modo manutenção | `motdguard.admin` |
-| `/motdguard maintenance off` | Desativa o modo manutenção | `motdguard.admin` |
-| `/mg m` | Alias para manutenção | `motdguard.admin` |
+| `/motdguard` | Shows the help menu | `motdguard.admin` |
+| `/mg` | Main alias | `motdguard.admin` |
+| `/motdguard reload` | Reloads the configuration | `motdguard.admin` |
+| `/motdguard maintenance` | Toggles maintenance mode | `motdguard.admin` |
+| `/motdguard maintenance on` | Enables maintenance mode | `motdguard.admin` |
+| `/motdguard maintenance off` | Disables maintenance mode | `motdguard.admin` |
+| `/mg m` | Maintenance alias | `motdguard.admin` |
 
-## Permissões
+## Permissions
 
-| Permissão | Descrição | Padrão |
+| Permission | Description | Default |
 | --- | --- | --- |
-| `motdguard.admin` | Acesso aos comandos administrativos | `op` |
-| `motdguard.bypass` | Permite entrar durante manutenção | `false` |
+| `motdguard.admin` | Access to administrative commands | `op` |
+| `motdguard.bypass` | Allows joining during maintenance mode | `false` |
 
-## Build Local
+## Local Build
 
-Use o Gradle Wrapper incluído no repositório.
+Use the Gradle Wrapper included in the repository.
 
 ```bash
 ./gradlew build
 ```
 
-Build sem SpotBugs:
+Build without SpotBugs:
 
 ```bash
 ./gradlew build -x spotbugsMain -x spotbugsTest
 ```
 
-Gerar o JAR final:
+Generate the final JAR:
 
 ```bash
 ./gradlew shadowJar
 ```
 
-O artefato compilado fica em:
+The compiled artifact is generated at:
 
 ```text
 build/libs/motdguard-1.0.0.jar
 ```
 
-## Estrutura
+## Project Structure
 
 ```text
 src/main/java/io/github/hanielcota/motdguard/
@@ -196,34 +202,34 @@ src/main/java/io/github/hanielcota/motdguard/
     └── RateLimitService.java
 ```
 
-## Qualidade e Segurança
+## Quality and Security
 
-MotdGuard foi pensado para ser confiável em produção. O foco é simples: proteger o proxy, manter o visual do servidor profissional e evitar que configuração ruim ou dependência velha vire dor de cabeça.
+MotdGuard is designed to be reliable in production. The focus is simple: protect the proxy, keep the server presentation professional, and prevent bad configuration or outdated dependencies from becoming a headache.
 
-O projeto usa GitHub Actions para validar build, CodeQL para análise de segurança e Dependabot para manter dependências atualizadas. Menos improviso, mais previsibilidade.
+The project uses GitHub Actions to validate builds, CodeQL for security analysis, and Dependabot to keep dependencies updated. Less improvisation, more predictability.
 
-| Área | Ferramenta |
+| Area | Tool |
 | --- | --- |
 | Build | GitHub Actions |
-| Análise estática | CodeQL |
-| Dependências | Dependabot |
-| Empacotamento | Shadow Jar |
+| Static analysis | CodeQL |
+| Dependencies | Dependabot |
+| Packaging | Shadow Jar |
 
-## Filosofia
+## Philosophy
 
-MotdGuard segue uma ideia direta: plugin bom não precisa ser pesado, confuso ou cheio de firula. Ele precisa resolver o problema, proteger o servidor e continuar funcionando sem chamar atenção.
+MotdGuard follows a direct idea: a good plugin does not need to be heavy, confusing, or filled with unnecessary features. It needs to solve the problem, protect the server, and keep working without demanding attention.
 
-Este projeto existe para entregar uma camada limpa, forte e confiável para quem quer um proxy Velocity com aparência profissional e controle de verdade.
+This project exists to deliver a clean, strong, and reliable layer for anyone who wants a professional Velocity proxy with real control.
 
-## Contribuição
+## Contributing
 
-Contribuições são bem-vindas. Para propor mudanças:
+Contributions are welcome. To propose changes:
 
-1. Faça um fork do repositório.
-2. Crie uma branch para sua alteração.
-3. Rode o build localmente.
-4. Abra um pull request descrevendo o que mudou.
+1. Fork the repository.
+2. Create a branch for your change.
+3. Run the build locally.
+4. Open a pull request describing what changed.
 
-## Licença
+## License
 
-Distribuído sob a licença MIT. Veja [LICENSE](LICENSE) para mais detalhes.
+Distributed under the MIT License. See [LICENSE](LICENSE) for more details.
