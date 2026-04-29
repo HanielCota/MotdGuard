@@ -1,0 +1,58 @@
+# Gradle
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+*.code-workspace
+
+# Java
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# Logs
+*.log
+logs/
+
+# Runtime
+plugins/
+runner/
+server/
+runtime/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp files
+*.tmp
+*.bak
+*.swp
+*~
+.#*
+
+# Security
+*.pem
+*.key
+*.pkcs8
+
+# Build outputs (except shadowJar)
+build/libs/
+!build/libs/*-all.jar
+
+# SpotBugs
+build/reports/
+
+# JDK distributions
+jdk21/
+jdk-*/
