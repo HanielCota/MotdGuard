@@ -4,7 +4,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 
 plugins {
     java
-    id("com.gradleup.shadow") version "8.3.6"
+    id("com.gradleup.shadow") version "9.4.1"
     id("com.github.spotbugs") version "6.0.14"
 }
 
