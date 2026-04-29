@@ -35,7 +35,7 @@ dependencies {
     annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
 
     implementation("co.aikar:acf-velocity:0.5.1-SNAPSHOT")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
     implementation("com.bucket4j:bucket4j_jdk17-core:8.14.0")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.17.2")
 
