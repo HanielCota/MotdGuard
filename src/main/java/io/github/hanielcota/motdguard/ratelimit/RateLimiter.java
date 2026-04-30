@@ -27,6 +27,7 @@ public final class RateLimiter {
   public RateLimiter(final ConfigManager configManager) {
     this.configManager = configManager;
     this.cache = Caffeine.newBuilder().maximumSize(MAX_ENTRIES).build();
+
     refresh();
   }
 

@@ -3,6 +3,7 @@ package io.github.hanielcota.motdguard.config;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.dataformat.toml.TomlFactory;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ public final class ConfigManager {
     this.configPath = dataDirectory.resolve(FILE_NAME);
     this.mapper = new ObjectMapper(new TomlFactory());
     this.mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    this.mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
   }
 
   public ConfigData getConfigData() {

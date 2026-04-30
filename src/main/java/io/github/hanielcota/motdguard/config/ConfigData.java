@@ -9,11 +9,12 @@ public record ConfigData(
     MessagesConfig messages) {
 
   public record MotdConfig(String line1, String line2) {
-    private static final MotdConfig DEFAULTS = new MotdConfig("<#00FF00>MeuServidor", "<#FFFFFF>Modo Hardcore Ativo");
+    private static final String DEFAULT_LINE1 = "<#00FF00>MeuServidor";
+    private static final String DEFAULT_LINE2 = "<#FFFFFF>Modo Hardcore Ativo";
 
     public MotdConfig {
-      line1 = requireNonNullElse(line1, DEFAULTS.line1);
-      line2 = requireNonNullElse(line2, DEFAULTS.line2);
+      line1 = requireNonNullElse(line1, DEFAULT_LINE1);
+      line2 = requireNonNullElse(line2, DEFAULT_LINE2);
     }
   }
 
@@ -49,45 +50,43 @@ public record ConfigData(
       String helpMaintenanceOn,
       String helpMaintenanceOff,
       String cooldownMessage) {
-    private static final MessagesConfig DEFAULTS =
-        new MessagesConfig(
-            "&aConfiguration reloaded successfully.",
-            "&cFailed to reload configuration. Check console.",
-            "&aMaintenance mode enabled.",
-            "&aMaintenance mode disabled.",
-            "&aMaintenance mode {status}.",
-            "&aMotdGuard Commands:",
-            "&e/motdguard reload - Reload configuration",
-            "&e/motdguard maintenance - Toggle maintenance mode",
-            "&e/motdguard maintenance on - Enable maintenance",
-            "&e/motdguard maintenance off - Disable maintenance",
-            "&cAguarde antes de usar outro comando.");
+    private static final String RELOAD_SUCCESS = "&aConfiguration reloaded successfully.";
+    private static final String RELOAD_FAILURE = "&cFailed to reload configuration. Check console.";
+    private static final String MAINTENANCE_ENABLED = "&aMaintenance mode enabled.";
+    private static final String MAINTENANCE_DISABLED = "&aMaintenance mode disabled.";
+    private static final String MAINTENANCE_TOGGLED = "&aMaintenance mode {status}.";
+    private static final String HELP_HEADER = "&aMotdGuard Commands:";
+    private static final String HELP_RELOAD = "&e/motdguard reload - Reload configuration";
+    private static final String HELP_MAINTENANCE = "&e/motdguard maintenance - Toggle maintenance mode";
+    private static final String HELP_MAINTENANCE_ON = "&e/motdguard maintenance on - Enable maintenance";
+    private static final String HELP_MAINTENANCE_OFF = "&e/motdguard maintenance off - Disable maintenance";
+    private static final String COOLDOWN_MESSAGE = "&cAguarde antes de usar outro comando.";
 
     public MessagesConfig {
-      reloadSuccess = requireNonNullElse(reloadSuccess, DEFAULTS.reloadSuccess);
-      reloadFailure = requireNonNullElse(reloadFailure, DEFAULTS.reloadFailure);
-      maintenanceEnabled = requireNonNullElse(maintenanceEnabled, DEFAULTS.maintenanceEnabled);
-      maintenanceDisabled = requireNonNullElse(maintenanceDisabled, DEFAULTS.maintenanceDisabled);
-      maintenanceToggled = requireNonNullElse(maintenanceToggled, DEFAULTS.maintenanceToggled);
-      helpHeader = requireNonNullElse(helpHeader, DEFAULTS.helpHeader);
-      helpReload = requireNonNullElse(helpReload, DEFAULTS.helpReload);
-      helpMaintenance = requireNonNullElse(helpMaintenance, DEFAULTS.helpMaintenance);
-      helpMaintenanceOn = requireNonNullElse(helpMaintenanceOn, DEFAULTS.helpMaintenanceOn);
-      helpMaintenanceOff = requireNonNullElse(helpMaintenanceOff, DEFAULTS.helpMaintenanceOff);
-      cooldownMessage = requireNonNullElse(cooldownMessage, DEFAULTS.cooldownMessage);
+      reloadSuccess = requireNonNullElse(reloadSuccess, RELOAD_SUCCESS);
+      reloadFailure = requireNonNullElse(reloadFailure, RELOAD_FAILURE);
+      maintenanceEnabled = requireNonNullElse(maintenanceEnabled, MAINTENANCE_ENABLED);
+      maintenanceDisabled = requireNonNullElse(maintenanceDisabled, MAINTENANCE_DISABLED);
+      maintenanceToggled = requireNonNullElse(maintenanceToggled, MAINTENANCE_TOGGLED);
+      helpHeader = requireNonNullElse(helpHeader, HELP_HEADER);
+      helpReload = requireNonNullElse(helpReload, HELP_RELOAD);
+      helpMaintenance = requireNonNullElse(helpMaintenance, HELP_MAINTENANCE);
+      helpMaintenanceOn = requireNonNullElse(helpMaintenanceOn, HELP_MAINTENANCE_ON);
+      helpMaintenanceOff = requireNonNullElse(helpMaintenanceOff, HELP_MAINTENANCE_OFF);
+      cooldownMessage = requireNonNullElse(cooldownMessage, COOLDOWN_MESSAGE);
     }
   }
 
-  private static final ConfigData DEFAULTS = new ConfigData(
-          new MotdConfig(null, null),
-          new MaintenanceConfig(false, null),
-          new RateLimitConfig(true, 60, null),
-          new MessagesConfig(null, null, null, null, null, null, null, null, null, null, null));
+  private static final MotdConfig DEFAULT_MOTD = new MotdConfig(null, null);
+  private static final MaintenanceConfig DEFAULT_MAINTENANCE = new MaintenanceConfig(false, null);
+  private static final RateLimitConfig DEFAULT_RATELIMIT = new RateLimitConfig(true, 60, null);
+  private static final MessagesConfig DEFAULT_MESSAGES =
+      new MessagesConfig(null, null, null, null, null, null, null, null, null, null, null);
 
   public ConfigData {
-    motd = requireNonNullElse(motd, DEFAULTS.motd);
-    maintenance = requireNonNullElse(maintenance, DEFAULTS.maintenance);
-    rateLimit = requireNonNullElse(rateLimit, DEFAULTS.rateLimit);
-    messages = requireNonNullElse(messages, DEFAULTS.messages);
+    motd = requireNonNullElse(motd, DEFAULT_MOTD);
+    maintenance = requireNonNullElse(maintenance, DEFAULT_MAINTENANCE);
+    rateLimit = requireNonNullElse(rateLimit, DEFAULT_RATELIMIT);
+    messages = requireNonNullElse(messages, DEFAULT_MESSAGES);
   }
 }

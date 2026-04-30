@@ -6,7 +6,7 @@ line2 = "<#FFFFFF>Modo Hardcore Ativo"
 enabled = false
 kick-message = "<red>Servidor em manutenção. Volte em breve!"
 
-[ratelimit]
+[rate-limit]
 enabled = true
 max-pings-per-minute = 60
 block-message = "Muitas requisições. Aguarde."

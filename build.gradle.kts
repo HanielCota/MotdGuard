@@ -86,6 +86,7 @@ tasks {
     }
 
     withType<SpotBugsTask> {
+        excludeFilter.set(file("spotbugs-exclude.xml"))
         reports {
             create("html") {
                 required.set(true)
