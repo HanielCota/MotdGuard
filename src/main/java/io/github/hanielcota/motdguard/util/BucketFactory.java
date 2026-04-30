@@ -7,13 +7,17 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class BucketFactory {
 
-  private static final int MINIMUM_MAX_PINGS = 1;
-
   public static Bucket create(final int maxPingsPerMinute) {
-    final int max = Math.max(maxPingsPerMinute, MINIMUM_MAX_PINGS);
+    if (maxPingsPerMinute < 1) {
+      throw new IllegalArgumentException("maxPingsPerMinute must be at least 1");
+    }
 
     return Bucket.builder()
-        .addLimit(limit -> limit.capacity(max).refillGreedy(max, Duration.ofMinutes(1)))
+        .addLimit(
+            limit ->
+                limit
+                    .capacity(maxPingsPerMinute)
+                    .refillGreedy(maxPingsPerMinute, Duration.ofMinutes(1)))
         .build();
   }
 }

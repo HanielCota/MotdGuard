@@ -119,7 +119,7 @@ line2 = "<#ffffff>Protegido por <#f58220>MotdGuard"
 enabled = false
 kick-message = "<red>Servidor em manutenção. Volte em breve!"
 
-[ratelimit]
+[rate-limit]
 enabled = true
 max-pings-per-minute = 60
 block-message = "Muitas requisições. Aguarde."
@@ -130,11 +130,14 @@ reload-failure = "&cFalha ao recarregar a configuração. Verifique o console."
 maintenance-enabled = "&aModo manutenção ativado."
 maintenance-disabled = "&aModo manutenção desativado."
 maintenance-toggled = "&aModo manutenção {status}."
+maintenance-status-enabled = "ativado"
+maintenance-status-disabled = "desativado"
 help-header = "&aComandos do MotdGuard:"
 help-reload = "&e/motdguard reload - Recarrega a configuração"
 help-maintenance = "&e/motdguard maintenance - Alterna o modo manutenção"
 help-maintenance-on = "&e/motdguard maintenance on - Ativa a manutenção"
 help-maintenance-off = "&e/motdguard maintenance off - Desativa a manutenção"
+cooldown-message = "&cAguarde antes de usar outro comando."
 ```
 
 ## MiniMessage

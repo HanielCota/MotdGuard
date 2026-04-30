@@ -12,4 +12,12 @@
     <Class name="io.github.hanielcota.motdguard.util.PluginExceptionHandler"/>
     <Bug pattern="INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE"/>
   </Match>
+  <Match>
+    <Class name="io.github.hanielcota.motdguard.maintenance.MaintenanceManager"/>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Class name="io.github.hanielcota.motdguard.maintenance.MaintenanceManager$State"/>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+  </Match>
 </FindBugsFilter>

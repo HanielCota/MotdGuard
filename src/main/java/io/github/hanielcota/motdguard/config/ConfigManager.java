@@ -9,19 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Manages loading and reloading of the plugin configuration.
- *
- * <p>This class handles reading the {@code config.toml} file using Jackson's TOML support
- * and provides access to the parsed configuration data. If the config file does not exist,
- * it will copy the default configuration from the plugin resources.
- *
- * <p>This class is thread-safe for concurrent reload operations.
- */
 @Slf4j
 public final class ConfigManager {
 
@@ -40,35 +30,47 @@ public final class ConfigManager {
 
   public ConfigData getConfigData() {
     final var data = configData.get();
+
     if (data == null) {
       throw new IllegalStateException("Configuration has not been loaded yet");
     }
+
     return data;
   }
 
   public synchronized void load() {
-    if (!Files.exists(configPath)) {
-      try {
-        final Path parent = configPath.getParent();
-        if (parent != null) {
-          Files.createDirectories(parent);
-        }
-        copyDefaultConfig();
-      } catch (final IOException e) {
-        log.error("Failed to create default configuration", e);
-        throw new IllegalStateException("Could not create default config", e);
-      }
+    if (Files.exists(configPath)) {
+      reload();
+      return;
     }
+
+    try {
+      final Path parent = configPath.getParent();
+
+      if (parent != null) {
+        Files.createDirectories(parent);
+      }
+
+      copyDefaultConfig();
+    } catch (final IOException e) {
+      log.error("Failed to create default configuration", e);
+      throw new IllegalStateException("Could not create default config", e);
+    } catch (final RuntimeException e) {
+      log.error("Failed to prepare default configuration", e);
+      throw e;
+    }
+
     reload();
   }
 
   public synchronized void reload() {
-    try {
-      final var newData = mapper.readValue(configPath.toFile(), ConfigData.class);
+    try (final InputStream input = Files.newInputStream(configPath)) {
+      final var newData = mapper.readValue(input, ConfigData.class);
       configData.set(newData);
+
       log.info("Configuration reloaded successfully.");
-    } catch (final IOException e) {
-      log.error("Failed to parse config.toml", e);
+    } catch (final IOException | RuntimeException e) {
+      log.error("Failed to load config.toml", e);
       throw new IllegalStateException("Failed to load configuration: " + e.getMessage(), e);
     }
   }
@@ -78,7 +80,8 @@ public final class ConfigManager {
       if (resource == null) {
         throw new IllegalStateException("Default config.toml not found in resources");
       }
-      Files.copy(resource, configPath, StandardCopyOption.REPLACE_EXISTING);
+
+      Files.copy(resource, configPath);
     }
   }
 }

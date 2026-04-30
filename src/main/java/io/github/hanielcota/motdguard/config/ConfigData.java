@@ -1,40 +1,63 @@
 package io.github.hanielcota.motdguard.config;
 
-import static java.util.Objects.requireNonNullElse;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 public record ConfigData(
     MotdConfig motd,
     MaintenanceConfig maintenance,
-    RateLimitConfig rateLimit,
+    @JsonAlias("ratelimit") RateLimitConfig rateLimit,
+    CooldownConfig cooldown,
     MessagesConfig messages) {
 
+  public ConfigData {
+    if (motd == null) {
+      throw new NullPointerException("Missing [motd] section");
+    }
+    if (maintenance == null) {
+      throw new NullPointerException("Missing [maintenance] section");
+    }
+    if (rateLimit == null) {
+      throw new NullPointerException("Missing [rate-limit] section");
+    }
+    if (cooldown == null) {
+      throw new NullPointerException("Missing [cooldown] section");
+    }
+    if (messages == null) {
+      throw new NullPointerException("Missing [messages] section");
+    }
+  }
+
   public record MotdConfig(String line1, String line2) {
-    private static final String DEFAULT_LINE1 = "<#00FF00>MeuServidor";
-    private static final String DEFAULT_LINE2 = "<#FFFFFF>Modo Hardcore Ativo";
 
     public MotdConfig {
-      line1 = requireNonNullElse(line1, DEFAULT_LINE1);
-      line2 = requireNonNullElse(line2, DEFAULT_LINE2);
+      requireText(line1, "motd.line1");
+      requireText(line2, "motd.line2");
     }
   }
 
   public record MaintenanceConfig(boolean enabled, String kickMessage) {
-    private static final String DEFAULT_KICK_MESSAGE =
-        "<red>Servidor em manutenção. Volte em breve!";
 
     public MaintenanceConfig {
-      kickMessage = requireNonNullElse(kickMessage, DEFAULT_KICK_MESSAGE);
+      requireText(kickMessage, "maintenance.kick-message");
     }
   }
 
   public record RateLimitConfig(boolean enabled, int maxPingsPerMinute, String blockMessage) {
-    private static final String DEFAULT_BLOCK_MESSAGE = "Muitas requisições. Aguarde.";
 
     public RateLimitConfig {
       if (maxPingsPerMinute < 1) {
-        maxPingsPerMinute = 60;
+        throw new IllegalArgumentException("rate-limit.max-pings-per-minute must be at least 1");
       }
-      blockMessage = requireNonNullElse(blockMessage, DEFAULT_BLOCK_MESSAGE);
+      requireText(blockMessage, "rate-limit.block-message");
+    }
+  }
+
+  public record CooldownConfig(boolean enabled, int durationSeconds) {
+
+    public CooldownConfig {
+      if (durationSeconds < 1) {
+        throw new IllegalArgumentException("cooldown.duration-seconds must be at least 1");
+      }
     }
   }
 
@@ -44,49 +67,54 @@ public record ConfigData(
       String maintenanceEnabled,
       String maintenanceDisabled,
       String maintenanceToggled,
+      String maintenanceStatusEnabled,
+      String maintenanceStatusDisabled,
       String helpHeader,
       String helpReload,
       String helpMaintenance,
       String helpMaintenanceOn,
       String helpMaintenanceOff,
       String cooldownMessage) {
-    private static final String RELOAD_SUCCESS = "&aConfiguration reloaded successfully.";
-    private static final String RELOAD_FAILURE = "&cFailed to reload configuration. Check console.";
-    private static final String MAINTENANCE_ENABLED = "&aMaintenance mode enabled.";
-    private static final String MAINTENANCE_DISABLED = "&aMaintenance mode disabled.";
-    private static final String MAINTENANCE_TOGGLED = "&aMaintenance mode {status}.";
-    private static final String HELP_HEADER = "&aMotdGuard Commands:";
-    private static final String HELP_RELOAD = "&e/motdguard reload - Reload configuration";
-    private static final String HELP_MAINTENANCE = "&e/motdguard maintenance - Toggle maintenance mode";
-    private static final String HELP_MAINTENANCE_ON = "&e/motdguard maintenance on - Enable maintenance";
-    private static final String HELP_MAINTENANCE_OFF = "&e/motdguard maintenance off - Disable maintenance";
-    private static final String COOLDOWN_MESSAGE = "&cAguarde antes de usar outro comando.";
 
     public MessagesConfig {
-      reloadSuccess = requireNonNullElse(reloadSuccess, RELOAD_SUCCESS);
-      reloadFailure = requireNonNullElse(reloadFailure, RELOAD_FAILURE);
-      maintenanceEnabled = requireNonNullElse(maintenanceEnabled, MAINTENANCE_ENABLED);
-      maintenanceDisabled = requireNonNullElse(maintenanceDisabled, MAINTENANCE_DISABLED);
-      maintenanceToggled = requireNonNullElse(maintenanceToggled, MAINTENANCE_TOGGLED);
-      helpHeader = requireNonNullElse(helpHeader, HELP_HEADER);
-      helpReload = requireNonNullElse(helpReload, HELP_RELOAD);
-      helpMaintenance = requireNonNullElse(helpMaintenance, HELP_MAINTENANCE);
-      helpMaintenanceOn = requireNonNullElse(helpMaintenanceOn, HELP_MAINTENANCE_ON);
-      helpMaintenanceOff = requireNonNullElse(helpMaintenanceOff, HELP_MAINTENANCE_OFF);
-      cooldownMessage = requireNonNullElse(cooldownMessage, COOLDOWN_MESSAGE);
+      requireText(reloadSuccess, "messages.reload-success");
+      requireText(reloadFailure, "messages.reload-failure");
+
+      requireText(maintenanceEnabled, "messages.maintenance-enabled");
+      requireText(maintenanceDisabled, "messages.maintenance-disabled");
+      requireText(maintenanceToggled, "messages.maintenance-toggled");
+
+      maintenanceStatusEnabled =
+          requireText(
+              defaultIfBlank(maintenanceStatusEnabled, "enabled"),
+              "messages.maintenance-status-enabled");
+
+      maintenanceStatusDisabled =
+          requireText(
+              defaultIfBlank(maintenanceStatusDisabled, "disabled"),
+              "messages.maintenance-status-disabled");
+
+      requireText(helpHeader, "messages.help-header");
+      requireText(helpReload, "messages.help-reload");
+      requireText(helpMaintenance, "messages.help-maintenance");
+      requireText(helpMaintenanceOn, "messages.help-maintenance-on");
+      requireText(helpMaintenanceOff, "messages.help-maintenance-off");
+
+      requireText(cooldownMessage, "messages.cooldown-message");
     }
   }
 
-  private static final MotdConfig DEFAULT_MOTD = new MotdConfig(null, null);
-  private static final MaintenanceConfig DEFAULT_MAINTENANCE = new MaintenanceConfig(false, null);
-  private static final RateLimitConfig DEFAULT_RATELIMIT = new RateLimitConfig(true, 60, null);
-  private static final MessagesConfig DEFAULT_MESSAGES =
-      new MessagesConfig(null, null, null, null, null, null, null, null, null, null, null);
+  private static String requireText(final String value, final String path) {
+    if (value == null || value.isBlank()) {
+      throw new IllegalArgumentException(path + " must not be blank");
+    }
+    return value;
+  }
 
-  public ConfigData {
-    motd = requireNonNullElse(motd, DEFAULT_MOTD);
-    maintenance = requireNonNullElse(maintenance, DEFAULT_MAINTENANCE);
-    rateLimit = requireNonNullElse(rateLimit, DEFAULT_RATELIMIT);
-    messages = requireNonNullElse(messages, DEFAULT_MESSAGES);
+  private static String defaultIfBlank(final String value, final String fallback) {
+    if (value == null || value.isBlank()) {
+      return fallback;
+    }
+    return value;
   }
 }

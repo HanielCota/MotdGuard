@@ -61,6 +61,12 @@ dependencies {
     testCompileOnly(libs.lombok)
     testAnnotationProcessor(libs.lombok)
 
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.velocity.api)
+
     spotbugsPlugins(libs.spotbugs.plugin)
 }
 
@@ -93,6 +99,10 @@ tasks {
                 outputLocation.set(layout.buildDirectory.file("reports/spotbugs.html"))
             }
         }
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     build {

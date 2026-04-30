@@ -3,6 +3,7 @@ package io.github.hanielcota.motdguard.motd;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import io.github.hanielcota.motdguard.config.ConfigManager;
 import io.github.hanielcota.motdguard.util.MiniMessageUtil;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
@@ -19,21 +20,19 @@ public final class MotdProvider {
   }
 
   public ServerPing buildMotd(final ServerPing original) {
-    return original.asBuilder().description(cached.get()).build();
+    final Component motd = cached.get();
+
+    return Objects.requireNonNull(original, "original").asBuilder().description(motd).build();
   }
 
   public void refresh() {
     final var motdConfig = configManager.getConfigData().motd();
+
     final Component line1 = MiniMessageUtil.deserialize(motdConfig.line1());
     final Component line2 = MiniMessageUtil.deserialize(motdConfig.line2());
 
-    final Component newCached = Component.text()
-            .append(line1)
-            .append(Component.newline())
-            .append(line2)
-            .build();
+    cached.set(Component.text().append(line1).append(Component.newline()).append(line2).build());
 
-    cached.set(newCached);
     log.info("MOTD refreshed");
   }
 }

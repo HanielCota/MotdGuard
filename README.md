@@ -119,7 +119,7 @@ line2 = "<#ffffff>Protected by <#f58220>MotdGuard"
 enabled = false
 kick-message = "<red>Server under maintenance. Please come back soon!"
 
-[ratelimit]
+[rate-limit]
 enabled = true
 max-pings-per-minute = 60
 block-message = "Too many requests. Please wait."
@@ -130,11 +130,14 @@ reload-failure = "&cFailed to reload the configuration. Check the console."
 maintenance-enabled = "&aMaintenance mode enabled."
 maintenance-disabled = "&aMaintenance mode disabled."
 maintenance-toggled = "&aMaintenance mode {status}."
+maintenance-status-enabled = "enabled"
+maintenance-status-disabled = "disabled"
 help-header = "&aMotdGuard commands:"
 help-reload = "&e/motdguard reload - Reloads the configuration"
 help-maintenance = "&e/motdguard maintenance - Toggles maintenance mode"
 help-maintenance-on = "&e/motdguard maintenance on - Enables maintenance"
 help-maintenance-off = "&e/motdguard maintenance off - Disables maintenance"
+cooldown-message = "&cPlease wait before using another command."
 ```
 
 ## MiniMessage

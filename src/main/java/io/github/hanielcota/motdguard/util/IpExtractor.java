@@ -2,23 +2,43 @@ package io.github.hanielcota.motdguard.util;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.Optional;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
-/**
- * Utility class for extracting IP addresses from {@link InetSocketAddress} objects.
- *
- * <p>Provides a safe way to get the host address string from a socket address, handling null cases
- * gracefully.
- */
+@Slf4j
 @UtilityClass
 public class IpExtractor {
 
-  public static String extract(final InetSocketAddress remoteAddress) {
-    if (remoteAddress == null) return null;
+  public static Optional<String> extract(final InetSocketAddress remoteAddress) {
+    if (remoteAddress == null) {
+      return Optional.empty();
+    }
 
     final InetAddress address = remoteAddress.getAddress();
-    if (address == null) return null;
 
-    return address.getHostAddress();
+    if (address == null) {
+      log.warn(
+          "Unresolved address; using hostname as rate-limit key: {}",
+          remoteAddress.getHostString());
+
+      return Optional.ofNullable(normalize(remoteAddress.getHostString()));
+    }
+
+    return Optional.ofNullable(normalize(address.getHostAddress()));
+  }
+
+  private static String normalize(final String host) {
+    if (host == null || host.isBlank()) {
+      return null;
+    }
+
+    final int scopeIndex = host.indexOf('%');
+
+    if (scopeIndex > 0) {
+      return host.substring(0, scopeIndex);
+    }
+
+    return host;
   }
 }

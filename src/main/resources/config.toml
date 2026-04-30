@@ -11,15 +11,21 @@ enabled = true
 max-pings-per-minute = 60
 block-message = "Muitas requisições. Aguarde."
 
+[cooldown]
+enabled = true
+duration-seconds = 60
+
 [messages]
-reload-success = "&aConfiguration reloaded successfully."
-reload-failure = "&cFailed to reload configuration. Check console."
-maintenance-enabled = "&aMaintenance mode enabled."
-maintenance-disabled = "&aMaintenance mode disabled."
-maintenance-toggled = "&aMaintenance mode {status}."
-help-header = "&aMotdGuard Commands:"
-help-reload = "&e/motdguard reload - Reload configuration"
-help-maintenance = "&e/motdguard maintenance - Toggle maintenance mode"
-help-maintenance-on = "&e/motdguard maintenance on - Enable maintenance"
-help-maintenance-off = "&e/motdguard maintenance off - Disable maintenance"
-cooldown-message = "&cAguarde antes de usar outro comando."
+reload-success = "<green>Configuration reloaded successfully."
+reload-failure = "<red>Failed to reload configuration. Check console."
+maintenance-enabled = "<green>Maintenance mode enabled."
+maintenance-disabled = "<green>Maintenance mode disabled."
+maintenance-toggled = "<green>Maintenance mode {status}."
+maintenance-status-enabled = "enabled"
+maintenance-status-disabled = "disabled"
+help-header = "<green>MotdGuard Commands:"
+help-reload = "<yellow>/motdguard reload - Reload configuration"
+help-maintenance = "<yellow>/motdguard maintenance - Toggle maintenance mode"
+help-maintenance-on = "<yellow>/motdguard maintenance on - Enable maintenance"
+help-maintenance-off = "<yellow>/motdguard maintenance off - Disable maintenance"
+cooldown-message = "<red>Aguarde antes de usar outro comando."

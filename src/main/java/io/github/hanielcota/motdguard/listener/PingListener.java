@@ -6,12 +6,6 @@ import io.github.hanielcota.motdguard.motd.MotdProvider;
 import io.github.hanielcota.motdguard.ratelimit.RateLimiter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Event listener for proxy ping events.
- *
- * <p>This listener processes incoming server ping requests, first checking if the IP is rate
- * limited. If blocked, a hidden ping is returned. Otherwise, the dynamic MOTD is returned instead.
- */
 @RequiredArgsConstructor
 public final class PingListener {
 
@@ -20,10 +14,16 @@ public final class PingListener {
 
   @Subscribe
   public void onProxyPing(final ProxyPingEvent event) {
-    if (!rateLimiter.isAllowed(event.getConnection().getRemoteAddress())) {
-      event.setPing(rateLimiter.buildBlockedPing(event.getPing()));
+    final var originalPing = event.getPing();
+    final var address = event.getConnection().getRemoteAddress();
+
+    final var blockedPing = rateLimiter.tryBlockPing(address, originalPing);
+
+    if (blockedPing != null) {
+      event.setPing(blockedPing);
       return;
     }
-    event.setPing(motdProvider.buildMotd(event.getPing()));
+
+    event.setPing(motdProvider.buildMotd(originalPing));
   }
 }

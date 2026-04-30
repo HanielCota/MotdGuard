@@ -4,6 +4,7 @@ import co.aikar.commands.VelocityCommandManager;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -20,17 +21,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Main plugin class for MotdGuard, a Velocity plugin providing dynamic MOTD, maintenance mode, and
- * rate limiting features.
- *
- * <p>This plugin is annotated with Velocity's {@link Plugin} annotation and is automatically loaded
- * when Velocity starts. It handles initialization of all services, registration of event listeners,
- * and command registration.
- *
- * @author HanielCota
- * @version 1.0.0
- */
 @Slf4j
 @Plugin(
     id = "motdguard",
@@ -42,6 +32,7 @@ public final class MotdGuardPlugin {
 
   private final ProxyServer server;
   private final Path dataDirectory;
+  private VelocityCommandManager commandManager;
 
   @Inject
   public MotdGuardPlugin(final ProxyServer server, @DataDirectory final Path dataDirectory) {
@@ -50,10 +41,8 @@ public final class MotdGuardPlugin {
   }
 
   @Subscribe
-  private void onProxyInitialize(final ProxyInitializeEvent event) {
-    final var previousHandler = Thread.getDefaultUncaughtExceptionHandler();
-    final var exceptionHandler = new PluginExceptionHandler(dataDirectory, previousHandler);
-    Thread.setDefaultUncaughtExceptionHandler(exceptionHandler);
+  public void onProxyInitialize(final ProxyInitializeEvent event) {
+    final var exceptionHandler = new PluginExceptionHandler(dataDirectory);
 
     try {
       final var configManager = new ConfigManager(dataDirectory);
@@ -66,14 +55,12 @@ public final class MotdGuardPlugin {
       server.getEventManager().register(this, new PingListener(motdProvider, rateLimiter));
       server.getEventManager().register(this, new LoginListener(maintenanceManager));
 
-      final var cooldown = new CooldownService(Duration.ofMinutes(1));
-      server.getScheduler()
-          .buildTask(this, cooldown::cleanup)
-          .delay(Duration.ofMinutes(5))
-          .repeat(Duration.ofMinutes(5))
-          .schedule();
+      final var cooldownConfig = configManager.getConfigData().cooldown();
+      final var cooldown =
+          new CooldownService(
+              cooldownConfig.enabled(), Duration.ofSeconds(cooldownConfig.durationSeconds()));
 
-      final var commandManager = new VelocityCommandManager(server, this);
+      commandManager = new VelocityCommandManager(server, this);
       commandManager.registerCommand(
           new MotdGuardCommand(
               configManager, maintenanceManager, rateLimiter, motdProvider, cooldown));
@@ -83,5 +70,14 @@ public final class MotdGuardPlugin {
       exceptionHandler.caughtException("plugin initialization", e);
       throw e;
     }
+  }
+
+  @Subscribe
+  public void onProxyShutdown(final ProxyShutdownEvent event) {
+    if (commandManager != null) {
+      commandManager.unregisterCommands();
+    }
+
+    log.info("MotdGuard disabled.");
   }
 }
