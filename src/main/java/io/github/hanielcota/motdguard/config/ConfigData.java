@@ -1,18 +1,15 @@
 package io.github.hanielcota.motdguard.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
-public final class ConfigData {
-
-    private final MotdConfig motd = new MotdConfig();
-    private final MaintenanceConfig maintenance = new MaintenanceConfig();
-
-    @JsonProperty("ratelimit")
-    private final RateLimitConfig rateLimit = new RateLimitConfig();
-
-    private final MessagesConfig messages = new MessagesConfig();
+public record ConfigData(
+    MotdConfig motd,
+    MaintenanceConfig maintenance,
+    RateLimitConfig rateLimit,
+    MessagesConfig messages
+) {
+    public ConfigData {
+        motd = motd != null ? motd : new MotdConfig(null, null);
+        maintenance = maintenance != null ? maintenance : new MaintenanceConfig(false, null);
+        rateLimit = rateLimit != null ? rateLimit : new RateLimitConfig(true, 60, null);
+        messages = messages != null ? messages : new MessagesConfig(null, null, null, null, null, null, null, null, null, null);
+    }
 }

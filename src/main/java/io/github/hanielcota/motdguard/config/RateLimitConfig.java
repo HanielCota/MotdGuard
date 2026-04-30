@@ -1,16 +1,14 @@
 package io.github.hanielcota.motdguard.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-
-@Getter
-public final class RateLimitConfig {
-
-  private final boolean enabled = true;
-
-  @JsonProperty("max-pings-per-minute")
-  private final int maxPingsPerMinute = 60;
-
-  @JsonProperty("block-message")
-  private final String blockMessage = "Muitas requisições. Aguarde.";
+public record RateLimitConfig(
+    boolean enabled,
+    int maxPingsPerMinute,
+    String blockMessage
+) {
+    public RateLimitConfig {
+        if (maxPingsPerMinute < 1) {
+            maxPingsPerMinute = 60;
+        }
+        blockMessage = blockMessage != null ? blockMessage : "Muitas requisições. Aguarde.";
+    }
 }

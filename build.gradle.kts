@@ -14,8 +14,8 @@ buildscript {
 
 plugins {
     java
-    id("com.gradleup.shadow") version "9.4.1"
-    id("com.github.spotbugs") version "6.5.1"
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.spotbugs)
 }
 
 group = "io.github.hanielcota"
@@ -37,7 +37,6 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/") {
         name = "papermc"
     }
-
 }
 
 configurations.configureEach {
@@ -49,24 +48,24 @@ configurations.configureEach {
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
+    compileOnly(libs.velocity.api)
+    annotationProcessor(libs.velocity.api)
 
-    implementation("co.aikar:acf-velocity:0.5.1-SNAPSHOT")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
-    implementation("com.bucket4j:bucket4j_jdk17-core:8.18.0")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-toml:2.21.3")
+    implementation(libs.acf.velocity)
+    implementation(libs.caffeine)
+    implementation(libs.bucket4j)
+    implementation(libs.jackson.toml)
 
-    compileOnly("org.projectlombok:lombok:1.18.32")
-    annotationProcessor("org.projectlombok:lombok:1.18.32")
-    testCompileOnly("org.projectlombok:lombok:1.18.32")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.32")
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
+    testCompileOnly(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
 
-    spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0")
+    spotbugsPlugins(libs.spotbugs.plugin)
 }
 
 spotbugs {
-    toolVersion.set("4.9.8")
+    toolVersion.set(libs.versions.spotbugs.get())
     effort.set(Effort.MAX)
     reportLevel.set(Confidence.DEFAULT)
 }
