@@ -4,27 +4,30 @@ import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import io.github.hanielcota.motdguard.maintenance.MaintenanceManager;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * Event listener for player login events.
+ *
+ * <p>When maintenance mode is enabled, this listener blocks any player without the {@code
+ * motdguard.bypass} permission from logging in, kicking them with the configured maintenance kick
+ * message.
+ */
+@Slf4j
+@RequiredArgsConstructor
 public final class LoginListener {
 
-    private static final Logger log = LoggerFactory.getLogger(LoginListener.class);
+  private final MaintenanceManager maintenanceManager;
 
-    private final MaintenanceManager maintenanceManager;
+  @Subscribe
+  public void onLogin(final LoginEvent event) {
+    if (!maintenanceManager.isEnabled()) return;
+    if (event.getPlayer().hasPermission("motdguard.bypass")) return;
 
-    public LoginListener(final MaintenanceManager maintenanceManager) {
-        this.maintenanceManager = maintenanceManager;
-    }
-
-    @Subscribe
-    public void onLogin(final LoginEvent event) {
-        if (!maintenanceManager.isEnabled()) return;
-        if (maintenanceManager.canBypass(event.getPlayer())) return;
-
-        final Component kickMessage = maintenanceManager.getKickMessage();
-        event.setResult(ResultedEvent.ComponentResult.denied(kickMessage));
-        log.debug("Blocked player {} during maintenance", event.getPlayer().getUsername());
-    }
+    final Component kickMessage = maintenanceManager.getKickMessage();
+    event.setResult(ResultedEvent.ComponentResult.denied(kickMessage));
+    log.debug("Blocked player {} during maintenance", event.getPlayer().getUsername());
+  }
 }
