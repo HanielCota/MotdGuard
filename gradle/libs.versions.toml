@@ -8,7 +8,7 @@ findsecbugs = "1.14.0"
 velocity = "3.5.0-SNAPSHOT"
 acf = "0.5.1-SNAPSHOT"
 junit = "5.12.2"
-mockito = "5.17.0"
+mockito = "5.23.0"
 
 [libraries]
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
