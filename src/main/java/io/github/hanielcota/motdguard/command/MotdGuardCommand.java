@@ -61,6 +61,8 @@ public final class MotdGuardCommand extends BaseCommand {
 
         return;
       }
+
+      cooldown.setUsed(playerId);
     }
 
     try {
@@ -74,10 +76,6 @@ public final class MotdGuardCommand extends BaseCommand {
       if (issuer.getIssuer() instanceof CommandSource source) {
         source.sendMessage(MiniMessageUtil.deserialize(messages.reloadSuccess()));
       }
-
-      if (issuer.isPlayer()) {
-        cooldown.setUsed(issuer.getUniqueId());
-      }
     } catch (final Exception e) {
       log.error("Failed to reload configuration", e);
 
@@ -89,7 +87,7 @@ public final class MotdGuardCommand extends BaseCommand {
     }
   }
 
-  @Subcommand("maintenance|m on")
+  @Subcommand("maintenance on|m on")
   @Description("Enable maintenance mode")
   public void onMaintenanceOn(final CommandIssuer issuer) {
     if (issuer.isPlayer()) {
@@ -104,6 +102,18 @@ public final class MotdGuardCommand extends BaseCommand {
 
         return;
       }
+
+      cooldown.setUsed(playerId);
+    }
+
+    if (maintenanceManager.isEnabled()) {
+      final MessagesConfig messages = configManager.getConfigData().messages();
+
+      if (issuer.getIssuer() instanceof CommandSource source) {
+        source.sendMessage(MiniMessageUtil.deserialize(messages.maintenanceEnabled()));
+      }
+
+      return;
     }
 
     maintenanceManager.setEnabled(true);
@@ -113,13 +123,9 @@ public final class MotdGuardCommand extends BaseCommand {
     if (issuer.getIssuer() instanceof CommandSource source) {
       source.sendMessage(MiniMessageUtil.deserialize(messages.maintenanceEnabled()));
     }
-
-    if (issuer.isPlayer()) {
-      cooldown.setUsed(issuer.getUniqueId());
-    }
   }
 
-  @Subcommand("maintenance|m off")
+  @Subcommand("maintenance off|m off")
   @Description("Disable maintenance mode")
   public void onMaintenanceOff(final CommandIssuer issuer) {
     if (issuer.isPlayer()) {
@@ -134,6 +140,18 @@ public final class MotdGuardCommand extends BaseCommand {
 
         return;
       }
+
+      cooldown.setUsed(playerId);
+    }
+
+    if (!maintenanceManager.isEnabled()) {
+      final MessagesConfig messages = configManager.getConfigData().messages();
+
+      if (issuer.getIssuer() instanceof CommandSource source) {
+        source.sendMessage(MiniMessageUtil.deserialize(messages.maintenanceDisabled()));
+      }
+
+      return;
     }
 
     maintenanceManager.setEnabled(false);
@@ -142,10 +160,6 @@ public final class MotdGuardCommand extends BaseCommand {
 
     if (issuer.getIssuer() instanceof CommandSource source) {
       source.sendMessage(MiniMessageUtil.deserialize(messages.maintenanceDisabled()));
-    }
-
-    if (issuer.isPlayer()) {
-      cooldown.setUsed(issuer.getUniqueId());
     }
   }
 
@@ -164,23 +178,20 @@ public final class MotdGuardCommand extends BaseCommand {
 
         return;
       }
+
+      cooldown.setUsed(playerId);
     }
 
     final boolean enabled = maintenanceManager.toggle();
     final MessagesConfig messages = configManager.getConfigData().messages();
 
-    String status = messages.maintenanceStatusDisabled();
-    if (enabled) {
-      status = messages.maintenanceStatusEnabled();
-    }
+    final String status =
+        enabled ? messages.maintenanceStatusEnabled() : messages.maintenanceStatusDisabled();
 
     if (issuer.getIssuer() instanceof CommandSource source) {
-      source.sendMessage(MiniMessageUtil.deserialize(
+      source.sendMessage(
+          MiniMessageUtil.deserialize(
               messages.maintenanceToggled().replace(PluginConstants.STATUS_PLACEHOLDER, status)));
-    }
-
-    if (issuer.isPlayer()) {
-      cooldown.setUsed(issuer.getUniqueId());
     }
   }
 }

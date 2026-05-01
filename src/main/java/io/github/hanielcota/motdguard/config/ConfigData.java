@@ -45,7 +45,7 @@ public record ConfigData(
   public record RateLimitConfig(boolean enabled, int maxPingsPerMinute, String blockMessage) {
 
     public RateLimitConfig {
-      if (maxPingsPerMinute < 1) {
+      if (enabled && maxPingsPerMinute < 1) {
         throw new IllegalArgumentException("rate-limit.max-pings-per-minute must be at least 1");
       }
       requireText(blockMessage, "rate-limit.block-message");
@@ -55,7 +55,7 @@ public record ConfigData(
   public record CooldownConfig(boolean enabled, int durationSeconds) {
 
     public CooldownConfig {
-      if (durationSeconds < 1) {
+      if (enabled && durationSeconds < 1) {
         throw new IllegalArgumentException("cooldown.duration-seconds must be at least 1");
       }
     }

@@ -90,6 +90,7 @@ public final class RateLimiter {
         .version(new ServerPing.Version(0, "???"))
         .nullPlayers()
         .clearFavicon()
+        .notModCompatible()
         .build();
   }
 
