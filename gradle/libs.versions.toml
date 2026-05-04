@@ -1,5 +1,5 @@
 [versions]
-caffeine = "3.2.3"
+caffeine = "3.2.4"
 bucket4j = "8.18.0"
 jackson = "2.21.3"
 lombok = "1.18.32"
