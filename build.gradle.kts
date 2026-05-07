@@ -5,8 +5,8 @@ import com.github.spotbugs.snom.SpotBugsTask
 buildscript {
     configurations.classpath {
         resolutionStrategy.force(
-            "org.apache.logging.log4j:log4j-api:2.25.4",
-            "org.apache.logging.log4j:log4j-core:2.25.4",
+            "org.apache.logging.log4j:log4j-api:2.26.0",
+            "org.apache.logging.log4j:log4j-core:2.26.0",
             "org.codehaus.plexus:plexus-utils:4.0.3",
         )
     }
@@ -41,8 +41,8 @@ repositories {
 
 configurations.configureEach {
     resolutionStrategy.force(
-        "org.apache.logging.log4j:log4j-api:2.25.4",
-        "org.apache.logging.log4j:log4j-core:2.25.4",
+        "org.apache.logging.log4j:log4j-api:2.26.0",
+        "org.apache.logging.log4j:log4j-core:2.26.0",
         "org.codehaus.plexus:plexus-utils:4.0.3",
     )
 }
