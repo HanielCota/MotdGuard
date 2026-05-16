@@ -58,6 +58,20 @@ class CooldownServiceTest {
   }
 
   @Test
+  void refreshWithUnchangedConfigShouldPreserveActiveCooldowns() {
+    final var service = new CooldownService(true, Duration.ofHours(1));
+    final UUID playerId = UUID.randomUUID();
+
+    service.setUsed(playerId);
+    assertTrue(service.isOnCooldown(playerId));
+
+    // A reload that does not change the cooldown config must not wipe in-progress cooldowns.
+    service.refresh(true, Duration.ofHours(1));
+
+    assertTrue(service.isOnCooldown(playerId));
+  }
+
+  @Test
   void disabledServiceShouldAcceptNonPositiveDuration() {
     final var zeroDurationService = new CooldownService(false, Duration.ZERO);
     final var negativeDurationService = new CooldownService(false, Duration.ofSeconds(-1));

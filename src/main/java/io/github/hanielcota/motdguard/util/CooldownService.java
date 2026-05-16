@@ -15,7 +15,23 @@ public final class CooldownService {
     this.state = new AtomicReference<>(createState(enabled, cooldownDuration));
   }
 
+  /**
+   * Applies a new cooldown configuration.
+   *
+   * <p>When neither {@code enabled} nor {@code cooldownDuration} changed, the call is a no-op: the
+   * existing cache is kept so that cooldowns already in progress survive a configuration reload.
+   * Rebuilding the cache unconditionally would wipe every active cooldown, which makes the cooldown
+   * on the {@code reload} command itself ineffective.
+   */
   public void refresh(final boolean enabled, final Duration cooldownDuration) {
+    Objects.requireNonNull(cooldownDuration, "cooldownDuration");
+
+    final State current = state.get();
+
+    if (current.enabled() == enabled && current.duration().equals(cooldownDuration)) {
+      return;
+    }
+
     state.set(createState(enabled, cooldownDuration));
   }
 
@@ -29,7 +45,7 @@ public final class CooldownService {
     final Duration expiration =
         duration.isZero() || duration.isNegative() ? Duration.ofSeconds(1) : duration;
 
-    return new State(enabled, Caffeine.newBuilder().expireAfterWrite(expiration).build());
+    return new State(enabled, duration, Caffeine.newBuilder().expireAfterWrite(expiration).build());
   }
 
   public boolean isOnCooldown(final UUID playerId) {
@@ -58,5 +74,5 @@ public final class CooldownService {
     state.get().cache().invalidate(Objects.requireNonNull(playerId, "playerId"));
   }
 
-  private record State(boolean enabled, Cache<UUID, Boolean> cache) {}
+  private record State(boolean enabled, Duration duration, Cache<UUID, Boolean> cache) {}
 }
