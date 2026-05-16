@@ -1,118 +1,86 @@
 <div align="center">
-  <img src=".github/assets/logo.png" alt="Logo do MotdGuard" width="180">
 
-  <h1>MotdGuard</h1>
+<img src=".github/assets/logo.png" alt="Logo do MotdGuard" width="170">
 
-  <p>
-    O plugin definitivo para deixar seu proxy <strong>Velocity</strong> mais bonito, mais controlado
-    e muito mais protegido desde o primeiro ping.
-  </p>
+# MotdGuard
 
-  <p>
-    MOTD profissional, manutenção inteligente, rate limit contra flood e configuração simples.
-    Tudo em um plugin leve, direto e feito para servidor sério.
-  </p>
+**A primeira camada de controle do seu proxy Velocity.**
+MOTD profissional · modo manutenção inteligente · proteção contra flood de ping — desde o primeiro ping ao servidor.
 
-  <p>
-    <a href="README.md">
-      <img alt="Read in English" src="https://img.shields.io/badge/Read%20in-English-1f6feb?style=for-the-badge">
-    </a>
-  </p>
+<br>
 
-  <p>
-    <a href="https://github.com/HanielCota/MotdGuard/actions/workflows/build.yml">
-      <img alt="Build" src="https://img.shields.io/github/actions/workflow/status/HanielCota/MotdGuard/build.yml?branch=main&style=for-the-badge&label=build">
-    </a>
-    <a href="https://github.com/HanielCota/MotdGuard/security/code-scanning">
-      <img alt="CodeQL" src="https://img.shields.io/github/actions/workflow/status/HanielCota/MotdGuard/codeql.yml?branch=main&style=for-the-badge&label=codeql">
-    </a>
-    <a href="LICENSE">
-      <img alt="License" src="https://img.shields.io/github/license/HanielCota/MotdGuard?style=for-the-badge">
-    </a>
-    <img alt="Java" src="https://img.shields.io/badge/Java-21-f58220?style=for-the-badge">
-    <img alt="Velocity" src="https://img.shields.io/badge/Velocity-3.5%2B-1f6feb?style=for-the-badge">
-  </p>
+[![Build](https://img.shields.io/github/actions/workflow/status/HanielCota/MotdGuard/build.yml?branch=main&style=for-the-badge&labelColor=0d1117&color=f58220&label=Build&logo=githubactions&logoColor=f58220)](https://github.com/HanielCota/MotdGuard/actions/workflows/build.yml)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/HanielCota/MotdGuard/codeql.yml?branch=main&style=for-the-badge&labelColor=0d1117&color=f58220&label=CodeQL&logo=github&logoColor=f58220)](https://github.com/HanielCota/MotdGuard/security/code-scanning)
+[![License](https://img.shields.io/github/license/HanielCota/MotdGuard?style=for-the-badge&labelColor=0d1117&color=f58220&label=Licen%C3%A7a)](LICENSE)
+
+[![Java](https://img.shields.io/badge/Java-21-f58220?style=for-the-badge&labelColor=0d1117&logo=openjdk&logoColor=f58220)](https://adoptium.net/)
+[![Velocity](https://img.shields.io/badge/Velocity-3.5%2B-f58220?style=for-the-badge&labelColor=0d1117)](https://papermc.io/software/velocity)
+[![MiniMessage](https://img.shields.io/badge/MiniMessage-pronto-f58220?style=for-the-badge&labelColor=0d1117)](https://docs.advntr.dev/minimessage/)
+
+<br>
+
+**🌐 Idioma:** [English](README.md) · **Português**
+
 </div>
 
 ---
 
-## Visão Geral
+## 🛡️ Visão Geral
 
-**MotdGuard** não é só um plugin de MOTD. Ele é a primeira camada de controle do seu proxy.
+**MotdGuard** não é só mais um plugin de MOTD — é a primeira camada de controle do seu proxy Velocity.
 
-Enquanto outros plugins só mudam duas linhas na lista de servidores, o MotdGuard entrega uma experiência completa: visual forte, manutenção sem dor de cabeça e proteção real contra spam de ping. É o tipo de ferramenta que você instala uma vez e deixa trabalhando em silêncio, mantendo seu servidor com cara profissional e comportamento previsível.
+Enquanto muitos plugins apenas mudam duas linhas na lista de servidores, o MotdGuard entrega uma experiência completa: apresentação forte, modo manutenção sem dor de cabeça e proteção real contra spam de ping. É o tipo de ferramenta que você instala uma vez e deixa trabalhando silenciosamente em segundo plano — mantendo o servidor profissional, previsível e protegido.
 
-Com ele, você altera o MOTD com MiniMessage, ativa manutenção sem reiniciar o proxy, libera bypass para staff e limita abuso por IP antes que isso vire problema.
+Personalize o MOTD com MiniMessage, ative a manutenção sem reiniciar o proxy, permita o bypass da staff e limite o tráfego abusivo de ping por IP antes que vire problema.
 
-## Por que usar?
+> [!TIP]
+> Instale uma vez, configure em minutos e use `/motdguard reload` para aplicar mudanças ao vivo — sem reiniciar o proxy.
 
-| Motivo | Impacto |
-| --- | --- |
-| Visual de servidor premium | Seu servidor aparece com uma identidade mais forte e organizada na lista. |
-| Controle imediato | Ative manutenção, recarregue a configuração e ajuste mensagens sem derrubar o proxy. |
-| Segurança de verdade | Rate limit por IP ajuda a segurar flood de ping e consultas abusivas. |
-| Leve e objetivo | Faz o que precisa fazer sem virar um plugin gigante e confuso. |
-| Pronto para produção | Build automatizado, CodeQL, Dependabot e dependências monitoradas. |
+---
 
-## Destaques
+## ✨ Recursos
 
-| Recurso | Descrição |
-| --- | --- |
-| MOTD dinâmico | Transforme a primeira impressão do servidor com MiniMessage, cores e estilos modernos. |
-| Modo manutenção | Feche o servidor com elegância, mensagem customizada e controle total por comando. |
-| Rate limit de ping | Segure spam e flood de consultas antes que eles virem ruído no proxy. |
-| Hot reload | Ajuste tudo no `config.toml` e aplique sem reiniciar o Velocity. |
-| Bypass por permissão | Staff entra quando precisa, mesmo com manutenção ativa. |
-| Logs de erro | Falhas ficam registradas em `plugins/MotdGuard/errors.log` para diagnóstico rápido. |
+| | Recurso | Descrição |
+| :-: | --- | --- |
+| 🎨 | **MOTD dinâmico** | Crie uma primeira impressão forte com MiniMessage — cores, gradientes e estilos modernos de texto. |
+| 🔧 | **Modo manutenção** | Feche o servidor de forma limpa, com mensagem personalizada e controle total por comandos. |
+| 🚦 | **Rate limit de ping** | Segure spam e consultas abusivas de status antes que virem ruído no proxy. |
+| ♻️ | **Hot reload** | Atualize o `config.toml` e aplique as mudanças sem reiniciar o Velocity. |
+| 🔑 | **Bypass por permissão** | A staff continua entrando mesmo com a manutenção ativa. |
+| ⏱️ | **Cooldown de comando** | Limita comandos administrativos para evitar spam acidental. |
+| 📝 | **Logs de erro** | Falhas são gravadas em `plugins/MotdGuard/errors.log` para diagnóstico rápido. |
 
-## Requisitos
+---
+
+## 📋 Requisitos
 
 | Item | Versão |
 | --- | --- |
-| Java | 21+ |
-| Velocity | 3.5.0+ |
-| Gradle | Wrapper incluso no projeto |
+| ☕ **Java** | `21+` |
+| 🚀 **Velocity** | `3.5.0+` |
+| 🐘 **Gradle** | Wrapper já incluído no projeto |
 
-## Instalação
+---
 
-1. Baixe o arquivo `.jar` mais recente em [GitHub Releases](https://github.com/HanielCota/MotdGuard/releases).
-2. Coloque o arquivo em `plugins/` no seu proxy Velocity.
+## 📦 Instalação
+
+1. Baixe o `.jar` mais recente em [**GitHub Releases**](https://github.com/HanielCota/MotdGuard/releases).
+2. Coloque o arquivo na pasta `plugins/` do seu proxy Velocity.
 3. Reinicie o proxy para gerar a configuração inicial.
 4. Edite `plugins/MotdGuard/config.toml`.
-5. Use `/motdguard reload` para aplicar alterações sem reiniciar.
+5. Rode `/motdguard reload` para aplicar as mudanças sem reiniciar.
 
-## Releases
+---
 
-As releases são publicadas a partir de tags com versionamento semântico.
+## ⚙️ Configuração
 
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
+A configuração é simples, legível e direta — mude o comportamento do plugin sem recompilar nada.
 
-O workflow de release verifica se a versão da tag bate com a versão do projeto no Gradle, compila o plugin com Java 21, cria a GitHub Release, gera as notas da release e anexa o JAR compilado.
-
-Os artefatos de release ficam disponíveis em:
-
-```text
-https://github.com/HanielCota/MotdGuard/releases
-```
-
-## Configuração
-
-Configuração simples, legível e direta. Você muda o comportamento do plugin sem precisar recompilar nada.
-
-Arquivo principal:
-
-```text
-plugins/MotdGuard/config.toml
-```
-
-Exemplo:
+**Arquivo principal:** `plugins/MotdGuard/config.toml`
 
 ```toml
 [motd]
-line1 = "<#f58220><bold>MeuServidor</bold>"
+line1 = "<gradient:#f58220:#ffd9a8><bold>MeuServidor</bold></gradient>"
 line2 = "<#ffffff>Protegido por <#f58220>MotdGuard"
 
 [maintenance]
@@ -122,31 +90,39 @@ kick-message = "<red>Servidor em manutenção. Volte em breve!"
 [rate-limit]
 enabled = true
 max-pings-per-minute = 60
-block-message = "Muitas requisições. Aguarde."
+block-message = "<gray>Muitas requisições. Aguarde."
 
 [cooldown]
 enabled = true
 duration-seconds = 60
 
 [messages]
-reload-success = "&aConfiguração recarregada com sucesso."
-reload-failure = "&cFalha ao recarregar a configuração. Verifique o console."
-maintenance-enabled = "&aModo manutenção ativado."
-maintenance-disabled = "&aModo manutenção desativado."
-maintenance-toggled = "&aModo manutenção {status}."
+reload-success = "<green>Configuração recarregada com sucesso."
+reload-failure = "<red>Falha ao recarregar a configuração. Verifique o console."
+maintenance-enabled = "<green>Modo manutenção ativado."
+maintenance-disabled = "<green>Modo manutenção desativado."
+maintenance-toggled = "<green>Modo manutenção {status}."
 maintenance-status-enabled = "ativado"
 maintenance-status-disabled = "desativado"
-help-header = "&aComandos do MotdGuard:"
-help-reload = "&e/motdguard reload - Recarrega a configuração"
-help-maintenance = "&e/motdguard maintenance - Alterna o modo manutenção"
-help-maintenance-on = "&e/motdguard maintenance on - Ativa a manutenção"
-help-maintenance-off = "&e/motdguard maintenance off - Desativa a manutenção"
-cooldown-message = "&cAguarde antes de usar outro comando."
+help-header = "<#f58220><bold>Comandos do MotdGuard:"
+help-reload = "<yellow>/motdguard reload <gray>- Recarrega a configuração"
+help-maintenance = "<yellow>/motdguard maintenance <gray>- Alterna o modo manutenção"
+help-maintenance-on = "<yellow>/motdguard maintenance on <gray>- Ativa a manutenção"
+help-maintenance-off = "<yellow>/motdguard maintenance off <gray>- Desativa a manutenção"
+cooldown-message = "<red>Aguarde antes de usar outro comando."
 ```
 
-## MiniMessage
+> [!WARNING]
+> As cinco seções — `[motd]`, `[maintenance]`, `[rate-limit]`, `[cooldown]` e `[messages]` — são **obrigatórias**. Uma seção ausente faz o plugin falhar ao carregar, com um erro claro `Missing [seção]`.
 
-O MOTD usa [MiniMessage](https://docs.advntr.dev/minimessage/) para formatação moderna de texto. Isso permite criar um visual muito mais bonito do que o padrão antigo de cores simples.
+> [!NOTE]
+> As mensagens usam a sintaxe **MiniMessage** (`<green>`, `<#f58220>`, `<bold>`). Códigos de cor legados `&` **não** são suportados e apareceriam literalmente.
+
+---
+
+## 🎨 MiniMessage
+
+O MOTD e as mensagens usam [MiniMessage](https://docs.advntr.dev/minimessage/) para formatação moderna de texto — muito além do antigo padrão de cores simples.
 
 | Sintaxe | Resultado |
 | --- | --- |
@@ -156,52 +132,68 @@ O MOTD usa [MiniMessage](https://docs.advntr.dev/minimessage/) para formatação
 | `<gradient:#f58220:#ffffff>Servidor</gradient>` | Gradiente |
 | `<hover:show_text:'Info'>Passe o mouse</hover>` | Texto com hover |
 
-## Comandos
+---
+
+## ⌨️ Comandos
 
 | Comando | Descrição | Permissão |
 | --- | --- | --- |
-| `/motdguard` | Mostra o menu de ajuda | `motdguard.admin` |
-| `/mg` | Alias principal | `motdguard.admin` |
+| `/motdguard` · `/mg` | Mostra o menu de ajuda | `motdguard.admin` |
 | `/motdguard reload` | Recarrega a configuração | `motdguard.admin` |
-| `/motdguard maintenance` | Alterna o modo manutenção | `motdguard.admin` |
-| `/motdguard maintenance on` | Ativa o modo manutenção | `motdguard.admin` |
-| `/motdguard maintenance off` | Desativa o modo manutenção | `motdguard.admin` |
-| `/mg m` | Alias para manutenção | `motdguard.admin` |
+| `/motdguard maintenance` · `/mg m` | Alterna o modo manutenção | `motdguard.admin` |
+| `/motdguard maintenance on` · `/mg m on` | Ativa o modo manutenção | `motdguard.admin` |
+| `/motdguard maintenance off` · `/mg m off` | Desativa o modo manutenção | `motdguard.admin` |
 
-## Permissões
+---
+
+## 🔑 Permissões
 
 | Permissão | Descrição | Padrão |
 | --- | --- | --- |
 | `motdguard.admin` | Acesso aos comandos administrativos | `op` |
-| `motdguard.bypass` | Permite entrar durante manutenção | `false` |
+| `motdguard.bypass` | Permite entrar durante o modo manutenção | `false` |
 
-## Build Local
+---
+
+## 🚀 Releases
+
+As releases são publicadas a partir de tags de versão semântica.
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+O workflow de release verifica se a tag corresponde à versão do projeto no Gradle, compila o plugin com Java 21, cria uma GitHub Release, gera as notas de versão e anexa o JAR compilado.
+
+📥 Artefatos: [github.com/HanielCota/MotdGuard/releases](https://github.com/HanielCota/MotdGuard/releases)
+
+---
+
+## 🔨 Build Local
 
 Use o Gradle Wrapper incluído no repositório.
 
 ```bash
+# Build completo (testes, checagem de formatação, SpotBugs)
 ./gradlew build
-```
 
-Build sem SpotBugs:
-
-```bash
+# Build sem o SpotBugs
 ./gradlew build -x spotbugsMain -x spotbugsTest
-```
 
-Gerar o JAR final:
-
-```bash
+# Gerar o JAR final (shaded)
 ./gradlew shadowJar
 ```
 
-O artefato compilado fica em:
+O artefato compilado é gerado em:
 
 ```text
 build/libs/motdguard-1.0.0.jar
 ```
 
-## Estrutura
+---
+
+## 📁 Estrutura do Projeto
 
 ```text
 src/main/java/io/github/hanielcota/motdguard/
@@ -236,34 +228,51 @@ src/main/java/io/github/hanielcota/motdguard/
     └── PluginExceptionHandler.java
 ```
 
-## Qualidade e Segurança
+---
 
-MotdGuard foi pensado para ser confiável em produção. O foco é simples: proteger o proxy, manter o visual do servidor profissional e evitar que configuração ruim ou dependência velha vire dor de cabeça.
+## 🔒 Qualidade & Segurança
 
-O projeto usa GitHub Actions para validar build, CodeQL para análise de segurança e Dependabot para manter dependências atualizadas. Menos improviso, mais previsibilidade.
+O MotdGuard foi pensado para ser confiável em produção: proteger o proxy, manter a apresentação profissional e evitar que configuração ruim ou dependência velha vire dor de cabeça.
 
 | Área | Ferramenta |
 | --- | --- |
-| Build | GitHub Actions |
-| Análise estática | CodeQL |
-| Dependências | Dependabot |
-| Empacotamento | Shadow Jar |
+| 🏗️ Build | GitHub Actions |
+| 🔍 Análise estática | CodeQL · SpotBugs · FindSecBugs |
+| 🎯 Formatação | Spotless + Google Java Format |
+| 📦 Dependências | Dependabot |
+| 🧪 Testes | JUnit 5 · Mockito |
+| 📤 Empacotamento | Shadow JAR |
 
-## Filosofia
+---
 
-MotdGuard segue uma ideia direta: plugin bom não precisa ser pesado, confuso ou cheio de firula. Ele precisa resolver o problema, proteger o servidor e continuar funcionando sem chamar atenção.
+## 💭 Filosofia
 
-Este projeto existe para entregar uma camada limpa, forte e confiável para quem quer um proxy Velocity com aparência profissional e controle de verdade.
+Um bom plugin não precisa ser pesado, confuso ou cheio de recursos desnecessários. Ele precisa **resolver o problema, proteger o servidor e continuar funcionando sem exigir atenção.**
 
-## Contribuição
+O MotdGuard existe para entregar uma camada de controle limpa, forte e confiável para quem quer um proxy Velocity profissional.
 
-Contribuições são bem-vindas. Para propor mudanças:
+---
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas:
 
 1. Faça um fork do repositório.
-2. Crie uma branch para sua alteração.
-3. Rode o build localmente.
+2. Crie uma branch para a sua mudança.
+3. Rode o build localmente (`./gradlew build`).
 4. Abra um pull request descrevendo o que mudou.
 
-## Licença
+---
 
-Distribuído sob a licença MIT. Veja [LICENSE](LICENSE) para mais detalhes.
+## 📄 Licença
+
+Distribuído sob a **Licença MIT**. Veja [LICENSE](LICENSE) para mais detalhes.
+
+<div align="center">
+<br>
+
+**Feito com ☕ para servidores Velocity sérios.**
+
+<sub>Se o MotdGuard ajudar o seu servidor, considere deixar uma ⭐ no repositório.</sub>
+
+</div>
