@@ -124,6 +124,10 @@ enabled = true
 max-pings-per-minute = 60
 block-message = "Too many requests. Please wait."
 
+[cooldown]
+enabled = true
+duration-seconds = 60
+
 [messages]
 reload-success = "&aConfiguration reloaded successfully."
 reload-failure = "&cFailed to reload the configuration. Check the console."
@@ -207,19 +211,29 @@ src/main/java/io/github/hanielcota/motdguard/
 ├── config/
 │   ├── ConfigData.java
 │   ├── ConfigManager.java
+│   ├── ConfigValidation.java
+│   ├── CooldownConfig.java
 │   ├── MaintenanceConfig.java
 │   ├── MessagesConfig.java
 │   ├── MotdConfig.java
 │   └── RateLimitConfig.java
-├── exception/
-│   └── PluginExceptionHandler.java
+├── constants/
+│   └── PluginConstants.java
 ├── listener/
 │   ├── LoginListener.java
 │   └── PingListener.java
-└── service/
-    ├── MaintenanceService.java
-    ├── MotdService.java
-    └── RateLimitService.java
+├── maintenance/
+│   └── MaintenanceManager.java
+├── motd/
+│   └── MotdProvider.java
+├── ratelimit/
+│   └── RateLimiter.java
+└── util/
+    ├── BucketFactory.java
+    ├── CooldownService.java
+    ├── IpExtractor.java
+    ├── MiniMessageUtil.java
+    └── PluginExceptionHandler.java
 ```
 
 ## Quality and Security
