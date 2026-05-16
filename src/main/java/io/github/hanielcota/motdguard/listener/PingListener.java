@@ -4,13 +4,14 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import io.github.hanielcota.motdguard.motd.MotdProvider;
 import io.github.hanielcota.motdguard.ratelimit.RateLimiter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public final class PingListener {
 
-  private final MotdProvider motdProvider;
-  private final RateLimiter rateLimiter;
+  @NonNull private final MotdProvider motdProvider;
+  @NonNull private final RateLimiter rateLimiter;
 
   @Subscribe
   public void onProxyPing(final ProxyPingEvent event) {

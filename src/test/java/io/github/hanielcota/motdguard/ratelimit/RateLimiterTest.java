@@ -9,6 +9,11 @@ import static org.mockito.Mockito.when;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import io.github.hanielcota.motdguard.config.ConfigData;
 import io.github.hanielcota.motdguard.config.ConfigManager;
+import io.github.hanielcota.motdguard.config.CooldownConfig;
+import io.github.hanielcota.motdguard.config.MaintenanceConfig;
+import io.github.hanielcota.motdguard.config.MessagesConfig;
+import io.github.hanielcota.motdguard.config.MotdConfig;
+import io.github.hanielcota.motdguard.config.RateLimitConfig;
 import java.net.InetSocketAddress;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.Test;
@@ -19,11 +24,11 @@ class RateLimiterTest {
     final ConfigManager manager = mock(ConfigManager.class);
     final var config =
         new ConfigData(
-            new ConfigData.MotdConfig("Line1", "Line2"),
-            new ConfigData.MaintenanceConfig(false, "Kick"),
-            new ConfigData.RateLimitConfig(enabled, maxPings, blockMessage),
-            new ConfigData.CooldownConfig(false, 1),
-            new ConfigData.MessagesConfig(
+            new MotdConfig("Line1", "Line2"),
+            new MaintenanceConfig(false, "Kick"),
+            new RateLimitConfig(enabled, maxPings, blockMessage),
+            new CooldownConfig(false, 1),
+            new MessagesConfig(
                 "a", "b", "c", "d", "e", "enabled", "disabled", "g", "h", "i", "j", "k", "l"));
     when(manager.getConfigData()).thenReturn(config);
     return manager;
@@ -66,7 +71,8 @@ class RateLimiterTest {
     final ServerPing blocked = limiter.tryBlockPing(address, original);
 
     assertNotNull(blocked);
-    final String plain = PlainTextComponentSerializer.plainText().serialize(blocked.getDescriptionComponent());
+    final String plain =
+        PlainTextComponentSerializer.plainText().serialize(blocked.getDescriptionComponent());
     assertEquals("Too many", plain);
   }
 

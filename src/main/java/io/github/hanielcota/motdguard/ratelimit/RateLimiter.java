@@ -7,7 +7,6 @@ import io.github.bucket4j.Bucket;
 import io.github.hanielcota.motdguard.config.ConfigManager;
 import io.github.hanielcota.motdguard.util.BucketFactory;
 import io.github.hanielcota.motdguard.util.IpExtractor;
-import io.github.hanielcota.motdguard.util.MiniMessageUtil;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.Objects;
@@ -26,7 +25,7 @@ public final class RateLimiter {
   private final AtomicReference<State> state = new AtomicReference<>();
 
   public RateLimiter(final ConfigManager configManager) {
-    this.configManager = configManager;
+    this.configManager = Objects.requireNonNull(configManager, "configManager");
     this.cache =
         Caffeine.newBuilder()
             .maximumSize(MAX_ENTRIES)
@@ -76,7 +75,7 @@ public final class RateLimiter {
         new State(
             rateLimitConfig.enabled(),
             rateLimitConfig.maxPingsPerMinute(),
-            MiniMessageUtil.deserialize(rateLimitConfig.blockMessage())));
+            rateLimitConfig.blockMessageComponent()));
 
     cache.invalidateAll();
 

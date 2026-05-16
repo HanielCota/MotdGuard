@@ -7,8 +7,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.dataformat.toml.TomlFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,6 +24,8 @@ public final class ConfigManager {
   private final AtomicReference<ConfigData> configData = new AtomicReference<>();
 
   public ConfigManager(final Path dataDirectory) {
+    Objects.requireNonNull(dataDirectory, "dataDirectory");
+
     this.configPath = dataDirectory.resolve(FILE_NAME);
     this.mapper = new ObjectMapper(new TomlFactory());
     this.mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
@@ -82,6 +86,10 @@ public final class ConfigManager {
       }
 
       Files.copy(resource, configPath);
+    } catch (final FileAlreadyExistsException e) {
+      // Another thread/process created the config between the exists() check and the copy;
+      // the existing file wins and reload() will pick it up.
+      log.debug("config.toml already exists; skipping default copy");
     }
   }
 }

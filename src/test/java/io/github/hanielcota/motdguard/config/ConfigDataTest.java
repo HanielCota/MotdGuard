@@ -3,11 +3,6 @@ package io.github.hanielcota.motdguard.config;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import io.github.hanielcota.motdguard.config.ConfigData.CooldownConfig;
-import io.github.hanielcota.motdguard.config.ConfigData.MaintenanceConfig;
-import io.github.hanielcota.motdguard.config.ConfigData.MessagesConfig;
-import io.github.hanielcota.motdguard.config.ConfigData.MotdConfig;
-import io.github.hanielcota.motdguard.config.ConfigData.RateLimitConfig;
 import org.junit.jupiter.api.Test;
 
 class ConfigDataTest {
@@ -59,40 +54,35 @@ class ConfigDataTest {
   void shouldRejectNullMotd() {
     assertThrows(
         NullPointerException.class,
-        () -> new ConfigData(null, validMaintenance(), validRateLimit(), validCooldown(), validMessages()));
+        () ->
+            new ConfigData(
+                null, validMaintenance(), validRateLimit(), validCooldown(), validMessages()));
   }
 
   @Test
   void shouldRejectBlankMotdLine1() {
-    assertThrows(
-        IllegalArgumentException.class, () -> new MotdConfig("", "Line2"));
+    assertThrows(IllegalArgumentException.class, () -> new MotdConfig("", "Line2"));
   }
 
   @Test
   void shouldRejectBlankMotdLine2() {
-    assertThrows(
-        IllegalArgumentException.class, () -> new MotdConfig("Line1", "   "));
+    assertThrows(IllegalArgumentException.class, () -> new MotdConfig("Line1", "   "));
   }
 
   @Test
   void shouldRejectZeroMaxPings() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new RateLimitConfig(true, 0, "Block"));
+    assertThrows(IllegalArgumentException.class, () -> new RateLimitConfig(true, 0, "Block"));
   }
 
   @Test
   void shouldRejectZeroCooldownDuration() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new CooldownConfig(true, 0));
+    assertThrows(IllegalArgumentException.class, () -> new CooldownConfig(true, 0));
   }
 
   @Test
   void shouldApplyDefaultForBlankStatusEnabled() {
     final var messages =
-        new MessagesConfig(
-            "a", "b", "c", "d", "e", "", null, "g", "h", "i", "j", "k", "l");
+        new MessagesConfig("a", "b", "c", "d", "e", "", null, "g", "h", "i", "j", "k", "l");
 
     assertEquals("enabled", messages.maintenanceStatusEnabled());
   }
@@ -100,8 +90,7 @@ class ConfigDataTest {
   @Test
   void shouldApplyDefaultForBlankStatusDisabled() {
     final var messages =
-        new MessagesConfig(
-            "a", "b", "c", "d", "e", "f", "", "g", "h", "i", "j", "k", "l");
+        new MessagesConfig("a", "b", "c", "d", "e", "f", "", "g", "h", "i", "j", "k", "l");
 
     assertEquals("disabled", messages.maintenanceStatusDisabled());
   }

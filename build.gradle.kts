@@ -16,6 +16,7 @@ plugins {
     java
     alias(libs.plugins.shadow)
     alias(libs.plugins.spotbugs)
+    alias(libs.plugins.spotless)
 }
 
 group = "io.github.hanielcota"
@@ -74,6 +75,14 @@ spotbugs {
     toolVersion.set(libs.versions.spotbugs.get())
     effort.set(Effort.MAX)
     reportLevel.set(Confidence.DEFAULT)
+}
+
+spotless {
+    java {
+        target("src/**/*.java")
+        googleJavaFormat(libs.versions.google.java.format.get())
+        formatAnnotations()
+    }
 }
 
 tasks {

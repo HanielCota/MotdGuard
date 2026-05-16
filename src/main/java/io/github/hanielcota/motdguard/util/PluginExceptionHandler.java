@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,6 +25,8 @@ public final class PluginExceptionHandler {
   private final Path errorLogPath;
 
   public PluginExceptionHandler(final Path dataDirectory) {
+    Objects.requireNonNull(dataDirectory, "dataDirectory");
+
     this.errorLogPath = dataDirectory.resolve("errors.log");
   }
 

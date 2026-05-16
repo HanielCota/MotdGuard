@@ -19,6 +19,7 @@ import io.github.hanielcota.motdguard.util.CooldownService;
 import io.github.hanielcota.motdguard.util.PluginExceptionHandler;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -36,8 +37,8 @@ public final class MotdGuardPlugin {
 
   @Inject
   public MotdGuardPlugin(final ProxyServer server, @DataDirectory final Path dataDirectory) {
-    this.server = server;
-    this.dataDirectory = dataDirectory;
+    this.server = Objects.requireNonNull(server, "server");
+    this.dataDirectory = Objects.requireNonNull(dataDirectory, "dataDirectory");
   }
 
   @Subscribe

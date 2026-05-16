@@ -4,6 +4,7 @@ import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import io.github.hanielcota.motdguard.maintenance.MaintenanceManager;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public final class LoginListener {
 
-  private final MaintenanceManager maintenanceManager;
+  @NonNull private final MaintenanceManager maintenanceManager;
 
   @Subscribe
   public void onLogin(final LoginEvent event) {

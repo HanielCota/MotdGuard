@@ -1,7 +1,7 @@
 package io.github.hanielcota.motdguard.maintenance;
 
 import io.github.hanielcota.motdguard.config.ConfigManager;
-import io.github.hanielcota.motdguard.util.MiniMessageUtil;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
@@ -10,97 +10,59 @@ import net.kyori.adventure.text.Component;
 public final class MaintenanceManager {
 
   private final ConfigManager configManager;
-  private final AtomicReference<State> state = new AtomicReference<>();
+  private final AtomicReference<State> state;
 
   public MaintenanceManager(final ConfigManager configManager) {
-    this.configManager = configManager;
-    loadInitialState();
+    this.configManager = Objects.requireNonNull(configManager, "configManager");
+
+    final var maintenanceConfig = configManager.getConfigData().maintenance();
+    this.state =
+        new AtomicReference<>(
+            new State(maintenanceConfig.enabled(), maintenanceConfig.kickMessageComponent()));
+
+    log.info("Maintenance initial state loaded from config");
   }
 
   public State getState() {
-    final State snapshot = state.get();
-
-    if (snapshot == null) {
-      return new State(false, Component.empty());
-    }
-
-    return snapshot;
+    return state.get();
   }
 
   public boolean isEnabled() {
-    return getState().enabled();
+    return state.get().enabled();
   }
 
   public Component getKickMessage() {
-    return getState().kickMessage();
+    return state.get().kickMessage();
   }
 
   public void setEnabled(final boolean value) {
-    state.updateAndGet(
-        current -> {
-          if (current == null) {
-            return new State(value, Component.empty());
-          }
-
-          return new State(value, current.kickMessage());
-        });
-
+    state.updateAndGet(current -> new State(value, current.kickMessage()));
     logMaintenanceSet(value);
   }
 
   public boolean toggle() {
-    final State previous =
-        state.getAndUpdate(
-            current -> {
-              if (current == null) {
-                return new State(true, Component.empty());
-              }
+    final State updated =
+        state.updateAndGet(current -> new State(!current.enabled(), current.kickMessage()));
 
-              return new State(!current.enabled(), current.kickMessage());
-            });
+    logMaintenanceSet(updated.enabled());
 
-    boolean newValue = true;
-    if (previous != null) {
-      newValue = !previous.enabled();
-    }
-
-    logMaintenanceSet(newValue);
-
-    return newValue;
+    return updated.enabled();
   }
 
   /**
    * Refreshes the kick message from configuration while preserving the current runtime {@code
    * enabled} state.
    *
-   * <p>The {@code enabled} field in config is only applied at startup via {@link
-   * #loadInitialState()}. Runtime toggles by operators persist across reloads.
+   * <p>The {@code enabled} field in config is only applied at startup via the constructor. Runtime
+   * toggles by operators persist across reloads.
    */
   public void refresh() {
     final Component newKickMessage =
-        MiniMessageUtil.deserialize(configManager.getConfigData().maintenance().kickMessage());
+        configManager.getConfigData().maintenance().kickMessageComponent();
 
-    state.updateAndGet(
-        current -> {
-          if (current == null) {
-            return new State(false, newKickMessage);
-          }
-
-          return new State(current.enabled(), newKickMessage);
-        });
+    state.updateAndGet(current -> new State(current.enabled(), newKickMessage));
 
     log.info("Maintenance configuration refreshed (kick message updated, enabled state preserved)");
-  }
-
-  private void loadInitialState() {
-    final var maintenanceConfig = configManager.getConfigData().maintenance();
-
-    state.set(
-        new State(
-            maintenanceConfig.enabled(),
-            MiniMessageUtil.deserialize(maintenanceConfig.kickMessage())));
-
-    log.info("Maintenance initial state loaded from config");
   }
 
   private static void logMaintenanceSet(final boolean value) {

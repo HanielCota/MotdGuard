@@ -43,6 +43,34 @@ class CooldownServiceTest {
   }
 
   @Test
+  void shouldApplyRefreshedConfiguration() {
+    final var service = new CooldownService(true, Duration.ofHours(1));
+    final UUID playerId = UUID.randomUUID();
+
+    service.setUsed(playerId);
+    assertTrue(service.isOnCooldown(playerId));
+
+    service.refresh(false, Duration.ofSeconds(10));
+
+    assertFalse(service.isOnCooldown(playerId));
+    service.setUsed(playerId);
+    assertFalse(service.isOnCooldown(playerId));
+  }
+
+  @Test
+  void disabledServiceShouldAcceptNonPositiveDuration() {
+    final var zeroDurationService = new CooldownService(false, Duration.ZERO);
+    final var negativeDurationService = new CooldownService(false, Duration.ofSeconds(-1));
+    final UUID playerId = UUID.randomUUID();
+
+    zeroDurationService.setUsed(playerId);
+    negativeDurationService.setUsed(playerId);
+
+    assertFalse(zeroDurationService.isOnCooldown(playerId));
+    assertFalse(negativeDurationService.isOnCooldown(playerId));
+  }
+
+  @Test
   void shouldRejectZeroDuration() {
     assertThrows(IllegalArgumentException.class, () -> new CooldownService(true, Duration.ZERO));
   }

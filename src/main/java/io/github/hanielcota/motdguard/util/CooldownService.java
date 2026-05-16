@@ -5,41 +5,58 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class CooldownService {
 
-  private final boolean enabled;
-  private final Cache<UUID, Boolean> cache;
+  private final AtomicReference<State> state;
 
   public CooldownService(final boolean enabled, final Duration cooldownDuration) {
-    if (Objects.requireNonNull(cooldownDuration, "cooldownDuration").isZero()
-        || cooldownDuration.isNegative()) {
+    this.state = new AtomicReference<>(createState(enabled, cooldownDuration));
+  }
+
+  public void refresh(final boolean enabled, final Duration cooldownDuration) {
+    state.set(createState(enabled, cooldownDuration));
+  }
+
+  private static State createState(final boolean enabled, final Duration cooldownDuration) {
+    final Duration duration = Objects.requireNonNull(cooldownDuration, "cooldownDuration");
+
+    if (enabled && (duration.isZero() || duration.isNegative())) {
       throw new IllegalArgumentException("cooldownDuration must be positive");
     }
 
-    this.enabled = enabled;
-    this.cache = Caffeine.newBuilder().expireAfterWrite(cooldownDuration).build();
+    final Duration expiration =
+        duration.isZero() || duration.isNegative() ? Duration.ofSeconds(1) : duration;
+
+    return new State(enabled, Caffeine.newBuilder().expireAfterWrite(expiration).build());
   }
 
   public boolean isOnCooldown(final UUID playerId) {
-    if (!enabled) {
+    final State snapshot = state.get();
+
+    if (!snapshot.enabled()) {
       return false;
     }
 
     Objects.requireNonNull(playerId, "playerId");
 
-    return cache.getIfPresent(playerId) != null;
+    return snapshot.cache().getIfPresent(playerId) != null;
   }
 
   public void setUsed(final UUID playerId) {
-    if (!enabled) {
+    final State snapshot = state.get();
+
+    if (!snapshot.enabled()) {
       return;
     }
 
-    cache.put(Objects.requireNonNull(playerId, "playerId"), Boolean.TRUE);
+    snapshot.cache().put(Objects.requireNonNull(playerId, "playerId"), Boolean.TRUE);
   }
 
   public void clearCooldown(final UUID playerId) {
-    cache.invalidate(Objects.requireNonNull(playerId, "playerId"));
+    state.get().cache().invalidate(Objects.requireNonNull(playerId, "playerId"));
   }
+
+  private record State(boolean enabled, Cache<UUID, Boolean> cache) {}
 }
