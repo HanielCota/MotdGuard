@@ -1,7 +1,7 @@
 [versions]
 caffeine = "3.2.4"
 bucket4j = "8.18.0"
-jackson = "2.21.3"
+jackson = "2.21.4"
 lombok = "1.18.46"
 spotbugs = "4.9.8"
 findsecbugs = "1.14.0"
