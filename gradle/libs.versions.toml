@@ -9,7 +9,7 @@ velocity = "3.5.0-SNAPSHOT"
 acf = "0.5.1-SNAPSHOT"
 junit = "6.1.1"
 mockito = "5.23.0"
-spotless = "8.5.1"
+spotless = "8.8.0"
 google-java-format = "1.35.0"
 
 [libraries]
