@@ -4,6 +4,8 @@ import com.github.spotbugs.snom.SpotBugsTask
 
 buildscript {
     configurations.classpath {
+        // Pin transitive dependencies of the build plugins (SpotBugs/Shadow) to patched
+        // versions so the build classpath does not pull in known-vulnerable releases.
         resolutionStrategy.force(
             "org.apache.logging.log4j:log4j-api:2.26.1",
             "org.apache.logging.log4j:log4j-core:2.26.1",
@@ -20,7 +22,7 @@ plugins {
 }
 
 group = "io.github.hanielcota"
-version = "1.0.0"
+version = "1.0.0-rc.1"
 
 description = "Dynamic MOTD plugin for Velocity with maintenance mode and rate limiting"
 
@@ -41,6 +43,8 @@ repositories {
 }
 
 configurations.configureEach {
+    // Same pin as above for the application configurations, keeping transitive
+    // log4j/plexus on the patched releases across the whole dependency graph.
     resolutionStrategy.force(
         "org.apache.logging.log4j:log4j-api:2.26.1",
         "org.apache.logging.log4j:log4j-core:2.26.1",
