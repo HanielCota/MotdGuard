@@ -64,8 +64,20 @@ jobs:
             exit 1
           fi
 
+      - name: Verify plugin annotation version
+        shell: bash
+        run: |
+          project_version="$(./gradlew -q printVersion)"
+          plugin_version="$(grep -oP 'version\s*=\s*"\K[^"]+' src/main/java/io/github/hanielcota/motdguard/MotdGuardPlugin.java | head -1)"
+
+          if [ "$plugin_version" != "$project_version" ]; then
+            echo "@Plugin version ($plugin_version) does not match Gradle project version ($project_version)."
+            exit 1
+          fi
+
       - name: Build release artifact
-        run: ./gradlew build -x spotbugsMain -x spotbugsTest
+        # Full build including SpotBugs/FindSecBugs so the released artifact is security-scanned.
+        run: ./gradlew build
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v3

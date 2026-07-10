@@ -35,7 +35,18 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build
-        run: ./gradlew build -x spotbugsMain -x spotbugsTest
+        # Runs the full build including SpotBugs/FindSecBugs (wired into the `check` task).
+        # Security findings from FindSecBugs fail the build; do not exclude spotbugs* tasks here.
+        run: ./gradlew build
+
+      - name: Upload SpotBugs report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: spotbugs-report
+          path: build/reports/spotbugs.html
+          retention-days: 30
+          if-no-files-found: ignore
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
