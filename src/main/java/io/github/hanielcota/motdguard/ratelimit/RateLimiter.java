@@ -51,6 +51,8 @@ public final class RateLimiter {
     final Optional<String> ip = IpExtractor.extract(address);
 
     if (ip.isEmpty()) {
+      // Deliberate fail-closed policy: if the client IP cannot be determined we cannot key a
+      // bucket, so the ping is blocked rather than allowed to bypass rate limiting.
       log.warn("Could not determine IP address for ping; blocking");
       return buildBlockedPing(original, snapshot);
     }
@@ -71,13 +73,15 @@ public final class RateLimiter {
   public void refresh() {
     final var rateLimitConfig = configManager.getConfigData().rateLimit();
 
+    // Invalidate before publishing the new state so a ping can never pair the new limits with a
+    // bucket still using the previous capacity.
+    cache.invalidateAll();
+
     state.set(
         new State(
             rateLimitConfig.enabled(),
             rateLimitConfig.maxPingsPerMinute(),
             rateLimitConfig.blockMessageComponent()));
-
-    cache.invalidateAll();
 
     log.info("Rate limiter refreshed");
   }

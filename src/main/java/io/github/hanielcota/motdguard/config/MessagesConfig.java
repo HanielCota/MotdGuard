@@ -30,15 +30,8 @@ public record MessagesConfig(
     requireText(maintenanceDisabled, "messages.maintenance-disabled");
     requireText(maintenanceToggled, "messages.maintenance-toggled");
 
-    maintenanceStatusEnabled =
-        requireText(
-            defaultIfBlank(maintenanceStatusEnabled, "enabled"),
-            "messages.maintenance-status-enabled");
-
-    maintenanceStatusDisabled =
-        requireText(
-            defaultIfBlank(maintenanceStatusDisabled, "disabled"),
-            "messages.maintenance-status-disabled");
+    maintenanceStatusEnabled = defaultIfBlank(maintenanceStatusEnabled, "enabled");
+    maintenanceStatusDisabled = defaultIfBlank(maintenanceStatusDisabled, "disabled");
 
     requireText(helpHeader, "messages.help-header");
     requireText(helpReload, "messages.help-reload");
@@ -47,6 +40,22 @@ public record MessagesConfig(
     requireText(helpMaintenanceOff, "messages.help-maintenance-off");
 
     requireText(cooldownMessage, "messages.cooldown-message");
+
+    MiniMessageUtil.deserializeStrict(reloadSuccess, "messages.reload-success");
+    MiniMessageUtil.deserializeStrict(reloadFailure, "messages.reload-failure");
+    MiniMessageUtil.deserializeStrict(maintenanceEnabled, "messages.maintenance-enabled");
+    MiniMessageUtil.deserializeStrict(maintenanceDisabled, "messages.maintenance-disabled");
+    MiniMessageUtil.deserializeStrict(maintenanceToggled, "messages.maintenance-toggled");
+    MiniMessageUtil.deserializeStrict(
+        maintenanceStatusEnabled, "messages.maintenance-status-enabled");
+    MiniMessageUtil.deserializeStrict(
+        maintenanceStatusDisabled, "messages.maintenance-status-disabled");
+    MiniMessageUtil.deserializeStrict(helpHeader, "messages.help-header");
+    MiniMessageUtil.deserializeStrict(helpReload, "messages.help-reload");
+    MiniMessageUtil.deserializeStrict(helpMaintenance, "messages.help-maintenance");
+    MiniMessageUtil.deserializeStrict(helpMaintenanceOn, "messages.help-maintenance-on");
+    MiniMessageUtil.deserializeStrict(helpMaintenanceOff, "messages.help-maintenance-off");
+    MiniMessageUtil.deserializeStrict(cooldownMessage, "messages.cooldown-message");
   }
 
   public Component reloadSuccessComponent() {

@@ -9,6 +9,8 @@ public record MaintenanceConfig(boolean enabled, String kickMessage) {
 
   public MaintenanceConfig {
     requireText(kickMessage, "maintenance.kick-message");
+
+    MiniMessageUtil.deserializeStrict(kickMessage, "maintenance.kick-message");
   }
 
   public Component kickMessageComponent() {
