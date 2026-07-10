@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Plugin(
     id = "motdguard",
     name = "MotdGuard",
-    version = "1.0.0",
+    version = "1.0.0-rc.1",
     description = "Dynamic MOTD with maintenance mode and rate limiting",
     authors = {"HanielCota"})
 public final class MotdGuardPlugin {
@@ -34,6 +34,7 @@ public final class MotdGuardPlugin {
   private final ProxyServer server;
   private final Path dataDirectory;
   private VelocityCommandManager commandManager;
+  private PluginExceptionHandler exceptionHandler;
 
   @Inject
   public MotdGuardPlugin(final ProxyServer server, @DataDirectory final Path dataDirectory) {
@@ -43,7 +44,7 @@ public final class MotdGuardPlugin {
 
   @Subscribe
   public void onProxyInitialize(final ProxyInitializeEvent event) {
-    final var exceptionHandler = new PluginExceptionHandler(dataDirectory);
+    this.exceptionHandler = new PluginExceptionHandler(dataDirectory);
 
     try {
       final var configManager = new ConfigManager(dataDirectory);
@@ -64,7 +65,12 @@ public final class MotdGuardPlugin {
       commandManager = new VelocityCommandManager(server, this);
       commandManager.registerCommand(
           new MotdGuardCommand(
-              configManager, maintenanceManager, rateLimiter, motdProvider, cooldown));
+              configManager,
+              maintenanceManager,
+              rateLimiter,
+              motdProvider,
+              cooldown,
+              exceptionHandler));
 
       log.info("MotdGuard enabled successfully.");
     } catch (final Exception e) {
