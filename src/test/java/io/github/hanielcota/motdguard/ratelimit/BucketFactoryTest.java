@@ -8,27 +8,27 @@ import org.junit.jupiter.api.Test;
 
 class BucketFactoryTest {
 
-  @Test
-  void shouldCreateBucketWithValidCapacity() {
-    final var bucket = BucketFactory.create(10);
-    assertTrue(bucket.tryConsume(10));
-  }
+    @Test
+    void shouldCreateBucketWithValidCapacity() {
+        final var bucket = BucketFactory.create(10);
+        assertTrue(bucket.tryConsume(10));
+    }
 
-  @Test
-  void shouldConsumeWithinCapacity() {
-    final var bucket = BucketFactory.create(5);
+    @Test
+    void shouldConsumeWithinCapacity() {
+        final var bucket = BucketFactory.create(5);
 
-    assertTrue(bucket.tryConsume(5));
-    assertFalse(bucket.tryConsume(1));
-  }
+        assertTrue(bucket.tryConsume(5));
+        assertFalse(bucket.tryConsume(1));
+    }
 
-  @Test
-  void shouldThrowForZeroCapacity() {
-    assertThrows(IllegalArgumentException.class, () -> BucketFactory.create(0));
-  }
+    @Test
+    void shouldThrowForZeroCapacity() {
+        assertThrows(IllegalArgumentException.class, () -> BucketFactory.create(0));
+    }
 
-  @Test
-  void shouldThrowForNegativeCapacity() {
-    assertThrows(IllegalArgumentException.class, () -> BucketFactory.create(-5));
-  }
+    @Test
+    void shouldThrowForNegativeCapacity() {
+        assertThrows(IllegalArgumentException.class, () -> BucketFactory.create(-5));
+    }
 }

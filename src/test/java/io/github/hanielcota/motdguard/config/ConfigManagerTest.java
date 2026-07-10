@@ -11,114 +11,115 @@ import org.junit.jupiter.api.io.TempDir;
 
 class ConfigManagerTest {
 
-  @TempDir Path dataDir;
+    @TempDir
+    Path dataDir;
 
-  private static String validConfig(final String motdLine1) {
-    return String.join(
-        "\n",
-        "[motd]",
-        "line1 = \"" + motdLine1 + "\"",
-        "line2 = \"Second\"",
-        "",
-        "[maintenance]",
-        "enabled = false",
-        "kick-message = \"<red>Kick\"",
-        "",
-        "[rate-limit]",
-        "enabled = true",
-        "max-pings-per-minute = 60",
-        "block-message = \"Block\"",
-        "",
-        "[cooldown]",
-        "enabled = true",
-        "duration-seconds = 10",
-        "",
-        "[messages]",
-        "reload-success = \"ok\"",
-        "reload-failure = \"fail\"",
-        "maintenance-enabled = \"on\"",
-        "maintenance-disabled = \"off\"",
-        "maintenance-toggled = \"{status}\"",
-        "maintenance-status-enabled = \"enabled\"",
-        "maintenance-status-disabled = \"disabled\"",
-        "help-header = \"h\"",
-        "help-reload = \"r\"",
-        "help-maintenance = \"m\"",
-        "help-maintenance-on = \"mo\"",
-        "help-maintenance-off = \"mf\"",
-        "cooldown-message = \"cd\"");
-  }
+    private static String validConfig(final String motdLine1) {
+        return String.join(
+                "\n",
+                "[motd]",
+                "line1 = \"" + motdLine1 + "\"",
+                "line2 = \"Second\"",
+                "",
+                "[maintenance]",
+                "enabled = false",
+                "kick-message = \"<red>Kick\"",
+                "",
+                "[rate-limit]",
+                "enabled = true",
+                "max-pings-per-minute = 60",
+                "block-message = \"Block\"",
+                "",
+                "[cooldown]",
+                "enabled = true",
+                "duration-seconds = 10",
+                "",
+                "[messages]",
+                "reload-success = \"ok\"",
+                "reload-failure = \"fail\"",
+                "maintenance-enabled = \"on\"",
+                "maintenance-disabled = \"off\"",
+                "maintenance-toggled = \"{status}\"",
+                "maintenance-status-enabled = \"enabled\"",
+                "maintenance-status-disabled = \"disabled\"",
+                "help-header = \"h\"",
+                "help-reload = \"r\"",
+                "help-maintenance = \"m\"",
+                "help-maintenance-on = \"mo\"",
+                "help-maintenance-off = \"mf\"",
+                "cooldown-message = \"cd\"");
+    }
 
-  @Test
-  void shouldThrowWhenNotLoaded() {
-    final var manager = new ConfigManager(dataDir);
+    @Test
+    void shouldThrowWhenNotLoaded() {
+        final var manager = new ConfigManager(dataDir);
 
-    assertThrows(IllegalStateException.class, manager::getConfigData);
-  }
+        assertThrows(IllegalStateException.class, manager::getConfigData);
+    }
 
-  @Test
-  void shouldCreateDefaultConfigWhenMissing() {
-    final var manager = new ConfigManager(dataDir);
+    @Test
+    void shouldCreateDefaultConfigWhenMissing() {
+        final var manager = new ConfigManager(dataDir);
 
-    manager.load();
+        manager.load();
 
-    assertTrue(Files.exists(dataDir.resolve("config.toml")));
-    assertEquals("<#00FF00>MeuServidor", manager.getConfigData().motd().line1());
-  }
+        assertTrue(Files.exists(dataDir.resolve("config.toml")));
+        assertEquals("<#00FF00>MeuServidor", manager.getConfigData().motd().line1());
+    }
 
-  @Test
-  void shouldLoadExistingConfig() throws Exception {
-    Files.writeString(dataDir.resolve("config.toml"), validConfig("<green>First"));
-    final var manager = new ConfigManager(dataDir);
+    @Test
+    void shouldLoadExistingConfig() throws Exception {
+        Files.writeString(dataDir.resolve("config.toml"), validConfig("<green>First"));
+        final var manager = new ConfigManager(dataDir);
 
-    manager.load();
+        manager.load();
 
-    assertEquals("<green>First", manager.getConfigData().motd().line1());
-  }
+        assertEquals("<green>First", manager.getConfigData().motd().line1());
+    }
 
-  @Test
-  void shouldSwapConfigurationOnReload() throws Exception {
-    final Path file = dataDir.resolve("config.toml");
-    Files.writeString(file, validConfig("<green>First"));
-    final var manager = new ConfigManager(dataDir);
-    manager.load();
+    @Test
+    void shouldSwapConfigurationOnReload() throws Exception {
+        final Path file = dataDir.resolve("config.toml");
+        Files.writeString(file, validConfig("<green>First"));
+        final var manager = new ConfigManager(dataDir);
+        manager.load();
 
-    Files.writeString(file, validConfig("<blue>Updated"));
-    manager.reload();
+        Files.writeString(file, validConfig("<blue>Updated"));
+        manager.reload();
 
-    assertEquals("<blue>Updated", manager.getConfigData().motd().line1());
-  }
+        assertEquals("<blue>Updated", manager.getConfigData().motd().line1());
+    }
 
-  @Test
-  void shouldKeepPreviousConfigurationWhenReloadFails() throws Exception {
-    final Path file = dataDir.resolve("config.toml");
-    Files.writeString(file, validConfig("<green>First"));
-    final var manager = new ConfigManager(dataDir);
-    manager.load();
+    @Test
+    void shouldKeepPreviousConfigurationWhenReloadFails() throws Exception {
+        final Path file = dataDir.resolve("config.toml");
+        Files.writeString(file, validConfig("<green>First"));
+        final var manager = new ConfigManager(dataDir);
+        manager.load();
 
-    // Missing required sections -> ConfigData rejects the instance -> reload throws.
-    Files.writeString(file, "[maintenance]\nenabled = false\nkick-message = \"x\"\n");
+        // Missing required sections -> ConfigData rejects the instance -> reload throws.
+        Files.writeString(file, "[maintenance]\nenabled = false\nkick-message = \"x\"\n");
 
-    assertThrows(IllegalStateException.class, manager::reload);
-    assertEquals("<green>First", manager.getConfigData().motd().line1());
-  }
+        assertThrows(IllegalStateException.class, manager::reload);
+        assertEquals("<green>First", manager.getConfigData().motd().line1());
+    }
 
-  @Test
-  void shouldRejectMalformedTomlOnLoad() throws Exception {
-    Files.writeString(dataDir.resolve("config.toml"), "this = = is not valid toml ][");
-    final var manager = new ConfigManager(dataDir);
+    @Test
+    void shouldRejectMalformedTomlOnLoad() throws Exception {
+        Files.writeString(dataDir.resolve("config.toml"), "this = = is not valid toml ][");
+        final var manager = new ConfigManager(dataDir);
 
-    assertThrows(IllegalStateException.class, manager::load);
-  }
+        assertThrows(IllegalStateException.class, manager::load);
+    }
 
-  @Test
-  void shouldAcceptReadmeStyleMiniMessage() throws Exception {
-    final String richLine1 = "<gradient:#f58220:#ffd9a8><bold>MyServer</bold></gradient>";
-    Files.writeString(dataDir.resolve("config.toml"), validConfig(richLine1));
-    final var manager = new ConfigManager(dataDir);
+    @Test
+    void shouldAcceptReadmeStyleMiniMessage() throws Exception {
+        final String richLine1 = "<gradient:#f58220:#ffd9a8><bold>MyServer</bold></gradient>";
+        Files.writeString(dataDir.resolve("config.toml"), validConfig(richLine1));
+        final var manager = new ConfigManager(dataDir);
 
-    manager.load();
+        manager.load();
 
-    assertEquals(richLine1, manager.getConfigData().motd().line1());
-  }
+        assertEquals(richLine1, manager.getConfigData().motd().line1());
+    }
 }

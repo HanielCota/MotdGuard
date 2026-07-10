@@ -18,74 +18,73 @@ import org.junit.jupiter.api.Test;
 
 class CooldownServiceTest {
 
-  private static ConfigManager configManager(final CooldownConfig cooldown) {
-    final var manager = mock(ConfigManager.class);
-    when(manager.getConfigData()).thenReturn(configData(cooldown));
-    return manager;
-  }
+    private static ConfigManager configManager(final CooldownConfig cooldown) {
+        final var manager = mock(ConfigManager.class);
+        when(manager.getConfigData()).thenReturn(configData(cooldown));
+        return manager;
+    }
 
-  private static ConfigData configData(final CooldownConfig cooldown) {
-    return new ConfigData(
-        new MotdConfig("L1", "L2"),
-        new MaintenanceConfig(false, "Kick"),
-        new RateLimitConfig(false, 10, "Block"),
-        cooldown,
-        new MessagesConfig(
-            "a", "b", "c", "d", "e", "enabled", "disabled", "h", "r", "m", "mo", "mf", "cd"));
-  }
+    private static ConfigData configData(final CooldownConfig cooldown) {
+        return new ConfigData(
+                new MotdConfig("L1", "L2"),
+                new MaintenanceConfig(false, "Kick"),
+                new RateLimitConfig(false, 10, "Block"),
+                cooldown,
+                new MessagesConfig("a", "b", "c", "d", "e", "enabled", "disabled", "h", "r", "m", "mo", "mf", "cd"));
+    }
 
-  @Test
-  void disabledServiceShouldAlwaysAllow() {
-    final var service = new CooldownService(configManager(new CooldownConfig(false, 1)));
-    final UUID playerId = UUID.randomUUID();
+    @Test
+    void disabledServiceShouldAlwaysAllow() {
+        final var service = new CooldownService(configManager(new CooldownConfig(false, 1)));
+        final UUID playerId = UUID.randomUUID();
 
-    assertFalse(service.tryAcquire(playerId));
-    assertFalse(service.tryAcquire(playerId));
-  }
+        assertFalse(service.tryAcquire(playerId));
+        assertFalse(service.tryAcquire(playerId));
+    }
 
-  @Test
-  void tryAcquireShouldBeAtomicAndReportContention() {
-    final var service = new CooldownService(configManager(new CooldownConfig(true, 3600)));
-    final UUID playerId = UUID.randomUUID();
+    @Test
+    void tryAcquireShouldBeAtomicAndReportContention() {
+        final var service = new CooldownService(configManager(new CooldownConfig(true, 3600)));
+        final UUID playerId = UUID.randomUUID();
 
-    assertFalse(service.tryAcquire(playerId));
-    assertTrue(service.tryAcquire(playerId));
-  }
+        assertFalse(service.tryAcquire(playerId));
+        assertTrue(service.tryAcquire(playerId));
+    }
 
-  @Test
-  void shouldApplyRefreshedConfiguration() {
-    final var manager = mock(ConfigManager.class);
-    when(manager.getConfigData())
-        .thenReturn(configData(new CooldownConfig(true, 3600)))
-        .thenReturn(configData(new CooldownConfig(false, 10)));
+    @Test
+    void shouldApplyRefreshedConfiguration() {
+        final var manager = mock(ConfigManager.class);
+        when(manager.getConfigData())
+                .thenReturn(configData(new CooldownConfig(true, 3600)))
+                .thenReturn(configData(new CooldownConfig(false, 10)));
 
-    final var service = new CooldownService(manager);
-    final UUID playerId = UUID.randomUUID();
+        final var service = new CooldownService(manager);
+        final UUID playerId = UUID.randomUUID();
 
-    assertFalse(service.tryAcquire(playerId));
-    assertTrue(service.tryAcquire(playerId));
+        assertFalse(service.tryAcquire(playerId));
+        assertTrue(service.tryAcquire(playerId));
 
-    service.refresh();
+        service.refresh();
 
-    assertFalse(service.tryAcquire(playerId));
-  }
+        assertFalse(service.tryAcquire(playerId));
+    }
 
-  @Test
-  void refreshWithUnchangedConfigShouldPreserveActiveCooldowns() {
-    final var service = new CooldownService(configManager(new CooldownConfig(true, 3600)));
-    final UUID playerId = UUID.randomUUID();
+    @Test
+    void refreshWithUnchangedConfigShouldPreserveActiveCooldowns() {
+        final var service = new CooldownService(configManager(new CooldownConfig(true, 3600)));
+        final UUID playerId = UUID.randomUUID();
 
-    assertFalse(service.tryAcquire(playerId));
+        assertFalse(service.tryAcquire(playerId));
 
-    // A reload that does not change the cooldown config must not wipe in-progress cooldowns.
-    service.refresh();
+        // A reload that does not change the cooldown config must not wipe in-progress cooldowns.
+        service.refresh();
 
-    assertTrue(service.tryAcquire(playerId));
-  }
+        assertTrue(service.tryAcquire(playerId));
+    }
 
-  @Test
-  void shouldRejectNullPlayerId() {
-    final var service = new CooldownService(configManager(new CooldownConfig(true, 10)));
-    assertThrows(NullPointerException.class, () -> service.tryAcquire(null));
-  }
+    @Test
+    void shouldRejectNullPlayerId() {
+        final var service = new CooldownService(configManager(new CooldownConfig(true, 10)));
+        assertThrows(NullPointerException.class, () -> service.tryAcquire(null));
+    }
 }

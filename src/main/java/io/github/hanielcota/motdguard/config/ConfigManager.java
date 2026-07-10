@@ -19,80 +19,80 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class ConfigManager {
 
-  private static final String FILE_NAME = "config.toml";
+    private static final String FILE_NAME = "config.toml";
 
-  private final Path configPath;
-  private final ObjectMapper mapper;
-  private final AtomicReference<ConfigData> configData = new AtomicReference<>();
+    private final Path configPath;
+    private final ObjectMapper mapper;
+    private final AtomicReference<ConfigData> configData = new AtomicReference<>();
 
-  @Inject
-  public ConfigManager(@DataDirectory final Path dataDirectory) {
-    Objects.requireNonNull(dataDirectory, "dataDirectory");
+    @Inject
+    public ConfigManager(@DataDirectory final Path dataDirectory) {
+        Objects.requireNonNull(dataDirectory, "dataDirectory");
 
-    this.configPath = dataDirectory.resolve(FILE_NAME);
-    this.mapper = new ObjectMapper(new TomlFactory());
-    this.mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-    this.mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
-  }
-
-  public ConfigData getConfigData() {
-    final var data = configData.get();
-
-    if (data == null) {
-      throw new IllegalStateException("Configuration has not been loaded yet");
+        this.configPath = dataDirectory.resolve(FILE_NAME);
+        this.mapper = new ObjectMapper(new TomlFactory());
+        this.mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        this.mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
     }
 
-    return data;
-  }
+    public ConfigData getConfigData() {
+        final var data = configData.get();
 
-  public synchronized void load() {
-    if (Files.exists(configPath)) {
-      reload();
-      return;
+        if (data == null) {
+            throw new IllegalStateException("Configuration has not been loaded yet");
+        }
+
+        return data;
     }
 
-    try {
-      final Path parent = configPath.getParent();
+    public synchronized void load() {
+        if (Files.exists(configPath)) {
+            reload();
+            return;
+        }
 
-      if (parent != null) {
-        Files.createDirectories(parent);
-      }
+        try {
+            final Path parent = configPath.getParent();
 
-      copyDefaultConfig();
-    } catch (final IOException e) {
-      log.error("Failed to create default configuration", e);
-      throw new IllegalStateException("Could not create default config", e);
-    } catch (final RuntimeException e) {
-      log.error("Failed to prepare default configuration", e);
-      throw e;
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+
+            copyDefaultConfig();
+        } catch (final IOException e) {
+            log.error("Failed to create default configuration", e);
+            throw new IllegalStateException("Could not create default config", e);
+        } catch (final RuntimeException e) {
+            log.error("Failed to prepare default configuration", e);
+            throw e;
+        }
+
+        reload();
     }
 
-    reload();
-  }
+    public synchronized void reload() {
+        try (final InputStream input = Files.newInputStream(configPath)) {
+            final var newData = mapper.readValue(input, ConfigData.class);
+            configData.set(newData);
 
-  public synchronized void reload() {
-    try (final InputStream input = Files.newInputStream(configPath)) {
-      final var newData = mapper.readValue(input, ConfigData.class);
-      configData.set(newData);
-
-      log.info("Configuration reloaded successfully.");
-    } catch (final IOException | RuntimeException e) {
-      log.error("Failed to load config.toml", e);
-      throw new IllegalStateException("Failed to load configuration: " + e.getMessage(), e);
+            log.info("Configuration reloaded successfully.");
+        } catch (final IOException | RuntimeException e) {
+            log.error("Failed to load config.toml", e);
+            throw new IllegalStateException("Failed to load configuration: " + e.getMessage(), e);
+        }
     }
-  }
 
-  private void copyDefaultConfig() throws IOException {
-    try (final InputStream resource = getClass().getClassLoader().getResourceAsStream(FILE_NAME)) {
-      if (resource == null) {
-        throw new IllegalStateException("Default config.toml not found in resources");
-      }
+    private void copyDefaultConfig() throws IOException {
+        try (final InputStream resource = getClass().getClassLoader().getResourceAsStream(FILE_NAME)) {
+            if (resource == null) {
+                throw new IllegalStateException("Default config.toml not found in resources");
+            }
 
-      Files.copy(resource, configPath);
-    } catch (final FileAlreadyExistsException e) {
-      // Another thread/process created the config between the exists() check and the copy;
-      // the existing file wins and reload() will pick it up.
-      log.debug("config.toml already exists; skipping default copy");
+            Files.copy(resource, configPath);
+        } catch (final FileAlreadyExistsException e) {
+            // Another thread/process created the config between the exists() check and the copy;
+            // the existing file wins and reload() will pick it up.
+            log.debug("config.toml already exists; skipping default copy");
+        }
     }
-  }
 }

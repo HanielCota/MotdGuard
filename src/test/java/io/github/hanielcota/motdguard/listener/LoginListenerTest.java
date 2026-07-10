@@ -15,48 +15,48 @@ import org.junit.jupiter.api.Test;
 
 class LoginListenerTest {
 
-  private static final Component KICK = Component.text("Kick");
+    private static final Component KICK = Component.text("Kick");
 
-  private LoginEvent eventWithPermission(final boolean bypass) {
-    final var player = mock(Player.class);
-    when(player.hasPermission("motdguard.bypass")).thenReturn(bypass);
-    when(player.getUsername()).thenReturn("Steve");
+    private LoginEvent eventWithPermission(final boolean bypass) {
+        final var player = mock(Player.class);
+        when(player.hasPermission("motdguard.bypass")).thenReturn(bypass);
+        when(player.getUsername()).thenReturn("Steve");
 
-    final var event = mock(LoginEvent.class);
-    when(event.getPlayer()).thenReturn(player);
-    return event;
-  }
+        final var event = mock(LoginEvent.class);
+        when(event.getPlayer()).thenReturn(player);
+        return event;
+    }
 
-  @Test
-  void shouldAllowWhenMaintenanceDisabled() {
-    final var maintenanceManager = mock(MaintenanceManager.class);
-    when(maintenanceManager.getState()).thenReturn(new MaintenanceManager.State(false, KICK));
-    final var event = eventWithPermission(false);
+    @Test
+    void shouldAllowWhenMaintenanceDisabled() {
+        final var maintenanceManager = mock(MaintenanceManager.class);
+        when(maintenanceManager.getState()).thenReturn(new MaintenanceManager.State(false, KICK));
+        final var event = eventWithPermission(false);
 
-    new LoginListener(maintenanceManager).onLogin(event);
+        new LoginListener(maintenanceManager).onLogin(event);
 
-    verify(event, never()).setResult(any(ResultedEvent.ComponentResult.class));
-  }
+        verify(event, never()).setResult(any(ResultedEvent.ComponentResult.class));
+    }
 
-  @Test
-  void shouldAllowPlayerWithBypassPermission() {
-    final var maintenanceManager = mock(MaintenanceManager.class);
-    when(maintenanceManager.getState()).thenReturn(new MaintenanceManager.State(true, KICK));
-    final var event = eventWithPermission(true);
+    @Test
+    void shouldAllowPlayerWithBypassPermission() {
+        final var maintenanceManager = mock(MaintenanceManager.class);
+        when(maintenanceManager.getState()).thenReturn(new MaintenanceManager.State(true, KICK));
+        final var event = eventWithPermission(true);
 
-    new LoginListener(maintenanceManager).onLogin(event);
+        new LoginListener(maintenanceManager).onLogin(event);
 
-    verify(event, never()).setResult(any(ResultedEvent.ComponentResult.class));
-  }
+        verify(event, never()).setResult(any(ResultedEvent.ComponentResult.class));
+    }
 
-  @Test
-  void shouldDenyPlayerWithoutBypassDuringMaintenance() {
-    final var maintenanceManager = mock(MaintenanceManager.class);
-    when(maintenanceManager.getState()).thenReturn(new MaintenanceManager.State(true, KICK));
-    final var event = eventWithPermission(false);
+    @Test
+    void shouldDenyPlayerWithoutBypassDuringMaintenance() {
+        final var maintenanceManager = mock(MaintenanceManager.class);
+        when(maintenanceManager.getState()).thenReturn(new MaintenanceManager.State(true, KICK));
+        final var event = eventWithPermission(false);
 
-    new LoginListener(maintenanceManager).onLogin(event);
+        new LoginListener(maintenanceManager).onLogin(event);
 
-    verify(event).setResult(any(ResultedEvent.ComponentResult.class));
-  }
+        verify(event).setResult(any(ResultedEvent.ComponentResult.class));
+    }
 }

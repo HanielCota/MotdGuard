@@ -13,77 +13,76 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public final class CooldownService implements Reloadable {
 
-  private final ConfigManager configManager;
-  private final AtomicReference<State> state;
+    private final ConfigManager configManager;
+    private final AtomicReference<State> state;
 
-  @Inject
-  public CooldownService(final ConfigManager configManager) {
-    this.configManager = Objects.requireNonNull(configManager, "configManager");
-    this.state = new AtomicReference<>(createState(currentConfig()));
-  }
+    @Inject
+    public CooldownService(final ConfigManager configManager) {
+        this.configManager = Objects.requireNonNull(configManager, "configManager");
+        this.state = new AtomicReference<>(createState(currentConfig()));
+    }
 
-  /**
-   * Applies the current cooldown configuration.
-   *
-   * <p>When neither {@code enabled} nor the duration changed, the call is a no-op: the existing
-   * cache is kept so that cooldowns already in progress survive a configuration reload. Rebuilding
-   * the cache unconditionally would wipe every active cooldown, which makes the cooldown on the
-   * {@code reload} command itself ineffective.
-   */
-  @Override
-  public void refresh() {
-    final CooldownConfig next = currentConfig();
+    /**
+     * Applies the current cooldown configuration.
+     *
+     * <p>When neither {@code enabled} nor the duration changed, the call is a no-op: the existing
+     * cache is kept so that cooldowns already in progress survive a configuration reload. Rebuilding
+     * the cache unconditionally would wipe every active cooldown, which makes the cooldown on the
+     * {@code reload} command itself ineffective.
+     */
+    @Override
+    public void refresh() {
+        final CooldownConfig next = currentConfig();
 
-    state.updateAndGet(
-        current -> {
-          if (current.enabled() == next.enabled()
-              && current.duration().equals(Duration.ofSeconds(next.durationSeconds()))) {
-            return current;
-          }
+        state.updateAndGet(current -> {
+            if (current.enabled() == next.enabled()
+                    && current.duration().equals(Duration.ofSeconds(next.durationSeconds()))) {
+                return current;
+            }
 
-          return createState(next);
+            return createState(next);
         });
-  }
-
-  /**
-   * Atomically marks {@code playerId} as having used a command and reports whether it was already
-   * on cooldown.
-   *
-   * @return {@code true} if the player was already on cooldown (the caller should block the
-   *     command); {@code false} if the mark was just placed (the command may proceed). Always
-   *     {@code false} when the service is disabled.
-   */
-  public boolean tryAcquire(final UUID playerId) {
-    final State snapshot = state.get();
-
-    if (!snapshot.enabled()) {
-      return false;
     }
 
-    Objects.requireNonNull(playerId, "playerId");
+    /**
+     * Atomically marks {@code playerId} as having used a command and reports whether it was already
+     * on cooldown.
+     *
+     * @return {@code true} if the player was already on cooldown (the caller should block the
+     *     command); {@code false} if the mark was just placed (the command may proceed). Always
+     *     {@code false} when the service is disabled.
+     */
+    public boolean tryAcquire(final UUID playerId) {
+        final State snapshot = state.get();
 
-    return snapshot.cache().asMap().putIfAbsent(playerId, Boolean.TRUE) != null;
-  }
+        if (!snapshot.enabled()) {
+            return false;
+        }
 
-  private CooldownConfig currentConfig() {
-    return configManager.getConfigData().cooldown();
-  }
+        Objects.requireNonNull(playerId, "playerId");
 
-  private static State createState(final CooldownConfig config) {
-    final Duration duration = Duration.ofSeconds(config.durationSeconds());
-
-    if (config.enabled() && (duration.isZero() || duration.isNegative())) {
-      throw new IllegalArgumentException("cooldownDuration must be positive");
+        return snapshot.cache().asMap().putIfAbsent(playerId, Boolean.TRUE) != null;
     }
 
-    final Duration expiration =
-        !config.enabled() || duration.isZero() || duration.isNegative()
-            ? Duration.ofSeconds(1)
-            : duration;
+    private CooldownConfig currentConfig() {
+        return configManager.getConfigData().cooldown();
+    }
 
-    return new State(
-        config.enabled(), duration, Caffeine.newBuilder().expireAfterWrite(expiration).build());
-  }
+    private static State createState(final CooldownConfig config) {
+        final Duration duration = Duration.ofSeconds(config.durationSeconds());
 
-  private record State(boolean enabled, Duration duration, Cache<UUID, Boolean> cache) {}
+        if (config.enabled() && (duration.isZero() || duration.isNegative())) {
+            throw new IllegalArgumentException("cooldownDuration must be positive");
+        }
+
+        final Duration expiration =
+                !config.enabled() || duration.isZero() || duration.isNegative() ? Duration.ofSeconds(1) : duration;
+
+        return new State(
+                config.enabled(),
+                duration,
+                Caffeine.newBuilder().expireAfterWrite(expiration).build());
+    }
+
+    private record State(boolean enabled, Duration duration, Cache<UUID, Boolean> cache) {}
 }

@@ -11,6 +11,6 @@ package io.github.hanielcota.motdguard;
  */
 public interface Reloadable {
 
-  /** Refreshes this component from the current configuration. */
-  void refresh();
+    /** Refreshes this component from the current configuration. */
+    void refresh();
 }

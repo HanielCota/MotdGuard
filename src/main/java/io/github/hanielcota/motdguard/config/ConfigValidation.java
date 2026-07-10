@@ -5,17 +5,17 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 class ConfigValidation {
 
-  public static String requireText(final String value, final String path) {
-    if (value == null || value.isBlank()) {
-      throw new IllegalArgumentException(path + " must not be blank");
+    public static String requireText(final String value, final String path) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(path + " must not be blank");
+        }
+        return value;
     }
-    return value;
-  }
 
-  public static String defaultIfBlank(final String value, final String fallback) {
-    if (value == null || value.isBlank()) {
-      return fallback;
+    public static String defaultIfBlank(final String value, final String fallback) {
+        if (value == null || value.isBlank()) {
+            return fallback;
+        }
+        return value;
     }
-    return value;
-  }
 }

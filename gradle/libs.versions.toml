@@ -10,7 +10,7 @@ acf = "0.5.1-SNAPSHOT"
 junit = "6.1.1"
 mockito = "5.23.0"
 spotless = "8.8.0"
-google-java-format = "1.35.0"
+palantir-java-format = "2.80.0"
 
 [libraries]
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
