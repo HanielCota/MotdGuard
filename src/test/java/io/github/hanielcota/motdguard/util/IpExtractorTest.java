@@ -46,4 +46,14 @@ class IpExtractorTest {
     assertTrue(result.isPresent());
     assertEquals("fe80:0:0:0:0:0:0:1", result.get());
   }
+
+  @Test
+  void shouldFallbackToHostStringForUnresolvedAddress() {
+    final var address = InetSocketAddress.createUnresolved("unresolved-host", 25565);
+
+    final Optional<String> result = IpExtractor.extract(address);
+
+    assertTrue(result.isPresent());
+    assertEquals("unresolved-host", result.get());
+  }
 }

@@ -89,4 +89,15 @@ class RateLimiterTest {
 
     assertNull(limiter.tryBlockPing(address, dummyPing()));
   }
+
+  @Test
+  void shouldBlockPingWhenIpCannotBeDetermined() {
+    final var limiter = new RateLimiter(mockConfigManager(true, 5, "<red>Block"));
+    final ServerPing original = dummyPing();
+
+    // A null address makes it impossible to key a bucket, so the limiter fails closed.
+    final ServerPing blocked = limiter.tryBlockPing(null, original);
+
+    assertNotNull(blocked);
+  }
 }
