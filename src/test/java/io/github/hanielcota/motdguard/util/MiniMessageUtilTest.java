@@ -1,5 +1,6 @@
 package io.github.hanielcota.motdguard.util;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,15 +32,31 @@ class MiniMessageUtilTest {
   }
 
   @Test
-  void strictDeserializeShouldReturnComponentForValidInput() {
-    final Component component = MiniMessageUtil.deserializeStrict("<red>Hello", "test.path");
-
-    assertNotNull(component);
+  void assertValidShouldAcceptKnownTags() {
+    assertDoesNotThrow(
+        () ->
+            MiniMessageUtil.assertValid(
+                "<gradient:#f58220:#ffffff><bold>Hello</bold></gradient> <#fff><hover:show_text:'hi'>x",
+                "test.path"));
   }
 
   @Test
-  void strictDeserializeShouldRejectNullInput() {
+  void assertValidShouldRejectUnknownTag() {
     assertThrows(
-        IllegalArgumentException.class, () -> MiniMessageUtil.deserializeStrict(null, "test.path"));
+        IllegalArgumentException.class,
+        () -> MiniMessageUtil.assertValid("<gren>typo", "test.path"));
+  }
+
+  @Test
+  void assertValidShouldRejectInvalidHexColor() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> MiniMessageUtil.assertValid("<#zzzzzz>bad", "test.path"));
+  }
+
+  @Test
+  void assertValidShouldRejectNullInput() {
+    assertThrows(
+        IllegalArgumentException.class, () -> MiniMessageUtil.assertValid(null, "test.path"));
   }
 }

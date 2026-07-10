@@ -19,7 +19,7 @@ public record RateLimitConfig(boolean enabled, int maxPingsPerMinute, String blo
     }
     requireText(blockMessage, "rate-limit.block-message");
 
-    MiniMessageUtil.deserializeStrict(blockMessage, "rate-limit.block-message");
+    MiniMessageUtil.assertValid(blockMessage, "rate-limit.block-message");
   }
 
   public Component blockMessageComponent() {
