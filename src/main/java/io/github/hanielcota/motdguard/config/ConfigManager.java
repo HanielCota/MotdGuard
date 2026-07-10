@@ -8,7 +8,6 @@ import com.fasterxml.jackson.dataformat.toml.TomlFactory;
 import com.google.inject.Inject;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,7 +51,7 @@ public final class ConfigManager {
         }
 
         try {
-            final Path parent = configPath.getParent();
+            final var parent = configPath.getParent();
 
             if (parent != null) {
                 Files.createDirectories(parent);
@@ -71,7 +70,7 @@ public final class ConfigManager {
     }
 
     public synchronized void reload() {
-        try (final InputStream input = Files.newInputStream(configPath)) {
+        try (final var input = Files.newInputStream(configPath)) {
             final var newData = mapper.readValue(input, ConfigData.class);
             configData.set(newData);
 
@@ -83,7 +82,7 @@ public final class ConfigManager {
     }
 
     private void copyDefaultConfig() throws IOException {
-        try (final InputStream resource = getClass().getClassLoader().getResourceAsStream(FILE_NAME)) {
+        try (final var resource = getClass().getClassLoader().getResourceAsStream(FILE_NAME)) {
             if (resource == null) {
                 throw new IllegalStateException("Default config.toml not found in resources");
             }

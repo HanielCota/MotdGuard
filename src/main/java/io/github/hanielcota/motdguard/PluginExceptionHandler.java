@@ -57,7 +57,7 @@ public final class PluginExceptionHandler {
             ensureFileExists();
             rotateIfNeeded();
 
-            final String entry = String.format(
+            final var entry = String.format(
                     "[%s] Context: %s%n%s%n%n",
                     LocalDateTime.now().format(FORMATTER), context, stackTraceToString(throwable));
 
@@ -72,7 +72,7 @@ public final class PluginExceptionHandler {
             return;
         }
 
-        final Path parent = errorLogPath.getParent();
+        final var parent = errorLogPath.getParent();
 
         if (parent != null) {
             Files.createDirectories(parent);
@@ -90,7 +90,7 @@ public final class PluginExceptionHandler {
             return;
         }
 
-        final Path rotatedPath = errorLogPath.resolveSibling(errorLogPath.getFileName() + ".1");
+        final var rotatedPath = errorLogPath.resolveSibling(errorLogPath.getFileName() + ".1");
 
         Files.move(errorLogPath, rotatedPath, StandardCopyOption.REPLACE_EXISTING);
         Files.createFile(errorLogPath);

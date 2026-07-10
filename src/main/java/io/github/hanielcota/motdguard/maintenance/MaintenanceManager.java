@@ -54,8 +54,7 @@ public final class MaintenanceManager implements Reloadable {
      * toggles by operators persist across reloads.
      */
     public void refresh() {
-        final Component newKickMessage =
-                configManager.getConfigData().maintenance().kickMessageComponent();
+        final var newKickMessage = configManager.getConfigData().maintenance().kickMessageComponent();
 
         state.updateAndGet(current -> new State(current.enabled(), newKickMessage));
 

@@ -23,12 +23,14 @@ public final class LoginListener {
             return;
         }
 
-        if (event.getPlayer().hasPermission("motdguard.bypass")) {
+        final var player = event.getPlayer();
+
+        if (player.hasPermission("motdguard.bypass")) {
             return;
         }
 
         event.setResult(ResultedEvent.ComponentResult.denied(snapshot.kickMessage()));
 
-        log.debug("Blocked player {} during maintenance", event.getPlayer().getUsername());
+        log.debug("Blocked player {} during maintenance", player.getUsername());
     }
 }

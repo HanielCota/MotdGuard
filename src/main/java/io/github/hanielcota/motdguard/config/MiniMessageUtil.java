@@ -2,7 +2,6 @@ package io.github.hanielcota.motdguard.config;
 
 import java.util.Locale;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -121,10 +120,10 @@ class MiniMessageUtil {
             throw new IllegalArgumentException(path + " must not be null");
         }
 
-        final Matcher matcher = TAG_PATTERN.matcher(text);
+        final var matcher = TAG_PATTERN.matcher(text);
 
         while (matcher.find()) {
-            final String raw = matcher.group(3);
+            final var raw = matcher.group(3);
 
             if (raw.startsWith("#")) {
                 validateHexColor(raw, path, text);
@@ -138,7 +137,7 @@ class MiniMessageUtil {
     }
 
     private static void validateHexColor(final String token, final String path, final String text) {
-        final String hex = token.substring(1);
+        final var hex = token.substring(1);
         final int length = hex.length();
         final boolean validLength = length == 3 || length == 4 || length == 6 || length == 8;
 
