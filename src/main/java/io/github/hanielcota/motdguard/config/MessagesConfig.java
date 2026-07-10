@@ -41,21 +41,19 @@ public record MessagesConfig(
 
     requireText(cooldownMessage, "messages.cooldown-message");
 
-    MiniMessageUtil.deserializeStrict(reloadSuccess, "messages.reload-success");
-    MiniMessageUtil.deserializeStrict(reloadFailure, "messages.reload-failure");
-    MiniMessageUtil.deserializeStrict(maintenanceEnabled, "messages.maintenance-enabled");
-    MiniMessageUtil.deserializeStrict(maintenanceDisabled, "messages.maintenance-disabled");
-    MiniMessageUtil.deserializeStrict(maintenanceToggled, "messages.maintenance-toggled");
-    MiniMessageUtil.deserializeStrict(
-        maintenanceStatusEnabled, "messages.maintenance-status-enabled");
-    MiniMessageUtil.deserializeStrict(
-        maintenanceStatusDisabled, "messages.maintenance-status-disabled");
-    MiniMessageUtil.deserializeStrict(helpHeader, "messages.help-header");
-    MiniMessageUtil.deserializeStrict(helpReload, "messages.help-reload");
-    MiniMessageUtil.deserializeStrict(helpMaintenance, "messages.help-maintenance");
-    MiniMessageUtil.deserializeStrict(helpMaintenanceOn, "messages.help-maintenance-on");
-    MiniMessageUtil.deserializeStrict(helpMaintenanceOff, "messages.help-maintenance-off");
-    MiniMessageUtil.deserializeStrict(cooldownMessage, "messages.cooldown-message");
+    MiniMessageUtil.assertValid(reloadSuccess, "messages.reload-success");
+    MiniMessageUtil.assertValid(reloadFailure, "messages.reload-failure");
+    MiniMessageUtil.assertValid(maintenanceEnabled, "messages.maintenance-enabled");
+    MiniMessageUtil.assertValid(maintenanceDisabled, "messages.maintenance-disabled");
+    MiniMessageUtil.assertValid(maintenanceToggled, "messages.maintenance-toggled");
+    MiniMessageUtil.assertValid(maintenanceStatusEnabled, "messages.maintenance-status-enabled");
+    MiniMessageUtil.assertValid(maintenanceStatusDisabled, "messages.maintenance-status-disabled");
+    MiniMessageUtil.assertValid(helpHeader, "messages.help-header");
+    MiniMessageUtil.assertValid(helpReload, "messages.help-reload");
+    MiniMessageUtil.assertValid(helpMaintenance, "messages.help-maintenance");
+    MiniMessageUtil.assertValid(helpMaintenanceOn, "messages.help-maintenance-on");
+    MiniMessageUtil.assertValid(helpMaintenanceOff, "messages.help-maintenance-off");
+    MiniMessageUtil.assertValid(cooldownMessage, "messages.cooldown-message");
   }
 
   public Component reloadSuccessComponent() {

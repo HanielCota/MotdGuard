@@ -11,8 +11,8 @@ public record MotdConfig(String line1, String line2) {
     requireText(line1, "motd.line1");
     requireText(line2, "motd.line2");
 
-    MiniMessageUtil.deserializeStrict(line1, "motd.line1");
-    MiniMessageUtil.deserializeStrict(line2, "motd.line2");
+    MiniMessageUtil.assertValid(line1, "motd.line1");
+    MiniMessageUtil.assertValid(line2, "motd.line2");
   }
 
   public Component line1Component() {

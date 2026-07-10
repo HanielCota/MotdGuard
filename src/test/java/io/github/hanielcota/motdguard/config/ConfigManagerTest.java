@@ -110,4 +110,15 @@ class ConfigManagerTest {
 
     assertThrows(IllegalStateException.class, manager::load);
   }
+
+  @Test
+  void shouldAcceptReadmeStyleMiniMessage() throws Exception {
+    final String richLine1 = "<gradient:#f58220:#ffd9a8><bold>MyServer</bold></gradient>";
+    Files.writeString(dataDir.resolve("config.toml"), validConfig(richLine1));
+    final var manager = new ConfigManager(dataDir);
+
+    manager.load();
+
+    assertEquals(richLine1, manager.getConfigData().motd().line1());
+  }
 }
