@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 
@@ -21,11 +22,19 @@ public final class RateLimiter {
   private static final int MAX_ENTRIES = 10_000;
 
   private final ConfigManager configManager;
+  private final Function<InetSocketAddress, Optional<String>> ipExtractor;
   private final Cache<String, Bucket> cache;
   private final AtomicReference<State> state = new AtomicReference<>();
 
   public RateLimiter(final ConfigManager configManager) {
+    this(configManager, IpExtractor::extract);
+  }
+
+  public RateLimiter(
+      final ConfigManager configManager,
+      final Function<InetSocketAddress, Optional<String>> ipExtractor) {
     this.configManager = Objects.requireNonNull(configManager, "configManager");
+    this.ipExtractor = Objects.requireNonNull(ipExtractor, "ipExtractor");
     this.cache =
         Caffeine.newBuilder()
             .maximumSize(MAX_ENTRIES)
@@ -48,7 +57,7 @@ public final class RateLimiter {
       return null;
     }
 
-    final Optional<String> ip = IpExtractor.extract(address);
+    final Optional<String> ip = ipExtractor.apply(address);
 
     if (ip.isEmpty()) {
       // Deliberate fail-closed policy: if the client IP cannot be determined we cannot key a

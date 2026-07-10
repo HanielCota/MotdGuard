@@ -92,11 +92,15 @@ class RateLimiterTest {
 
   @Test
   void shouldBlockPingWhenIpCannotBeDetermined() {
-    final var limiter = new RateLimiter(mockConfigManager(true, 5, "<red>Block"));
+    // Inject an extractor that cannot resolve an IP so the fail-closed path is exercised
+    // deterministically, without relying on a null address.
+    final var limiter =
+        new RateLimiter(
+            mockConfigManager(true, 5, "<red>Block"), ignored -> java.util.Optional.empty());
     final ServerPing original = dummyPing();
 
-    // A null address makes it impossible to key a bucket, so the limiter fails closed.
-    final ServerPing blocked = limiter.tryBlockPing(null, original);
+    final ServerPing blocked =
+        limiter.tryBlockPing(new InetSocketAddress("127.0.0.1", 12345), original);
 
     assertNotNull(blocked);
   }
