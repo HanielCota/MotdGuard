@@ -34,9 +34,10 @@ public final class CooldownService implements Reloadable {
     public void refresh() {
         final CooldownConfig next = currentConfig();
 
+        final var nextDuration = Duration.ofSeconds(next.durationSeconds());
+
         state.updateAndGet(current -> {
-            if (current.enabled() == next.enabled()
-                    && current.duration().equals(Duration.ofSeconds(next.durationSeconds()))) {
+            if (current.enabled() == next.enabled() && current.duration().equals(nextDuration)) {
                 return current;
             }
 
@@ -69,14 +70,14 @@ public final class CooldownService implements Reloadable {
     }
 
     private static State createState(final CooldownConfig config) {
-        final Duration duration = Duration.ofSeconds(config.durationSeconds());
+        final var duration = Duration.ofSeconds(config.durationSeconds());
+        final var nonPositiveDuration = duration.isZero() || duration.isNegative();
 
-        if (config.enabled() && (duration.isZero() || duration.isNegative())) {
+        if (config.enabled() && nonPositiveDuration) {
             throw new IllegalArgumentException("cooldownDuration must be positive");
         }
 
-        final Duration expiration =
-                !config.enabled() || duration.isZero() || duration.isNegative() ? Duration.ofSeconds(1) : duration;
+        final Duration expiration = !config.enabled() || nonPositiveDuration ? Duration.ofSeconds(1) : duration;
 
         return new State(
                 config.enabled(),

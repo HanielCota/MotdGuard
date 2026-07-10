@@ -1,6 +1,5 @@
 package io.github.hanielcota.motdguard.ratelimit;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
@@ -15,12 +14,14 @@ class IpExtractor {
             return Optional.empty();
         }
 
-        final InetAddress address = remoteAddress.getAddress();
+        final var address = remoteAddress.getAddress();
 
         if (address == null) {
-            log.warn("Unresolved address; using hostname as rate-limit key: {}", remoteAddress.getHostString());
+            final var hostString = remoteAddress.getHostString();
 
-            return Optional.ofNullable(normalize(remoteAddress.getHostString()));
+            log.warn("Unresolved address; using hostname as rate-limit key: {}", hostString);
+
+            return Optional.ofNullable(normalize(hostString));
         }
 
         return Optional.ofNullable(normalize(address.getHostAddress()));
