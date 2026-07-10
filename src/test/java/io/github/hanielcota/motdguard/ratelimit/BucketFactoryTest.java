@@ -1,4 +1,4 @@
-package io.github.hanielcota.motdguard.util;
+package io.github.hanielcota.motdguard.ratelimit;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -1,4 +1,4 @@
-package io.github.hanielcota.motdguard.util;
+package io.github.hanielcota.motdguard.config;
 
 import java.util.Locale;
 import java.util.Set;
@@ -11,7 +11,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 
 @Slf4j
 @UtilityClass
-public class MiniMessageUtil {
+class MiniMessageUtil {
 
   private static final MiniMessage INSTANCE = MiniMessage.miniMessage();
 

@@ -1,4 +1,4 @@
-package io.github.hanielcota.motdguard.util;
+package io.github.hanielcota.motdguard.command;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;

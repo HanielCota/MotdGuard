@@ -7,8 +7,6 @@ import com.velocitypowered.api.proxy.server.ServerPing;
 import io.github.bucket4j.Bucket;
 import io.github.hanielcota.motdguard.Reloadable;
 import io.github.hanielcota.motdguard.config.ConfigManager;
-import io.github.hanielcota.motdguard.util.BucketFactory;
-import io.github.hanielcota.motdguard.util.IpExtractor;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.Objects;

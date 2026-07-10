@@ -1,11 +1,11 @@
-package io.github.hanielcota.motdguard.util;
+package io.github.hanielcota.motdguard.ratelimit;
 
 import io.github.bucket4j.Bucket;
 import java.time.Duration;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class BucketFactory {
+class BucketFactory {
 
   public static Bucket create(final int maxPingsPerMinute) {
     if (maxPingsPerMinute < 1) {

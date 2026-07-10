@@ -4,7 +4,6 @@ import static io.github.hanielcota.motdguard.config.ConfigValidation.defaultIfBl
 import static io.github.hanielcota.motdguard.config.ConfigValidation.requireText;
 
 import io.github.hanielcota.motdguard.constants.PluginConstants;
-import io.github.hanielcota.motdguard.util.MiniMessageUtil;
 import net.kyori.adventure.text.Component;
 
 public record MessagesConfig(
