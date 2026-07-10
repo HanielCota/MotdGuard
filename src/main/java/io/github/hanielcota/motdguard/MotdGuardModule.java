@@ -24,34 +24,34 @@ import java.util.Objects;
  */
 public final class MotdGuardModule extends AbstractModule {
 
-  private final ProxyServer server;
-  private final Path dataDirectory;
+    private final ProxyServer server;
+    private final Path dataDirectory;
 
-  public MotdGuardModule(final ProxyServer server, final Path dataDirectory) {
-    this.server = Objects.requireNonNull(server, "server");
-    this.dataDirectory = Objects.requireNonNull(dataDirectory, "dataDirectory");
-  }
+    public MotdGuardModule(final ProxyServer server, final Path dataDirectory) {
+        this.server = Objects.requireNonNull(server, "server");
+        this.dataDirectory = Objects.requireNonNull(dataDirectory, "dataDirectory");
+    }
 
-  @Override
-  protected void configure() {
-    bind(ProxyServer.class).toInstance(server);
-    bind(Path.class).annotatedWith(DataDirectory.class).toInstance(dataDirectory);
+    @Override
+    protected void configure() {
+        bind(ProxyServer.class).toInstance(server);
+        bind(Path.class).annotatedWith(DataDirectory.class).toInstance(dataDirectory);
 
-    bind(ConfigManager.class).in(Singleton.class);
-    bind(MaintenanceManager.class).in(Singleton.class);
-    bind(RateLimiter.class).in(Singleton.class);
-    bind(MotdProvider.class).in(Singleton.class);
-    bind(CooldownService.class).in(Singleton.class);
-    bind(PluginExceptionHandler.class).in(Singleton.class);
-  }
+        bind(ConfigManager.class).in(Singleton.class);
+        bind(MaintenanceManager.class).in(Singleton.class);
+        bind(RateLimiter.class).in(Singleton.class);
+        bind(MotdProvider.class).in(Singleton.class);
+        bind(CooldownService.class).in(Singleton.class);
+        bind(PluginExceptionHandler.class).in(Singleton.class);
+    }
 
-  @Provides
-  @Singleton
-  List<Reloadable> reloadables(
-      final MaintenanceManager maintenanceManager,
-      final RateLimiter rateLimiter,
-      final MotdProvider motdProvider,
-      final CooldownService cooldownService) {
-    return List.of(maintenanceManager, rateLimiter, motdProvider, cooldownService);
-  }
+    @Provides
+    @Singleton
+    List<Reloadable> reloadables(
+            final MaintenanceManager maintenanceManager,
+            final RateLimiter rateLimiter,
+            final MotdProvider motdProvider,
+            final CooldownService cooldownService) {
+        return List.of(maintenanceManager, rateLimiter, motdProvider, cooldownService);
+    }
 }

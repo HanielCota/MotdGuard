@@ -27,117 +27,118 @@ import net.kyori.adventure.text.Component;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public final class MotdGuardCommand extends BaseCommand {
 
-  @NonNull private final ConfigManager configManager;
-  @NonNull private final MaintenanceManager maintenanceManager;
-  @NonNull private final CooldownService cooldown;
-  @NonNull private final List<Reloadable> reloadables;
-  @NonNull private final PluginExceptionHandler exceptionHandler;
+    @NonNull private final ConfigManager configManager;
 
-  @Default
-  public void onDefault(final CommandIssuer issuer) {
-    final MessagesConfig messages = messages();
+    @NonNull private final MaintenanceManager maintenanceManager;
 
-    send(issuer, messages.helpHeaderComponent());
-    send(issuer, messages.helpReloadComponent());
-    send(issuer, messages.helpMaintenanceComponent());
-    send(issuer, messages.helpMaintenanceOnComponent());
-    send(issuer, messages.helpMaintenanceOffComponent());
-  }
+    @NonNull private final CooldownService cooldown;
 
-  @Subcommand("reload")
-  @Description("Reload configuration")
-  public void onReload(final CommandIssuer issuer) {
-    if (blockedByCooldown(issuer)) {
-      return;
+    @NonNull private final List<Reloadable> reloadables;
+
+    @NonNull private final PluginExceptionHandler exceptionHandler;
+
+    @Default
+    public void onDefault(final CommandIssuer issuer) {
+        final MessagesConfig messages = messages();
+
+        send(issuer, messages.helpHeaderComponent());
+        send(issuer, messages.helpReloadComponent());
+        send(issuer, messages.helpMaintenanceComponent());
+        send(issuer, messages.helpMaintenanceOnComponent());
+        send(issuer, messages.helpMaintenanceOffComponent());
     }
 
-    try {
-      configManager.reload();
+    @Subcommand("reload")
+    @Description("Reload configuration")
+    public void onReload(final CommandIssuer issuer) {
+        if (blockedByCooldown(issuer)) {
+            return;
+        }
 
-      for (final Reloadable reloadable : reloadables) {
-        reloadable.refresh();
-      }
+        try {
+            configManager.reload();
 
-      send(issuer, messages().reloadSuccessComponent());
-    } catch (final Exception e) {
-      // configManager.reload() validates and swaps atomically, so a failure here leaves the
-      // previously loaded configuration fully intact and the refreshes above do not run.
-      exceptionHandler.caughtException("configuration reload", e);
-      send(issuer, messages().reloadFailureComponent());
-    }
-  }
+            for (final Reloadable reloadable : reloadables) {
+                reloadable.refresh();
+            }
 
-  @Subcommand("maintenance on|m on")
-  @Description("Enable maintenance mode")
-  public void onMaintenanceOn(final CommandIssuer issuer) {
-    if (blockedByCooldown(issuer)) {
-      return;
-    }
-
-    if (!maintenanceManager.isEnabled()) {
-      maintenanceManager.setEnabled(true);
+            send(issuer, messages().reloadSuccessComponent());
+        } catch (final Exception e) {
+            // configManager.reload() validates and swaps atomically, so a failure here leaves the
+            // previously loaded configuration fully intact and the refreshes above do not run.
+            exceptionHandler.caughtException("configuration reload", e);
+            send(issuer, messages().reloadFailureComponent());
+        }
     }
 
-    send(issuer, messages().maintenanceEnabledComponent());
-  }
+    @Subcommand("maintenance on|m on")
+    @Description("Enable maintenance mode")
+    public void onMaintenanceOn(final CommandIssuer issuer) {
+        if (blockedByCooldown(issuer)) {
+            return;
+        }
 
-  @Subcommand("maintenance off|m off")
-  @Description("Disable maintenance mode")
-  public void onMaintenanceOff(final CommandIssuer issuer) {
-    if (blockedByCooldown(issuer)) {
-      return;
+        if (!maintenanceManager.isEnabled()) {
+            maintenanceManager.setEnabled(true);
+        }
+
+        send(issuer, messages().maintenanceEnabledComponent());
     }
 
-    if (maintenanceManager.isEnabled()) {
-      maintenanceManager.setEnabled(false);
+    @Subcommand("maintenance off|m off")
+    @Description("Disable maintenance mode")
+    public void onMaintenanceOff(final CommandIssuer issuer) {
+        if (blockedByCooldown(issuer)) {
+            return;
+        }
+
+        if (maintenanceManager.isEnabled()) {
+            maintenanceManager.setEnabled(false);
+        }
+
+        send(issuer, messages().maintenanceDisabledComponent());
     }
 
-    send(issuer, messages().maintenanceDisabledComponent());
-  }
+    @Subcommand("maintenance|m")
+    @Description("Toggle maintenance mode")
+    public void onMaintenanceToggle(final CommandIssuer issuer) {
+        if (blockedByCooldown(issuer)) {
+            return;
+        }
 
-  @Subcommand("maintenance|m")
-  @Description("Toggle maintenance mode")
-  public void onMaintenanceToggle(final CommandIssuer issuer) {
-    if (blockedByCooldown(issuer)) {
-      return;
+        final MessagesConfig messages = messages();
+        final boolean enabled = maintenanceManager.toggle();
+        final String status = enabled ? messages.maintenanceStatusEnabled() : messages.maintenanceStatusDisabled();
+
+        send(issuer, messages.maintenanceToggledComponent(status));
     }
 
-    final MessagesConfig messages = messages();
-    final boolean enabled = maintenanceManager.toggle();
-    final String status =
-        enabled ? messages.maintenanceStatusEnabled() : messages.maintenanceStatusDisabled();
-
-    send(issuer, messages.maintenanceToggledComponent(status));
-  }
-
-  private MessagesConfig messages() {
-    return configManager.getConfigData().messages();
-  }
-
-  private void send(final CommandIssuer issuer, final Component message) {
-    if (issuer.getIssuer() instanceof CommandSource source) {
-      source.sendMessage(message);
-      return;
+    private MessagesConfig messages() {
+        return configManager.getConfigData().messages();
     }
 
-    log.debug(
-        "Could not deliver message: issuer is not a CommandSource ({})",
-        String.valueOf(issuer.getIssuer()));
-  }
+    private void send(final CommandIssuer issuer, final Component message) {
+        if (issuer.getIssuer() instanceof CommandSource source) {
+            source.sendMessage(message);
+            return;
+        }
 
-  /** Returns {@code true} if the command must be aborted because the player is on cooldown. */
-  private boolean blockedByCooldown(final CommandIssuer issuer) {
-    if (!issuer.isPlayer()) {
-      return false;
+        log.debug("Could not deliver message: issuer is not a CommandSource ({})", String.valueOf(issuer.getIssuer()));
     }
 
-    // tryAcquire atomically checks and marks the cooldown, so two concurrent commands from the
-    // same player cannot both observe "not on cooldown" (closes the check-then-act race).
-    if (cooldown.tryAcquire(issuer.getUniqueId())) {
-      send(issuer, messages().cooldownMessageComponent());
-      return true;
-    }
+    /** Returns {@code true} if the command must be aborted because the player is on cooldown. */
+    private boolean blockedByCooldown(final CommandIssuer issuer) {
+        if (!issuer.isPlayer()) {
+            return false;
+        }
 
-    return false;
-  }
+        // tryAcquire atomically checks and marks the cooldown, so two concurrent commands from the
+        // same player cannot both observe "not on cooldown" (closes the check-then-act race).
+        if (cooldown.tryAcquire(issuer.getUniqueId())) {
+            send(issuer, messages().cooldownMessageComponent());
+            return true;
+        }
+
+        return false;
+    }
 }

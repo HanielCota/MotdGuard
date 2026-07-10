@@ -17,59 +17,57 @@ import org.junit.jupiter.api.Test;
 
 class MaintenanceManagerTest {
 
-  private ConfigManager mockConfigManager(boolean enabled, String kickMessage) {
-    final ConfigManager manager = mock(ConfigManager.class);
-    final var config =
-        new ConfigData(
-            new MotdConfig("Line1", "Line2"),
-            new MaintenanceConfig(enabled, kickMessage),
-            new RateLimitConfig(false, 10, "Block"),
-            new CooldownConfig(false, 1),
-            new MessagesConfig(
-                "a", "b", "c", "d", "e", "enabled", "disabled", "g", "h", "i", "j", "k", "l"));
-    when(manager.getConfigData()).thenReturn(config);
-    return manager;
-  }
+    private ConfigManager mockConfigManager(boolean enabled, String kickMessage) {
+        final ConfigManager manager = mock(ConfigManager.class);
+        final var config = new ConfigData(
+                new MotdConfig("Line1", "Line2"),
+                new MaintenanceConfig(enabled, kickMessage),
+                new RateLimitConfig(false, 10, "Block"),
+                new CooldownConfig(false, 1),
+                new MessagesConfig("a", "b", "c", "d", "e", "enabled", "disabled", "g", "h", "i", "j", "k", "l"));
+        when(manager.getConfigData()).thenReturn(config);
+        return manager;
+    }
 
-  @Test
-  void shouldLoadInitialStateFromConfig() {
-    final var maintenanceManager = new MaintenanceManager(mockConfigManager(true, "<red>Kick"));
+    @Test
+    void shouldLoadInitialStateFromConfig() {
+        final var maintenanceManager = new MaintenanceManager(mockConfigManager(true, "<red>Kick"));
 
-    assertTrue(maintenanceManager.isEnabled());
-    assertEquals(
-        "Kick",
-        net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
-            .serialize(maintenanceManager.getState().kickMessage()));
-  }
+        assertTrue(maintenanceManager.isEnabled());
+        assertEquals(
+                "Kick",
+                net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
+                        .serialize(maintenanceManager.getState().kickMessage()));
+    }
 
-  @Test
-  void shouldDisableMaintenance() {
-    final var maintenanceManager = new MaintenanceManager(mockConfigManager(true, "Kick"));
+    @Test
+    void shouldDisableMaintenance() {
+        final var maintenanceManager = new MaintenanceManager(mockConfigManager(true, "Kick"));
 
-    maintenanceManager.setEnabled(false);
+        maintenanceManager.setEnabled(false);
 
-    assertFalse(maintenanceManager.isEnabled());
-  }
+        assertFalse(maintenanceManager.isEnabled());
+    }
 
-  @Test
-  void shouldToggleMaintenance() {
-    final var maintenanceManager = new MaintenanceManager(mockConfigManager(false, "Kick"));
+    @Test
+    void shouldToggleMaintenance() {
+        final var maintenanceManager = new MaintenanceManager(mockConfigManager(false, "Kick"));
 
-    assertFalse(maintenanceManager.isEnabled());
+        assertFalse(maintenanceManager.isEnabled());
 
-    final boolean toggled = maintenanceManager.toggle();
+        final boolean toggled = maintenanceManager.toggle();
 
-    assertTrue(toggled);
-    assertTrue(maintenanceManager.isEnabled());
-  }
+        assertTrue(toggled);
+        assertTrue(maintenanceManager.isEnabled());
+    }
 
-  @Test
-  void shouldPreserveEnabledStateOnRefresh() {
-    final var maintenanceManager = new MaintenanceManager(mockConfigManager(false, "Old"));
-    maintenanceManager.setEnabled(true);
+    @Test
+    void shouldPreserveEnabledStateOnRefresh() {
+        final var maintenanceManager = new MaintenanceManager(mockConfigManager(false, "Old"));
+        maintenanceManager.setEnabled(true);
 
-    maintenanceManager.refresh();
+        maintenanceManager.refresh();
 
-    assertTrue(maintenanceManager.isEnabled());
-  }
+        assertTrue(maintenanceManager.isEnabled());
+    }
 }

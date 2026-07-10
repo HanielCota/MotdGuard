@@ -6,13 +6,13 @@ import net.kyori.adventure.text.Component;
 
 public record MaintenanceConfig(boolean enabled, String kickMessage) {
 
-  public MaintenanceConfig {
-    requireText(kickMessage, "maintenance.kick-message");
+    public MaintenanceConfig {
+        requireText(kickMessage, "maintenance.kick-message");
 
-    MiniMessageUtil.assertValid(kickMessage, "maintenance.kick-message");
-  }
+        MiniMessageUtil.assertValid(kickMessage, "maintenance.kick-message");
+    }
 
-  public Component kickMessageComponent() {
-    return MiniMessageUtil.deserialize(kickMessage);
-  }
+    public Component kickMessageComponent() {
+        return MiniMessageUtil.deserialize(kickMessage);
+    }
 }

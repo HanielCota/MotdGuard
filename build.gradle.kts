@@ -84,7 +84,7 @@ spotbugs {
 spotless {
     java {
         target("src/**/*.java")
-        googleJavaFormat(libs.versions.google.java.format.get())
+        palantirJavaFormat(libs.versions.palantir.java.format.get())
         formatAnnotations()
     }
 }

@@ -13,22 +13,22 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public final class LoginListener {
 
-  @NonNull private final MaintenanceManager maintenanceManager;
+    @NonNull private final MaintenanceManager maintenanceManager;
 
-  @Subscribe
-  public void onLogin(final LoginEvent event) {
-    final var snapshot = maintenanceManager.getState();
+    @Subscribe
+    public void onLogin(final LoginEvent event) {
+        final var snapshot = maintenanceManager.getState();
 
-    if (!snapshot.enabled()) {
-      return;
+        if (!snapshot.enabled()) {
+            return;
+        }
+
+        if (event.getPlayer().hasPermission("motdguard.bypass")) {
+            return;
+        }
+
+        event.setResult(ResultedEvent.ComponentResult.denied(snapshot.kickMessage()));
+
+        log.debug("Blocked player {} during maintenance", event.getPlayer().getUsername());
     }
-
-    if (event.getPlayer().hasPermission("motdguard.bypass")) {
-      return;
-    }
-
-    event.setResult(ResultedEvent.ComponentResult.denied(snapshot.kickMessage()));
-
-    log.debug("Blocked player {} during maintenance", event.getPlayer().getUsername());
-  }
 }

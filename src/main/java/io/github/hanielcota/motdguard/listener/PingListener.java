@@ -11,21 +11,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public final class PingListener {
 
-  @NonNull private final MotdProvider motdProvider;
-  @NonNull private final RateLimiter rateLimiter;
+    @NonNull private final MotdProvider motdProvider;
 
-  @Subscribe
-  public void onProxyPing(final ProxyPingEvent event) {
-    final var originalPing = event.getPing();
-    final var address = event.getConnection().getRemoteAddress();
+    @NonNull private final RateLimiter rateLimiter;
 
-    final var blockedPing = rateLimiter.tryBlockPing(address, originalPing);
+    @Subscribe
+    public void onProxyPing(final ProxyPingEvent event) {
+        final var originalPing = event.getPing();
+        final var address = event.getConnection().getRemoteAddress();
 
-    if (blockedPing != null) {
-      event.setPing(blockedPing);
-      return;
+        final var blockedPing = rateLimiter.tryBlockPing(address, originalPing);
+
+        if (blockedPing != null) {
+            event.setPing(blockedPing);
+            return;
+        }
+
+        event.setPing(motdProvider.buildMotd(originalPing));
     }
-
-    event.setPing(motdProvider.buildMotd(originalPing));
-  }
 }
