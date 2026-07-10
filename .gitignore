@@ -46,10 +46,6 @@ desktop.ini
 *.key
 *.pkcs8
 
-# Build outputs (except shadowJar)
-build/libs/
-!build/libs/*-all.jar
-
 # SpotBugs
 build/reports/
 
