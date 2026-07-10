@@ -1,5 +1,6 @@
 package io.github.hanielcota.motdguard.listener;
 
+import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import io.github.hanielcota.motdguard.motd.MotdProvider;
@@ -7,7 +8,7 @@ import io.github.hanielcota.motdguard.ratelimit.RateLimiter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public final class PingListener {
 
   @NonNull private final MotdProvider motdProvider;

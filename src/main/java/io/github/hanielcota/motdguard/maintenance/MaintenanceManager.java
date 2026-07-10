@@ -1,5 +1,7 @@
 package io.github.hanielcota.motdguard.maintenance;
 
+import com.google.inject.Inject;
+import io.github.hanielcota.motdguard.Reloadable;
 import io.github.hanielcota.motdguard.config.ConfigManager;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -7,11 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 
 @Slf4j
-public final class MaintenanceManager {
+public final class MaintenanceManager implements Reloadable {
 
   private final ConfigManager configManager;
   private final AtomicReference<State> state;
 
+  @Inject
   public MaintenanceManager(final ConfigManager configManager) {
     this.configManager = Objects.requireNonNull(configManager, "configManager");
 

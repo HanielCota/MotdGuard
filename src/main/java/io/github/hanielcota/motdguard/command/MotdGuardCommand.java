@@ -7,15 +7,15 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandSource;
+import io.github.hanielcota.motdguard.Reloadable;
 import io.github.hanielcota.motdguard.config.ConfigManager;
 import io.github.hanielcota.motdguard.config.MessagesConfig;
 import io.github.hanielcota.motdguard.maintenance.MaintenanceManager;
-import io.github.hanielcota.motdguard.motd.MotdProvider;
-import io.github.hanielcota.motdguard.ratelimit.RateLimiter;
 import io.github.hanielcota.motdguard.util.CooldownService;
 import io.github.hanielcota.motdguard.util.PluginExceptionHandler;
-import java.time.Duration;
+import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +25,13 @@ import net.kyori.adventure.text.Component;
 @CommandPermission("motdguard.admin")
 @Description("Manage MOTD and maintenance mode")
 @Slf4j
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public final class MotdGuardCommand extends BaseCommand {
 
   @NonNull private final ConfigManager configManager;
   @NonNull private final MaintenanceManager maintenanceManager;
-  @NonNull private final RateLimiter rateLimiter;
-  @NonNull private final MotdProvider motdProvider;
   @NonNull private final CooldownService cooldown;
+  @NonNull private final List<Reloadable> reloadables;
   @NonNull private final PluginExceptionHandler exceptionHandler;
 
   @Default
@@ -55,13 +54,10 @@ public final class MotdGuardCommand extends BaseCommand {
 
     try {
       configManager.reload();
-      maintenanceManager.refresh();
-      rateLimiter.refresh();
-      motdProvider.refresh();
 
-      final var cooldownConfig = configManager.getConfigData().cooldown();
-      cooldown.refresh(
-          cooldownConfig.enabled(), Duration.ofSeconds(cooldownConfig.durationSeconds()));
+      for (final Reloadable reloadable : reloadables) {
+        reloadable.refresh();
+      }
 
       send(issuer, messages().reloadSuccessComponent());
     } catch (final Exception e) {

@@ -1,5 +1,7 @@
 package io.github.hanielcota.motdguard.util;
 
+import com.google.inject.Inject;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -22,7 +24,8 @@ public final class PluginExceptionHandler {
 
   private final Path errorLogPath;
 
-  public PluginExceptionHandler(final Path dataDirectory) {
+  @Inject
+  public PluginExceptionHandler(@DataDirectory final Path dataDirectory) {
     Objects.requireNonNull(dataDirectory, "dataDirectory");
 
     this.errorLogPath = dataDirectory.resolve("errors.log");

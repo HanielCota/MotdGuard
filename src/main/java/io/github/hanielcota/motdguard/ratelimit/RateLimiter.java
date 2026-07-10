@@ -2,8 +2,10 @@ package io.github.hanielcota.motdguard.ratelimit;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.inject.Inject;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import io.github.bucket4j.Bucket;
+import io.github.hanielcota.motdguard.Reloadable;
 import io.github.hanielcota.motdguard.config.ConfigManager;
 import io.github.hanielcota.motdguard.util.BucketFactory;
 import io.github.hanielcota.motdguard.util.IpExtractor;
@@ -17,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 
 @Slf4j
-public final class RateLimiter {
+public final class RateLimiter implements Reloadable {
 
   private static final int MAX_ENTRIES = 10_000;
 
@@ -26,6 +28,7 @@ public final class RateLimiter {
   private final Cache<String, Bucket> cache;
   private final AtomicReference<State> state = new AtomicReference<>();
 
+  @Inject
   public RateLimiter(final ConfigManager configManager) {
     this(configManager, IpExtractor::extract);
   }

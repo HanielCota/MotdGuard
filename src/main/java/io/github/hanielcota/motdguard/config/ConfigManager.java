@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.dataformat.toml.TomlFactory;
+import com.google.inject.Inject;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
@@ -23,7 +25,8 @@ public final class ConfigManager {
   private final ObjectMapper mapper;
   private final AtomicReference<ConfigData> configData = new AtomicReference<>();
 
-  public ConfigManager(final Path dataDirectory) {
+  @Inject
+  public ConfigManager(@DataDirectory final Path dataDirectory) {
     Objects.requireNonNull(dataDirectory, "dataDirectory");
 
     this.configPath = dataDirectory.resolve(FILE_NAME);
