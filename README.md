@@ -48,7 +48,7 @@ Customize the MOTD with MiniMessage, enable maintenance without restarting the p
 | ♻️ | **Hot reload** | Update `config.toml` and apply changes without restarting Velocity. |
 | 🔑 | **Permission bypass** | Staff can still join even while maintenance is active. |
 | ⏱️ | **Command cooldown** | Throttle administrative commands to prevent accidental spam. |
-| 📝 | **Error logs** | Failures are written to `plugins/MotdGuard/errors.log` for quick diagnostics. |
+| 📝 | **Error logs** | Startup and reload failures are written to `plugins/MotdGuard/errors.log` for quick diagnostics. |
 
 ---
 
@@ -185,10 +185,13 @@ Use the Gradle Wrapper included in the repository.
 ./gradlew shadowJar
 ```
 
+> [!NOTE]
+> MotdGuard currently targets Velocity **3.5.0** and ACF **0.5.1**, which are published as `-SNAPSHOT` (development) builds. Until stable coordinates are available, the plugin version is marked as a release candidate (for example `1.0.0-rc.1`). Reproducible builds of a tag depend on the resolved upstream SNAPSHOT not changing.
+
 The compiled artifact is generated at:
 
 ```text
-build/libs/motdguard-1.0.0.jar
+build/libs/motdguard-<version>.jar
 ```
 
 ---
