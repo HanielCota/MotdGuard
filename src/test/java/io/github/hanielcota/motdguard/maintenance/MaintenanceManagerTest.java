@@ -13,9 +13,15 @@ import io.github.hanielcota.motdguard.config.MaintenanceConfig;
 import io.github.hanielcota.motdguard.config.MessagesConfig;
 import io.github.hanielcota.motdguard.config.MotdConfig;
 import io.github.hanielcota.motdguard.config.RateLimitConfig;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class MaintenanceManagerTest {
+
+    @TempDir
+    Path dataDir;
 
     private ConfigManager mockConfigManager(boolean enabled, String kickMessage) {
         final ConfigManager manager = mock(ConfigManager.class);
@@ -31,7 +37,7 @@ class MaintenanceManagerTest {
 
     @Test
     void shouldLoadInitialStateFromConfig() {
-        final var maintenanceManager = new MaintenanceManager(mockConfigManager(true, "<red>Kick"));
+        final var maintenanceManager = new MaintenanceManager(mockConfigManager(true, "<red>Kick"), dataDir);
 
         assertTrue(maintenanceManager.isEnabled());
         assertEquals(
@@ -42,7 +48,7 @@ class MaintenanceManagerTest {
 
     @Test
     void shouldDisableMaintenance() {
-        final var maintenanceManager = new MaintenanceManager(mockConfigManager(true, "Kick"));
+        final var maintenanceManager = new MaintenanceManager(mockConfigManager(true, "Kick"), dataDir);
 
         maintenanceManager.setEnabled(false);
 
@@ -51,7 +57,7 @@ class MaintenanceManagerTest {
 
     @Test
     void shouldToggleMaintenance() {
-        final var maintenanceManager = new MaintenanceManager(mockConfigManager(false, "Kick"));
+        final var maintenanceManager = new MaintenanceManager(mockConfigManager(false, "Kick"), dataDir);
 
         assertFalse(maintenanceManager.isEnabled());
 
@@ -63,11 +69,39 @@ class MaintenanceManagerTest {
 
     @Test
     void shouldPreserveEnabledStateOnRefresh() {
-        final var maintenanceManager = new MaintenanceManager(mockConfigManager(false, "Old"));
+        final var maintenanceManager = new MaintenanceManager(mockConfigManager(false, "Old"), dataDir);
         maintenanceManager.setEnabled(true);
 
         maintenanceManager.refresh();
 
         assertTrue(maintenanceManager.isEnabled());
+    }
+
+    @Test
+    void shouldPersistEnabledStateAcrossInstances() {
+        final var first = new MaintenanceManager(mockConfigManager(false, "Kick"), dataDir);
+        first.setEnabled(true);
+
+        // Simulates a proxy restart: a new instance reads the persisted state instead of the config
+        // default (false).
+        final var second = new MaintenanceManager(mockConfigManager(false, "Kick"), dataDir);
+
+        assertTrue(second.isEnabled());
+    }
+
+    @Test
+    void shouldUseConfigDefaultWhenNoPersistedState() {
+        final var manager = new MaintenanceManager(mockConfigManager(true, "Kick"), dataDir);
+
+        assertTrue(manager.isEnabled());
+    }
+
+    @Test
+    void shouldIgnoreInvalidPersistedStateAndUseConfigDefault() throws Exception {
+        Files.writeString(dataDir.resolve("maintenance.state"), "not-a-boolean");
+
+        final var manager = new MaintenanceManager(mockConfigManager(true, "Kick"), dataDir);
+
+        assertTrue(manager.isEnabled());
     }
 }

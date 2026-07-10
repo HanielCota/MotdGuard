@@ -41,7 +41,16 @@ public final class CooldownService implements Reloadable {
                 return current;
             }
 
-            return createState(next);
+            final State rebuilt = createState(next);
+
+            // Carry in-progress cooldowns over so a reload that changes the duration (but keeps the
+            // service enabled) does not silently free players still on cooldown — notably the reload
+            // command itself. New entries get a fresh full-duration window; existing ones survive.
+            if (current.enabled() && rebuilt.enabled()) {
+                rebuilt.cache().putAll(current.cache().asMap());
+            }
+
+            return rebuilt;
         });
     }
 
@@ -77,7 +86,7 @@ public final class CooldownService implements Reloadable {
             throw new IllegalArgumentException("cooldownDuration must be positive");
         }
 
-        final Duration expiration = !config.enabled() || nonPositiveDuration ? Duration.ofSeconds(1) : duration;
+        final Duration expiration = !config.enabled() ? Duration.ofSeconds(1) : duration;
 
         return new State(
                 config.enabled(),

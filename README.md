@@ -118,6 +118,12 @@ cooldown-message = "<red>Please wait before using another command."
 > [!NOTE]
 > Messages use **MiniMessage** syntax (`<green>`, `<#f58220>`, `<bold>`). Legacy `&` color codes are **not** supported and would be shown literally.
 
+> [!NOTE]
+> Maintenance toggled by command (`/motdguard maintenance ...`) is persisted and survives both `/motdguard reload` and a proxy restart. The `enabled` value in `config.toml` is only the initial default, used until the first toggle. To force the config value again, delete `plugins/MotdGuard/maintenance.state`.
+
+> [!NOTE]
+> `max-pings-per-minute` caps the sustained rate per IP. An idle address may spend up to that many pings in a short burst and is then smoothed back to the per-minute rate, so legitimate clients are not cut off while abuse is held back.
+
 ---
 
 ## 🎨 MiniMessage

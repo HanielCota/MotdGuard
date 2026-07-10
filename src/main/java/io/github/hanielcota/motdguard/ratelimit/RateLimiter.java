@@ -50,9 +50,12 @@ public final class RateLimiter implements Reloadable {
      *     ping is allowed.
      */
     public ServerPing tryBlockPing(final InetSocketAddress address, final ServerPing original) {
-        final State snapshot = state.get();
+        // state is published in the constructor (via refresh) before the instance escapes, so it is
+        // never null here. requireNonNull turns an impossible null into a loud failure instead of a
+        // silent fail-open that would bypass rate limiting.
+        final State snapshot = Objects.requireNonNull(state.get(), "rate limiter state not initialized");
 
-        if (snapshot == null || !snapshot.enabled()) {
+        if (!snapshot.enabled()) {
             return null;
         }
 

@@ -64,6 +64,8 @@ public final class MotdGuardPlugin {
             commandManager.unregisterCommands();
         }
 
+        server.getEventManager().unregisterListeners(this);
+
         log.info("MotdGuard disabled.");
     }
 }

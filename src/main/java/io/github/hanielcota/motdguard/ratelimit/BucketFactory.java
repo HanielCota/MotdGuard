@@ -14,7 +14,7 @@ class BucketFactory {
 
         return Bucket.builder()
                 .addLimit(limit ->
-                        limit.capacity(maxPingsPerMinute).refillGreedy(maxPingsPerMinute, Duration.ofMinutes(1)))
+                        limit.capacity(maxPingsPerMinute).refillIntervally(maxPingsPerMinute, Duration.ofMinutes(1)))
                 .build();
     }
 }

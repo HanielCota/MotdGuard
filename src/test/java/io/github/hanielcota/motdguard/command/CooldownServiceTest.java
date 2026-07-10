@@ -83,6 +83,25 @@ class CooldownServiceTest {
     }
 
     @Test
+    void refreshWithChangedDurationShouldPreserveActiveCooldowns() {
+        final var manager = mock(ConfigManager.class);
+        when(manager.getConfigData())
+                .thenReturn(configData(new CooldownConfig(true, 3600)))
+                .thenReturn(configData(new CooldownConfig(true, 30)));
+
+        final var service = new CooldownService(manager);
+        final UUID playerId = UUID.randomUUID();
+
+        assertFalse(service.tryAcquire(playerId));
+
+        // A reload that changes the duration (but keeps the service enabled) must still preserve
+        // in-progress cooldowns instead of wiping them.
+        service.refresh();
+
+        assertTrue(service.tryAcquire(playerId));
+    }
+
+    @Test
     void shouldRejectNullPlayerId() {
         final var service = new CooldownService(configManager(new CooldownConfig(true, 10)));
         assertThrows(NullPointerException.class, () -> service.tryAcquire(null));

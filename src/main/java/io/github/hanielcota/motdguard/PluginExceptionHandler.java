@@ -5,6 +5,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -54,15 +55,16 @@ public final class PluginExceptionHandler {
     }
 
     private synchronized void writeToFile(final String context, final Throwable throwable) {
+        final var entry = String.format(
+                "[%s] Context: %s%n%s%n%n",
+                LocalDateTime.now(ZoneId.systemDefault()).format(FORMATTER),
+                context,
+                stackTraceToString(throwable));
+        final long entryBytes = entry.getBytes(StandardCharsets.UTF_8).length;
+
         try {
             ensureFileExists();
-            rotateIfNeeded();
-
-            final var entry = String.format(
-                    "[%s] Context: %s%n%s%n%n",
-                    LocalDateTime.now(ZoneId.systemDefault()).format(FORMATTER),
-                    context,
-                    stackTraceToString(throwable));
+            rotateIfNeeded(entryBytes);
 
             Files.writeString(errorLogPath, entry, StandardOpenOption.APPEND);
         } catch (final IOException e) {
@@ -88,8 +90,11 @@ public final class PluginExceptionHandler {
         }
     }
 
-    private void rotateIfNeeded() throws IOException {
-        if (Files.size(errorLogPath) < MAX_LOG_BYTES) {
+    private void rotateIfNeeded(final long incomingBytes) throws IOException {
+        // Rotate when the next entry would push the file past the cap, so the active log never
+        // exceeds MAX_LOG_BYTES. The previous check used the current size only, which allowed one
+        // entry past the limit before rotating.
+        if (Files.size(errorLogPath) + incomingBytes <= MAX_LOG_BYTES) {
             return;
         }
 

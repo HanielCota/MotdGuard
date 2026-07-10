@@ -57,18 +57,34 @@ public final class MotdGuardCommand extends BaseCommand {
 
         try {
             configManager.reload();
-
-            for (final Reloadable reloadable : reloadables) {
-                reloadable.refresh();
-            }
-
-            send(issuer, messages().reloadSuccessComponent());
         } catch (final Exception e) {
-            // configManager.reload() validates and swaps atomically, so a failure here leaves the
-            // previously loaded configuration fully intact and the refreshes above do not run.
+            // Validation/IO failed: the previously loaded configuration stays fully intact and none
+            // of the refreshes below run.
             exceptionHandler.caughtException("configuration reload", e);
             send(issuer, messages().reloadFailureComponent());
+            return;
         }
+
+        // The configuration was swapped successfully. Apply it to every component independently so a
+        // failure in one does not skip the others; any failure is reported honestly (the config is
+        // loaded, but a component did not apply it).
+        boolean refreshFailed = false;
+
+        for (final Reloadable reloadable : reloadables) {
+            try {
+                reloadable.refresh();
+            } catch (final Exception e) {
+                refreshFailed = true;
+                exceptionHandler.caughtException("configuration reload apply", e);
+            }
+        }
+
+        if (refreshFailed) {
+            send(issuer, messages().reloadFailureComponent());
+            return;
+        }
+
+        send(issuer, messages().reloadSuccessComponent());
     }
 
     @Subcommand("maintenance on|m on")

@@ -82,6 +82,7 @@ class MiniMessageUtil {
             "data",
             "shadow_color",
             "shadow",
+            "transition",
             "pre");
 
     private static final Pattern TAG_PATTERN = Pattern.compile("<(/?)(!?)([a-zA-Z#][a-zA-Z0-9_#-]*)[^>]*>");

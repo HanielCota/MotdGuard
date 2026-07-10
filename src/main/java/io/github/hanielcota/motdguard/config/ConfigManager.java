@@ -46,7 +46,8 @@ public final class ConfigManager {
 
     public synchronized void load() {
         if (Files.exists(configPath)) {
-            reload();
+            parseAndSwap();
+            log.info("Configuration loaded successfully.");
             return;
         }
 
@@ -66,15 +67,24 @@ public final class ConfigManager {
             throw e;
         }
 
-        reload();
+        parseAndSwap();
+        log.info("Default configuration created and loaded.");
     }
 
     public synchronized void reload() {
+        parseAndSwap();
+        log.info("Configuration reloaded successfully.");
+    }
+
+    /**
+     * Parses {@code config.toml}, validates it through the {@link ConfigData} constructors and swaps
+     * it in atomically. On any failure the previous configuration stays untouched because {@code
+     * configData.set} is never reached.
+     */
+    private void parseAndSwap() {
         try (final var input = Files.newInputStream(configPath)) {
             final var newData = mapper.readValue(input, ConfigData.class);
             configData.set(newData);
-
-            log.info("Configuration reloaded successfully.");
         } catch (final IOException | RuntimeException e) {
             log.error("Failed to load config.toml", e);
             throw new IllegalStateException("Failed to load configuration: " + e.getMessage(), e);
@@ -90,7 +100,7 @@ public final class ConfigManager {
             Files.copy(resource, configPath);
         } catch (final FileAlreadyExistsException e) {
             // Another thread/process created the config between the exists() check and the copy;
-            // the existing file wins and reload() will pick it up.
+            // the existing file wins and parseAndSwap() will pick it up.
             log.debug("config.toml already exists; skipping default copy");
         }
     }
