@@ -26,13 +26,14 @@ public final class CooldownService {
   public void refresh(final boolean enabled, final Duration cooldownDuration) {
     Objects.requireNonNull(cooldownDuration, "cooldownDuration");
 
-    final State current = state.get();
+    state.updateAndGet(
+        current -> {
+          if (current.enabled() == enabled && current.duration().equals(cooldownDuration)) {
+            return current;
+          }
 
-    if (current.enabled() == enabled && current.duration().equals(cooldownDuration)) {
-      return;
-    }
-
-    state.set(createState(enabled, cooldownDuration));
+          return createState(enabled, cooldownDuration);
+        });
   }
 
   private static State createState(final boolean enabled, final Duration cooldownDuration) {
@@ -68,6 +69,26 @@ public final class CooldownService {
     }
 
     snapshot.cache().put(Objects.requireNonNull(playerId, "playerId"), Boolean.TRUE);
+  }
+
+  /**
+   * Atomically marks {@code playerId} as having used a command and reports whether it was already
+   * on cooldown.
+   *
+   * @return {@code true} if the player was already on cooldown (the caller should block the
+   *     command); {@code false} if the mark was just placed (the command may proceed). Always
+   *     {@code false} when the service is disabled.
+   */
+  public boolean tryAcquire(final UUID playerId) {
+    final State snapshot = state.get();
+
+    if (!snapshot.enabled()) {
+      return false;
+    }
+
+    Objects.requireNonNull(playerId, "playerId");
+
+    return snapshot.cache().asMap().putIfAbsent(playerId, Boolean.TRUE) != null;
   }
 
   public void clearCooldown(final UUID playerId) {

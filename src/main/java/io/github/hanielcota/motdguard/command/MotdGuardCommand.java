@@ -14,8 +14,8 @@ import io.github.hanielcota.motdguard.maintenance.MaintenanceManager;
 import io.github.hanielcota.motdguard.motd.MotdProvider;
 import io.github.hanielcota.motdguard.ratelimit.RateLimiter;
 import io.github.hanielcota.motdguard.util.CooldownService;
+import io.github.hanielcota.motdguard.util.PluginExceptionHandler;
 import java.time.Duration;
-import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +33,7 @@ public final class MotdGuardCommand extends BaseCommand {
   @NonNull private final RateLimiter rateLimiter;
   @NonNull private final MotdProvider motdProvider;
   @NonNull private final CooldownService cooldown;
+  @NonNull private final PluginExceptionHandler exceptionHandler;
 
   @Default
   public void onDefault(final CommandIssuer issuer) {
@@ -64,7 +65,9 @@ public final class MotdGuardCommand extends BaseCommand {
 
       send(issuer, messages().reloadSuccessComponent());
     } catch (final Exception e) {
-      log.error("Failed to reload configuration", e);
+      // configManager.reload() validates and swaps atomically, so a failure here leaves the
+      // previously loaded configuration fully intact and the refreshes above do not run.
+      exceptionHandler.caughtException("configuration reload", e);
       send(issuer, messages().reloadFailureComponent());
     }
   }
@@ -119,7 +122,12 @@ public final class MotdGuardCommand extends BaseCommand {
   private void send(final CommandIssuer issuer, final Component message) {
     if (issuer.getIssuer() instanceof CommandSource source) {
       source.sendMessage(message);
+      return;
     }
+
+    log.debug(
+        "Could not deliver message: issuer is not a CommandSource ({})",
+        String.valueOf(issuer.getIssuer()));
   }
 
   /** Returns {@code true} if the command must be aborted because the player is on cooldown. */
@@ -128,14 +136,13 @@ public final class MotdGuardCommand extends BaseCommand {
       return false;
     }
 
-    final UUID playerId = issuer.getUniqueId();
-
-    if (cooldown.isOnCooldown(playerId)) {
+    // tryAcquire atomically checks and marks the cooldown, so two concurrent commands from the
+    // same player cannot both observe "not on cooldown" (closes the check-then-act race).
+    if (cooldown.tryAcquire(issuer.getUniqueId())) {
       send(issuer, messages().cooldownMessageComponent());
       return true;
     }
 
-    cooldown.setUsed(playerId);
     return false;
   }
 }

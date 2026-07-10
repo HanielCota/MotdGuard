@@ -10,6 +10,9 @@ public record MotdConfig(String line1, String line2) {
   public MotdConfig {
     requireText(line1, "motd.line1");
     requireText(line2, "motd.line2");
+
+    MiniMessageUtil.deserializeStrict(line1, "motd.line1");
+    MiniMessageUtil.deserializeStrict(line2, "motd.line2");
   }
 
   public Component line1Component() {
