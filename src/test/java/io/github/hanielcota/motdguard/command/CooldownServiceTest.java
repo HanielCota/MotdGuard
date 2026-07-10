@@ -39,31 +39,8 @@ class CooldownServiceTest {
     final var service = new CooldownService(configManager(new CooldownConfig(false, 1)));
     final UUID playerId = UUID.randomUUID();
 
-    assertFalse(service.isOnCooldown(playerId));
-    service.setUsed(playerId);
-    assertFalse(service.isOnCooldown(playerId));
-  }
-
-  @Test
-  void shouldTrackCooldownWhenEnabled() {
-    final var service = new CooldownService(configManager(new CooldownConfig(true, 3600)));
-    final UUID playerId = UUID.randomUUID();
-
-    assertFalse(service.isOnCooldown(playerId));
-    service.setUsed(playerId);
-    assertTrue(service.isOnCooldown(playerId));
-  }
-
-  @Test
-  void shouldClearCooldown() {
-    final var service = new CooldownService(configManager(new CooldownConfig(true, 3600)));
-    final UUID playerId = UUID.randomUUID();
-
-    service.setUsed(playerId);
-    assertTrue(service.isOnCooldown(playerId));
-
-    service.clearCooldown(playerId);
-    assertFalse(service.isOnCooldown(playerId));
+    assertFalse(service.tryAcquire(playerId));
+    assertFalse(service.tryAcquire(playerId));
   }
 
   @Test
@@ -85,14 +62,12 @@ class CooldownServiceTest {
     final var service = new CooldownService(manager);
     final UUID playerId = UUID.randomUUID();
 
-    service.setUsed(playerId);
-    assertTrue(service.isOnCooldown(playerId));
+    assertFalse(service.tryAcquire(playerId));
+    assertTrue(service.tryAcquire(playerId));
 
     service.refresh();
 
-    assertFalse(service.isOnCooldown(playerId));
-    service.setUsed(playerId);
-    assertFalse(service.isOnCooldown(playerId));
+    assertFalse(service.tryAcquire(playerId));
   }
 
   @Test
@@ -100,21 +75,17 @@ class CooldownServiceTest {
     final var service = new CooldownService(configManager(new CooldownConfig(true, 3600)));
     final UUID playerId = UUID.randomUUID();
 
-    service.setUsed(playerId);
-    assertTrue(service.isOnCooldown(playerId));
+    assertFalse(service.tryAcquire(playerId));
 
     // A reload that does not change the cooldown config must not wipe in-progress cooldowns.
     service.refresh();
 
-    assertTrue(service.isOnCooldown(playerId));
+    assertTrue(service.tryAcquire(playerId));
   }
 
   @Test
   void shouldRejectNullPlayerId() {
     final var service = new CooldownService(configManager(new CooldownConfig(true, 10)));
-    assertThrows(NullPointerException.class, () -> service.isOnCooldown(null));
-    assertThrows(NullPointerException.class, () -> service.setUsed(null));
-    assertThrows(NullPointerException.class, () -> service.clearCooldown(null));
     assertThrows(NullPointerException.class, () -> service.tryAcquire(null));
   }
 }

@@ -200,8 +200,12 @@ build/libs/motdguard-<version>.jar
 
 ```text
 src/main/java/io/github/hanielcota/motdguard/
+├── MotdGuardModule.java
 ├── MotdGuardPlugin.java
+├── PluginExceptionHandler.java
+├── Reloadable.java
 ├── command/
+│   ├── CooldownService.java
 │   └── MotdGuardCommand.java
 ├── config/
 │   ├── ConfigData.java
@@ -210,10 +214,9 @@ src/main/java/io/github/hanielcota/motdguard/
 │   ├── CooldownConfig.java
 │   ├── MaintenanceConfig.java
 │   ├── MessagesConfig.java
+│   ├── MiniMessageUtil.java
 │   ├── MotdConfig.java
 │   └── RateLimitConfig.java
-├── constants/
-│   └── PluginConstants.java
 ├── listener/
 │   ├── LoginListener.java
 │   └── PingListener.java
@@ -221,14 +224,10 @@ src/main/java/io/github/hanielcota/motdguard/
 │   └── MaintenanceManager.java
 ├── motd/
 │   └── MotdProvider.java
-├── ratelimit/
-│   └── RateLimiter.java
-└── util/
+└── ratelimit/
     ├── BucketFactory.java
-    ├── CooldownService.java
     ├── IpExtractor.java
-    ├── MiniMessageUtil.java
-    └── PluginExceptionHandler.java
+    └── RateLimiter.java
 ```
 
 ---
