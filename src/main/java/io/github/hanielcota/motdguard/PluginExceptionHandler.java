@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,9 @@ public final class PluginExceptionHandler {
 
             final var entry = String.format(
                     "[%s] Context: %s%n%s%n%n",
-                    LocalDateTime.now().format(FORMATTER), context, stackTraceToString(throwable));
+                    LocalDateTime.now(ZoneId.systemDefault()).format(FORMATTER),
+                    context,
+                    stackTraceToString(throwable));
 
             Files.writeString(errorLogPath, entry, StandardOpenOption.APPEND);
         } catch (final IOException e) {
