@@ -3,7 +3,6 @@ package io.github.hanielcota.motdguard.ratelimit;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
-import com.velocitypowered.api.proxy.server.ServerPing;
 import io.github.bucket4j.Bucket;
 import io.github.hanielcota.motdguard.Reloadable;
 import io.github.hanielcota.motdguard.config.ConfigManager;
@@ -16,6 +15,13 @@ import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 
+/**
+ * Decides whether a ping from a given address should be rate-limited.
+ *
+ * <p>This class is intentionally a pure decision maker: it reports allow/block and exposes the
+ * current block message, but it does not build the blocked {@code ServerPing}. Presentation lives in
+ * {@link io.github.hanielcota.motdguard.motd.MotdProvider}.
+ */
 @Slf4j
 public final class RateLimiter implements Reloadable {
 
@@ -44,19 +50,19 @@ public final class RateLimiter implements Reloadable {
     }
 
     /**
-     * Checks rate limiting for the given address and returns a blocked ping if rate-limited.
+     * Reports whether the ping from {@code address} must be blocked.
      *
-     * @return a blocked {@link ServerPing} if the address is rate-limited, or {@code null} if the
-     *     ping is allowed.
+     * @return {@code true} if the address is rate-limited (fail-closed when the IP cannot be
+     *     determined); {@code false} if the ping is allowed.
      */
-    public ServerPing tryBlockPing(final InetSocketAddress address, final ServerPing original) {
+    public boolean isBlocked(final InetSocketAddress address) {
         // state is published in the constructor (via refresh) before the instance escapes, so it is
         // never null here. requireNonNull turns an impossible null into a loud failure instead of a
         // silent fail-open that would bypass rate limiting.
         final State snapshot = Objects.requireNonNull(state.get(), "rate limiter state not initialized");
 
         if (!snapshot.enabled()) {
-            return null;
+            return false;
         }
 
         final Optional<String> ip = ipExtractor.apply(address);
@@ -65,19 +71,24 @@ public final class RateLimiter implements Reloadable {
             // Deliberate fail-closed policy: if the client IP cannot be determined we cannot key a
             // bucket, so the ping is blocked rather than allowed to bypass rate limiting.
             log.warn("Could not determine IP address for ping; blocking");
-            return buildBlockedPing(original, snapshot);
+            return true;
         }
 
         final String ipValue = ip.get();
         final var bucket = cache.get(ipValue, ignored -> BucketFactory.create(snapshot.maxPingsPerMinute()));
 
         if (bucket.tryConsume(1)) {
-            return null;
+            return false;
         }
 
         log.debug("Rate limit exceeded for IP: {}", ipValue);
 
-        return buildBlockedPing(original, snapshot);
+        return true;
+    }
+
+    /** The current block message, to be rendered by the presentation layer. */
+    public Component blockMessage() {
+        return Objects.requireNonNull(state.get(), "rate limiter state not initialized").blockMessage();
     }
 
     public void refresh() {
@@ -93,17 +104,6 @@ public final class RateLimiter implements Reloadable {
                 rateLimitConfig.blockMessageComponent()));
 
         log.info("Rate limiter refreshed");
-    }
-
-    private static ServerPing buildBlockedPing(final ServerPing original, final State snapshot) {
-        return Objects.requireNonNull(original, "original")
-                .asBuilder()
-                .description(snapshot.blockMessage())
-                .version(new ServerPing.Version(0, "???"))
-                .nullPlayers()
-                .clearFavicon()
-                .notModCompatible()
-                .build();
     }
 
     private record State(boolean enabled, int maxPingsPerMinute, Component blockMessage) {}

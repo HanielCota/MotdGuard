@@ -1,7 +1,9 @@
 package io.github.hanielcota.motdguard.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +14,7 @@ class ConfigDataTest {
     }
 
     private static MaintenanceConfig validMaintenance() {
-        return new MaintenanceConfig(false, "Kick");
+        return new MaintenanceConfig(false, "Kick", null, null);
     }
 
     private static RateLimitConfig validRateLimit() {
@@ -88,5 +90,30 @@ class ConfigDataTest {
         final var messages = new MessagesConfig("a", "b", "c", "d", "e", "f", "", "g", "h", "i", "j", "k", "l");
 
         assertEquals("disabled", messages.maintenanceStatusDisabled());
+    }
+
+    @Test
+    void shouldAcceptConfiguredMaintenanceMotd() {
+        final var maintenance = new MaintenanceConfig(false, "Kick", "<red>Maint", "Line2");
+
+        assertTrue(maintenance.hasMaintenanceMotd());
+    }
+
+    @Test
+    void shouldTreatAbsentMaintenanceMotdAsNotConfigured() {
+        assertFalse(validMaintenance().hasMaintenanceMotd());
+    }
+
+    @Test
+    void shouldTreatBlankMaintenanceMotdAsNotConfigured() {
+        final var maintenance = new MaintenanceConfig(false, "Kick", "   ", null);
+
+        assertFalse(maintenance.hasMaintenanceMotd());
+    }
+
+    @Test
+    void shouldRejectInvalidMaintenanceMotdTag() {
+        assertThrows(
+                IllegalArgumentException.class, () -> new MaintenanceConfig(false, "Kick", "<gren>bad", "Line2"));
     }
 }

@@ -5,6 +5,8 @@ line2 = "<#FFFFFF>Modo Hardcore Ativo"
 [maintenance]
 enabled = false
 kick-message = "<red>Servidor em manutenção. Volte em breve!"
+motd-line1 = "<#00FF00>MeuServidor"
+motd-line2 = "<red>Em manutenção. Volte em breve!"
 
 [rate-limit]
 enabled = true

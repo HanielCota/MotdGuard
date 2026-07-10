@@ -86,6 +86,10 @@ line2 = "<#ffffff>Protected by <#f58220>MotdGuard"
 [maintenance]
 enabled = false
 kick-message = "<red>Server under maintenance. Please come back soon!"
+# Optional MOTD shown in the server list while maintenance is active.
+# If omitted, the normal [motd] is shown instead.
+motd-line1 = "<gradient:#f58220:#ffd9a8><bold>MyServer</bold></gradient>"
+motd-line2 = "<red>Under maintenance — back soon! ({online} online)"
 
 [rate-limit]
 enabled = true
@@ -123,6 +127,12 @@ cooldown-message = "<red>Please wait before using another command."
 
 > [!NOTE]
 > `max-pings-per-minute` caps the sustained rate per IP. An idle address may spend up to that many pings in a short burst and is then smoothed back to the per-minute rate, so legitimate clients are not cut off while abuse is held back.
+
+> [!NOTE]
+> The MOTD supports live placeholders resolved per ping: `{online}` (players online), `{max}` (player limit) and `{version}` (protocol version). Lines without placeholders are rendered once and reused; lines with placeholders are rendered on each ping so the values stay live.
+
+> [!NOTE]
+> `motd-line1`/`motd-line2` under `[maintenance]` are optional. When both are set, the server list shows a dedicated maintenance MOTD; when omitted, the normal `[motd]` is shown. The kick message still applies on login.
 
 ---
 

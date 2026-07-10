@@ -10,7 +10,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 
 @Slf4j
 @UtilityClass
-class MiniMessageUtil {
+public class MiniMessageUtil {
 
     private static final MiniMessage INSTANCE = MiniMessage.miniMessage();
 

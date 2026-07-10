@@ -27,7 +27,7 @@ class CooldownServiceTest {
     private static ConfigData configData(final CooldownConfig cooldown) {
         return new ConfigData(
                 new MotdConfig("L1", "L2"),
-                new MaintenanceConfig(false, "Kick"),
+                new MaintenanceConfig(false, "Kick", null, null),
                 new RateLimitConfig(false, 10, "Block"),
                 cooldown,
                 new MessagesConfig("a", "b", "c", "d", "e", "enabled", "disabled", "h", "r", "m", "mo", "mf", "cd"));

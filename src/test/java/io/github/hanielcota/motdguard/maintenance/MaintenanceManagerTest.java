@@ -27,7 +27,7 @@ class MaintenanceManagerTest {
         final ConfigManager manager = mock(ConfigManager.class);
         final var config = new ConfigData(
                 new MotdConfig("Line1", "Line2"),
-                new MaintenanceConfig(enabled, kickMessage),
+                new MaintenanceConfig(enabled, kickMessage, null, null),
                 new RateLimitConfig(false, 10, "Block"),
                 new CooldownConfig(false, 1),
                 new MessagesConfig("a", "b", "c", "d", "e", "enabled", "disabled", "g", "h", "i", "j", "k", "l"));
