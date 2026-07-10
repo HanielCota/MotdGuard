@@ -2,51 +2,67 @@ package io.github.hanielcota.motdguard.util;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.inject.Inject;
+import io.github.hanielcota.motdguard.Reloadable;
+import io.github.hanielcota.motdguard.config.ConfigManager;
+import io.github.hanielcota.motdguard.config.CooldownConfig;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public final class CooldownService {
+public final class CooldownService implements Reloadable {
 
+  private final ConfigManager configManager;
   private final AtomicReference<State> state;
 
-  public CooldownService(final boolean enabled, final Duration cooldownDuration) {
-    this.state = new AtomicReference<>(createState(enabled, cooldownDuration));
+  @Inject
+  public CooldownService(final ConfigManager configManager) {
+    this.configManager = Objects.requireNonNull(configManager, "configManager");
+    this.state = new AtomicReference<>(createState(currentConfig()));
   }
 
   /**
-   * Applies a new cooldown configuration.
+   * Applies the current cooldown configuration.
    *
-   * <p>When neither {@code enabled} nor {@code cooldownDuration} changed, the call is a no-op: the
-   * existing cache is kept so that cooldowns already in progress survive a configuration reload.
-   * Rebuilding the cache unconditionally would wipe every active cooldown, which makes the cooldown
-   * on the {@code reload} command itself ineffective.
+   * <p>When neither {@code enabled} nor the duration changed, the call is a no-op: the existing
+   * cache is kept so that cooldowns already in progress survive a configuration reload. Rebuilding
+   * the cache unconditionally would wipe every active cooldown, which makes the cooldown on the
+   * {@code reload} command itself ineffective.
    */
-  public void refresh(final boolean enabled, final Duration cooldownDuration) {
-    Objects.requireNonNull(cooldownDuration, "cooldownDuration");
+  @Override
+  public void refresh() {
+    final CooldownConfig next = currentConfig();
 
     state.updateAndGet(
         current -> {
-          if (current.enabled() == enabled && current.duration().equals(cooldownDuration)) {
+          if (current.enabled() == next.enabled()
+              && current.duration().equals(Duration.ofSeconds(next.durationSeconds()))) {
             return current;
           }
 
-          return createState(enabled, cooldownDuration);
+          return createState(next);
         });
   }
 
-  private static State createState(final boolean enabled, final Duration cooldownDuration) {
-    final Duration duration = Objects.requireNonNull(cooldownDuration, "cooldownDuration");
+  private CooldownConfig currentConfig() {
+    return configManager.getConfigData().cooldown();
+  }
 
-    if (enabled && (duration.isZero() || duration.isNegative())) {
+  private static State createState(final CooldownConfig config) {
+    final Duration duration = Duration.ofSeconds(config.durationSeconds());
+
+    if (config.enabled() && (duration.isZero() || duration.isNegative())) {
       throw new IllegalArgumentException("cooldownDuration must be positive");
     }
 
     final Duration expiration =
-        duration.isZero() || duration.isNegative() ? Duration.ofSeconds(1) : duration;
+        !config.enabled() || duration.isZero() || duration.isNegative()
+            ? Duration.ofSeconds(1)
+            : duration;
 
-    return new State(enabled, duration, Caffeine.newBuilder().expireAfterWrite(expiration).build());
+    return new State(
+        config.enabled(), duration, Caffeine.newBuilder().expireAfterWrite(expiration).build());
   }
 
   public boolean isOnCooldown(final UUID playerId) {

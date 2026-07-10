@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import co.aikar.commands.CommandIssuer;
 import com.velocitypowered.api.command.CommandSource;
+import io.github.hanielcota.motdguard.Reloadable;
 import io.github.hanielcota.motdguard.config.ConfigData;
 import io.github.hanielcota.motdguard.config.ConfigManager;
 import io.github.hanielcota.motdguard.config.CooldownConfig;
@@ -21,11 +22,9 @@ import io.github.hanielcota.motdguard.config.MessagesConfig;
 import io.github.hanielcota.motdguard.config.MotdConfig;
 import io.github.hanielcota.motdguard.config.RateLimitConfig;
 import io.github.hanielcota.motdguard.maintenance.MaintenanceManager;
-import io.github.hanielcota.motdguard.motd.MotdProvider;
-import io.github.hanielcota.motdguard.ratelimit.RateLimiter;
 import io.github.hanielcota.motdguard.util.CooldownService;
 import io.github.hanielcota.motdguard.util.PluginExceptionHandler;
-import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
@@ -45,8 +44,9 @@ class MotdGuardCommandTest {
   private record Mocks(
       ConfigManager configManager,
       MaintenanceManager maintenanceManager,
-      RateLimiter rateLimiter,
-      MotdProvider motdProvider,
+      CooldownService cooldown,
+      Reloadable firstReloadable,
+      Reloadable secondReloadable,
       PluginExceptionHandler exceptionHandler,
       CommandSource source) {}
 
@@ -58,8 +58,9 @@ class MotdGuardCommandTest {
     return new Mocks(
         configManager,
         mock(MaintenanceManager.class),
-        mock(RateLimiter.class),
-        mock(MotdProvider.class),
+        mock(CooldownService.class),
+        mock(Reloadable.class),
+        mock(Reloadable.class),
         mock(PluginExceptionHandler.class),
         source);
   }
@@ -72,25 +73,25 @@ class MotdGuardCommandTest {
     return issuer;
   }
 
+  private MotdGuardCommand command(final Mocks m) {
+    return new MotdGuardCommand(
+        m.configManager(),
+        m.maintenanceManager(),
+        m.cooldown(),
+        List.of(m.firstReloadable(), m.secondReloadable()),
+        m.exceptionHandler());
+  }
+
   @Test
   void reloadShouldRefreshServicesAndNotifySuccess() {
     final var m = mocks();
-    final var cooldown = mock(CooldownService.class);
-    final var command =
-        new MotdGuardCommand(
-            m.configManager(),
-            m.maintenanceManager(),
-            m.rateLimiter(),
-            m.motdProvider(),
-            cooldown,
-            m.exceptionHandler());
+    final var command = command(m);
 
     command.onReload(issuer(false, m.source()));
 
     verify(m.configManager()).reload();
-    verify(m.maintenanceManager()).refresh();
-    verify(m.rateLimiter()).refresh();
-    verify(m.motdProvider()).refresh();
+    verify(m.firstReloadable()).refresh();
+    verify(m.secondReloadable()).refresh();
     verify(m.exceptionHandler(), never()).caughtException(anyString(), any());
     verify(m.source(), atLeastOnce()).sendMessage(any(Component.class));
   }
@@ -99,20 +100,14 @@ class MotdGuardCommandTest {
   void reloadShouldRouteFailureToExceptionHandler() {
     final var m = mocks();
     doThrow(new IllegalStateException("boom")).when(m.configManager()).reload();
-    final var command =
-        new MotdGuardCommand(
-            m.configManager(),
-            m.maintenanceManager(),
-            m.rateLimiter(),
-            m.motdProvider(),
-            mock(CooldownService.class),
-            m.exceptionHandler());
+    final var command = command(m);
 
     command.onReload(issuer(false, m.source()));
 
     verify(m.exceptionHandler())
         .caughtException(eq("configuration reload"), any(IllegalStateException.class));
-    verify(m.maintenanceManager(), never()).refresh();
+    verify(m.firstReloadable(), never()).refresh();
+    verify(m.secondReloadable(), never()).refresh();
     verify(m.source(), atLeastOnce()).sendMessage(any(Component.class));
   }
 
@@ -120,14 +115,13 @@ class MotdGuardCommandTest {
   void secondCommandShouldBeBlockedByCooldown() {
     final var m = mocks();
     when(m.configManager().getConfigData()).thenReturn(configData(new CooldownConfig(true, 3600)));
-    final var cooldown = new CooldownService(true, Duration.ofHours(1));
+    final var cooldown = new CooldownService(m.configManager());
     final var command =
         new MotdGuardCommand(
             m.configManager(),
             m.maintenanceManager(),
-            m.rateLimiter(),
-            m.motdProvider(),
             cooldown,
+            List.of(m.firstReloadable(), m.secondReloadable()),
             m.exceptionHandler());
 
     final var playerIssuer = issuer(true, m.source());

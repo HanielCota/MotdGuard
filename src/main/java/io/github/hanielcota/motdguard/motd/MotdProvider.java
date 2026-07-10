@@ -1,6 +1,8 @@
 package io.github.hanielcota.motdguard.motd;
 
+import com.google.inject.Inject;
 import com.velocitypowered.api.proxy.server.ServerPing;
+import io.github.hanielcota.motdguard.Reloadable;
 import io.github.hanielcota.motdguard.config.ConfigManager;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -8,11 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 
 @Slf4j
-public final class MotdProvider {
+public final class MotdProvider implements Reloadable {
 
   private final ConfigManager configManager;
   private final AtomicReference<Component> cached = new AtomicReference<>(Component.empty());
 
+  @Inject
   public MotdProvider(final ConfigManager configManager) {
     this.configManager = Objects.requireNonNull(configManager, "configManager");
     refresh();

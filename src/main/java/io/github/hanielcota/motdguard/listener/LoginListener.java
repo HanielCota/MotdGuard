@@ -1,5 +1,6 @@
 package io.github.hanielcota.motdguard.listener;
 
+import com.google.inject.Inject;
 import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
@@ -9,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public final class LoginListener {
 
   @NonNull private final MaintenanceManager maintenanceManager;
