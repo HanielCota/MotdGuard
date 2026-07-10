@@ -9,7 +9,7 @@
     <Bug pattern="EI_EXPOSE_REP2"/>
   </Match>
   <Match>
-    <Class name="io.github.hanielcota.motdguard.util.PluginExceptionHandler"/>
+    <Class name="io.github.hanielcota.motdguard.PluginExceptionHandler"/>
     <Bug pattern="INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE"/>
   </Match>
   <Match>

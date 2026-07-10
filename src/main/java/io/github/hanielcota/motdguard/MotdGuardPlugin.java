@@ -13,7 +13,6 @@ import io.github.hanielcota.motdguard.command.MotdGuardCommand;
 import io.github.hanielcota.motdguard.config.ConfigManager;
 import io.github.hanielcota.motdguard.listener.LoginListener;
 import io.github.hanielcota.motdguard.listener.PingListener;
-import io.github.hanielcota.motdguard.util.PluginExceptionHandler;
 import java.nio.file.Path;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;

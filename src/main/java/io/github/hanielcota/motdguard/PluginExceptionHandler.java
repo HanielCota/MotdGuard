@@ -1,4 +1,4 @@
-package io.github.hanielcota.motdguard.util;
+package io.github.hanielcota.motdguard;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;

@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import co.aikar.commands.CommandIssuer;
 import com.velocitypowered.api.command.CommandSource;
+import io.github.hanielcota.motdguard.PluginExceptionHandler;
 import io.github.hanielcota.motdguard.Reloadable;
 import io.github.hanielcota.motdguard.config.ConfigData;
 import io.github.hanielcota.motdguard.config.ConfigManager;
@@ -22,8 +23,6 @@ import io.github.hanielcota.motdguard.config.MessagesConfig;
 import io.github.hanielcota.motdguard.config.MotdConfig;
 import io.github.hanielcota.motdguard.config.RateLimitConfig;
 import io.github.hanielcota.motdguard.maintenance.MaintenanceManager;
-import io.github.hanielcota.motdguard.util.CooldownService;
-import io.github.hanielcota.motdguard.util.PluginExceptionHandler;
 import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;

@@ -1,4 +1,4 @@
-package io.github.hanielcota.motdguard.util;
+package io.github.hanielcota.motdguard.ratelimit;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @UtilityClass
-public class IpExtractor {
+class IpExtractor {
 
   public static Optional<String> extract(final InetSocketAddress remoteAddress) {
     if (remoteAddress == null) {
