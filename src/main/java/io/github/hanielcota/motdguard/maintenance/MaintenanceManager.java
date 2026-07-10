@@ -34,10 +34,6 @@ public final class MaintenanceManager implements Reloadable {
     return state.get().enabled();
   }
 
-  public Component getKickMessage() {
-    return state.get().kickMessage();
-  }
-
   public void setEnabled(final boolean value) {
     state.updateAndGet(current -> new State(value, current.kickMessage()));
     logMaintenanceSet(value);

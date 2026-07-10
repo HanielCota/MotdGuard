@@ -45,48 +45,6 @@ public final class CooldownService implements Reloadable {
         });
   }
 
-  private CooldownConfig currentConfig() {
-    return configManager.getConfigData().cooldown();
-  }
-
-  private static State createState(final CooldownConfig config) {
-    final Duration duration = Duration.ofSeconds(config.durationSeconds());
-
-    if (config.enabled() && (duration.isZero() || duration.isNegative())) {
-      throw new IllegalArgumentException("cooldownDuration must be positive");
-    }
-
-    final Duration expiration =
-        !config.enabled() || duration.isZero() || duration.isNegative()
-            ? Duration.ofSeconds(1)
-            : duration;
-
-    return new State(
-        config.enabled(), duration, Caffeine.newBuilder().expireAfterWrite(expiration).build());
-  }
-
-  public boolean isOnCooldown(final UUID playerId) {
-    final State snapshot = state.get();
-
-    if (!snapshot.enabled()) {
-      return false;
-    }
-
-    Objects.requireNonNull(playerId, "playerId");
-
-    return snapshot.cache().getIfPresent(playerId) != null;
-  }
-
-  public void setUsed(final UUID playerId) {
-    final State snapshot = state.get();
-
-    if (!snapshot.enabled()) {
-      return;
-    }
-
-    snapshot.cache().put(Objects.requireNonNull(playerId, "playerId"), Boolean.TRUE);
-  }
-
   /**
    * Atomically marks {@code playerId} as having used a command and reports whether it was already
    * on cooldown.
@@ -107,8 +65,24 @@ public final class CooldownService implements Reloadable {
     return snapshot.cache().asMap().putIfAbsent(playerId, Boolean.TRUE) != null;
   }
 
-  public void clearCooldown(final UUID playerId) {
-    state.get().cache().invalidate(Objects.requireNonNull(playerId, "playerId"));
+  private CooldownConfig currentConfig() {
+    return configManager.getConfigData().cooldown();
+  }
+
+  private static State createState(final CooldownConfig config) {
+    final Duration duration = Duration.ofSeconds(config.durationSeconds());
+
+    if (config.enabled() && (duration.isZero() || duration.isNegative())) {
+      throw new IllegalArgumentException("cooldownDuration must be positive");
+    }
+
+    final Duration expiration =
+        !config.enabled() || duration.isZero() || duration.isNegative()
+            ? Duration.ofSeconds(1)
+            : duration;
+
+    return new State(
+        config.enabled(), duration, Caffeine.newBuilder().expireAfterWrite(expiration).build());
   }
 
   private record State(boolean enabled, Duration duration, Cache<UUID, Boolean> cache) {}

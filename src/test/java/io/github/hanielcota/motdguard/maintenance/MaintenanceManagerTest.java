@@ -39,7 +39,7 @@ class MaintenanceManagerTest {
     assertEquals(
         "Kick",
         net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
-            .serialize(maintenanceManager.getKickMessage()));
+            .serialize(maintenanceManager.getState().kickMessage()));
   }
 
   @Test
