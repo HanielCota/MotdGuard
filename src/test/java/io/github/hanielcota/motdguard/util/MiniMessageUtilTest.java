@@ -2,6 +2,7 @@ package io.github.hanielcota.motdguard.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
@@ -27,5 +28,18 @@ class MiniMessageUtilTest {
     final Component component = MiniMessageUtil.deserialize("<invalid>test");
 
     assertNotNull(component);
+  }
+
+  @Test
+  void strictDeserializeShouldReturnComponentForValidInput() {
+    final Component component = MiniMessageUtil.deserializeStrict("<red>Hello", "test.path");
+
+    assertNotNull(component);
+  }
+
+  @Test
+  void strictDeserializeShouldRejectNullInput() {
+    assertThrows(
+        IllegalArgumentException.class, () -> MiniMessageUtil.deserializeStrict(null, "test.path"));
   }
 }
